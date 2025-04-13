@@ -4,6 +4,8 @@ Stay organised and focused with this simple yet efficient todo application.
 
 Currently work-in-progress.
 
+[View live demo on GitHub Pages](https://sa9102.github.io/Advanced-Todo/)
+
 ![Main page showing the list of pending and completed todo, as well as an input for todos, and a progress bar](./public/preview.png)
 
 ## Installation

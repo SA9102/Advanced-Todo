@@ -1,7 +1,8 @@
 import { createTheme } from "@mantine/core";
 
 const theme = createTheme({
-    defaultRadius: "sm"
-})
+  defaultRadius: "md",
+  cursorType: "pointer",
+});
 
-export default theme
+export default theme;

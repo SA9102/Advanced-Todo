@@ -2,10 +2,12 @@
 
 ## Features
 
-- [x] Create todos
-- [ ] Update todos
-- [ ] Delete todos
-- [ ] Check of todos as completed
+- [x] Create todo
+- [x] Quickly change todo task
+- [ ] Update todo task
+- [ ] Update todo description
+- [ ] Delete todo
+- [ ] Check off todo as completed
 
 ## User Inteface
 

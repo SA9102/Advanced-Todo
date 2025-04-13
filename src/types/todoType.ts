@@ -1,8 +1,9 @@
 type todoType = {
     id: string;
-    name: string;
+    task: string;
     description: string;
-    isComplete: boolean
+    isComplete: boolean;
+    isChangingTask: boolean;
 }
 
 export default todoType

@@ -11,6 +11,8 @@ import {
   useMantineTheme,
   Checkbox,
   Stack,
+  Divider,
+  Progress,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
@@ -26,7 +28,7 @@ const App = () => {
   const todos: todoType[] = useGetTodos();
   // const createTodo = useCreateTodo();
   // const checkTodo = useCheckTodo();
-  const {createTodo} = useTodoActions()
+  const { createTodo } = useTodoActions();
   const [newTodo, setNewTodo] = useState<todoType>(emptyTask);
 
   const theme = useMantineTheme();
@@ -35,20 +37,28 @@ const App = () => {
     setNewTodo({ ...emptyTask, id: uuidv4() });
   };
 
+  const getNumberOfCompletedTodos = () => {
+    return todos.filter((todo: todoType) => todo.isComplete).length;
+  };
+
+  const getCompletedValue = () => {
+    return (getNumberOfCompletedTodos() / todos.length) * 100;
+  };
+
   return (
     <AppShell p="xs">
       <AppShell.Main>
-        <Stack gap="xs">
-          <Group gap="0">
+        <Stack gap="sm">
+          <Group gap="xs" mb="sm">
             <TextInput
-              placeholder="Input task"
-              value={newTodo.name}
-              onChange={(e) => setNewTodo({ ...newTodo, name: e.target.value })}
+              size="xs"
+              placeholder="Enter todo ..."
+              value={newTodo.task}
+              onChange={(e) => setNewTodo({ ...newTodo, task: e.target.value })}
               flex="1"
-              
             />
             <ActionIcon
-              size="lg"
+              size="md"
               onClick={() => {
                 createTodo(newTodo);
                 resetTodos();
@@ -57,10 +67,33 @@ const App = () => {
               <IconPlus />
             </ActionIcon>
           </Group>
-          <Stack gap="xs">
-            {todos.map((todo: todoType) => (
-              <TodoItem todo={todo} />
-            ))}
+          <Stack>
+            <Text size="xs">
+              Completed Todos: {getNumberOfCompletedTodos()} / {todos.length}
+            </Text>
+            <Progress value={getCompletedValue()} />
+          </Stack>
+          <Divider />
+          <Stack>
+            <Text size="xs">Pending</Text>
+            <Stack gap="xs">
+              {todos.map((todo: todoType) => {
+                if (!todo.isComplete) {
+                  return <TodoItem key={todo.id} todo={todo} />;
+                }
+              })}
+            </Stack>
+          </Stack>
+          <Divider />
+          <Stack>
+            <Text size="xs">Completed</Text>
+            <Stack gap="xs">
+              {todos.map((todo: todoType) => {
+                if (todo.isComplete) {
+                  return <TodoItem key={todo.id} todo={todo} />;
+                }
+              })}
+            </Stack>
           </Stack>
         </Stack>
       </AppShell.Main>

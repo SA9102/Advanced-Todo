@@ -9,8 +9,10 @@ type state = {
 
 type actions = {
   createTodo: (newTodo: todoType) => void;
+  updateTodo: (updatedTodo: todoType) => void;
   checkTodo: (todoId: string) => void;
   deleteTodo: (todoId: string) => void;
+  changeTask: (todoId: string, isChange: boolean) => void;
 };
 
 const useTodoStore = create<state>((set) => ({
@@ -18,6 +20,15 @@ const useTodoStore = create<state>((set) => ({
   actions: {
     createTodo: (newTodo: todoType) =>
       set((state) => ({ todos: [...state.todos, newTodo] })),
+    updateTodo: (updatedTodo: todoType) =>
+      set((state) => ({
+        todos: state.todos.map((todo: todoType) => {
+          if (todo.id === updatedTodo.id) {
+            return updatedTodo;
+          }
+          return todo;
+        }),
+      })),
     checkTodo: (todoId: string) =>
       set((state) => ({
         todos: state.todos.map((todo: todoType) => {
@@ -31,6 +42,20 @@ const useTodoStore = create<state>((set) => ({
       set((state) => ({
         todos: state.todos.filter((todo: todoType) => todo.id !== todoId),
       })),
+    changeTask: (todoId: string, isChange: boolean) => {
+      set((state) => ({
+        todos: state.todos.map((todo: todoType) => {
+          if (todo.id === todoId) {
+            if (isChange) {
+              todo.isChangingTask = true;
+            } else {
+              todo.isChangingTask = false;
+            }
+          }
+          return todo;
+        }),
+      }));
+    },
   },
 }));
 

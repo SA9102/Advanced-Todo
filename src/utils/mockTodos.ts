@@ -7,6 +7,7 @@ const mockTodos: todoType[] = [
     description: "",
     isComplete: false,
     isChangingTask: false,
+    priority: "2",
   },
   {
     id: "2",
@@ -14,6 +15,7 @@ const mockTodos: todoType[] = [
     description: "",
     isComplete: false,
     isChangingTask: false,
+    priority: "1",
   },
   {
     id: "3",
@@ -21,6 +23,7 @@ const mockTodos: todoType[] = [
     description: "",
     isComplete: true,
     isChangingTask: false,
+    priority: "3",
   },
 ];
 

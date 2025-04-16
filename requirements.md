@@ -6,8 +6,9 @@
 - [x] Quickly change todo task
 - [ ] Update todo task
 - [ ] Update todo description
-- [ ] Delete todo
-- [ ] Check off todo as completed
+- [x] Delete todo
+- [x] Check off todo as completed
+- [x] Priorities
 
 ## User Inteface
 

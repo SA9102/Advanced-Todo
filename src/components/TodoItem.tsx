@@ -18,6 +18,8 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useState } from "react";
+import { Link, NavLink } from "react-router";
+import { ROOT } from "../routes/routes";
 
 type props = {
   todo: todoType;
@@ -43,9 +45,28 @@ const TodoItem = ({ todo }: props) => {
     changeTask(todo.id, false);
   };
 
+  const getPriorityColour = () => {
+    switch (todo.priority) {
+      case "1":
+        return "green";
+      case "2":
+        return "yellow";
+      case "3":
+        return "red";
+    }
+  };
+
   return (
     <>
-      <Card key={todo.id} shadow="xs" padding="xs" {...longPress()}>
+      <Card
+        style={{
+          borderLeft: `2px solid var(--mantine-color-${getPriorityColour()}-9)`,
+        }}
+        key={todo.id}
+        shadow="xs"
+        padding="xs"
+        {...longPress()}
+      >
         <Group justify="space-between">
           <Group>
             {todo.isChangingTask ? (
@@ -85,7 +106,9 @@ const TodoItem = ({ todo }: props) => {
               <Menu.Item onClick={() => changeTask(todo.id, true)}>
                 Change Task
               </Menu.Item>
-              <Menu.Item>Edit</Menu.Item>
+              <Link to={todo.id}>
+                <Menu.Item>Edit</Menu.Item>
+              </Link>
               <Menu.Item color="red" onClick={() => deleteTodo(todo.id)}>
                 Delete
               </Menu.Item>

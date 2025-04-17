@@ -8,6 +8,8 @@ const mockTodos: todoType[] = [
     isComplete: false,
     isChangingTask: false,
     priority: "2",
+    isExpanded: false,
+    tags: ["Food", "Entertainment"],
   },
   {
     id: "2",
@@ -16,6 +18,8 @@ const mockTodos: todoType[] = [
     isComplete: false,
     isChangingTask: false,
     priority: "1",
+    isExpanded: false,
+    tags: ["Food"],
   },
   {
     id: "3",
@@ -24,6 +28,8 @@ const mockTodos: todoType[] = [
     isComplete: true,
     isChangingTask: false,
     priority: "3",
+    isExpanded: false,
+    tags: ["Food", "Entertainment"],
   },
 ];
 

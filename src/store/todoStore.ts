@@ -13,6 +13,7 @@ type actions = {
   checkTodo: (todoId: string) => void;
   deleteTodo: (todoId: string) => void;
   changeTask: (todoId: string, isChange: boolean) => void;
+  toggleExpandTodo: (todoId: string) => void;
 };
 
 const useTodoStore = create<state>((set) => ({
@@ -51,6 +52,16 @@ const useTodoStore = create<state>((set) => ({
             } else {
               todo.isChangingTask = false;
             }
+          }
+          return todo;
+        }),
+      }));
+    },
+    toggleExpandTodo: (todoId: string) => {
+      set((state) => ({
+        todos: state.todos.map((todo: todoType) => {
+          if (todo.id === todoId) {
+            todo.isExpanded = !todo.isExpanded;
           }
           return todo;
         }),

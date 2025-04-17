@@ -7,7 +7,9 @@ const emptyTodo: todoType = {
   description: "",
   isComplete: false,
   isChangingTask: false,
+  isExpanded: false,
   priority: "1",
+  tags: [],
 };
 
 export default emptyTodo;

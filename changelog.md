@@ -1,5 +1,10 @@
 # Change Log
 
+## 17th May 2025
+
+- You can assign multiple tags to a todo item.
+- If more information than just the task is provided, you can expand a todo item to view more details
+
 ## 16th May 2025
 
 - Each todo item now has a priority of "low", "medium", or "high"

@@ -4,11 +4,12 @@
 
 - [x] Create todo
 - [x] Quickly change todo task
-- [ ] Update todo task
-- [ ] Update todo description
+- [x] Update todo task
+- [x] Update todo description
 - [x] Delete todo
 - [x] Check off todo as completed
 - [x] Priorities
+- [x] Tags
 
 ## User Inteface
 

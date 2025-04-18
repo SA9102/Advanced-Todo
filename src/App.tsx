@@ -27,12 +27,13 @@ import { Route, Routes } from "react-router";
 import HomePage from "./pages/HomePage";
 import { HOME, UPDATE_TODO } from "./routes/routes";
 import EditTodoPage from "./pages/EditTodoPage";
+import "./index.css";
 
 const App = () => {
   return (
-    <AppShell p="xs">
+    <AppShell>
       <AppShell.Main>
-        <Stack gap="sm">
+        <Stack gap="sm" p="xs" h="100vh">
           <Routes>
             <Route path={HOME} element={<HomePage />} />
             <Route path={UPDATE_TODO} element={<EditTodoPage />} />

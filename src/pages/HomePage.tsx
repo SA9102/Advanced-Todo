@@ -15,6 +15,7 @@ import { useGetTodos, useTodoActions } from "../store/todoStore";
 import { useState } from "react";
 import emptyTask from "../utils/emptyTodo";
 import { v4 as uuidv4 } from "uuid";
+import FiltersInput from "../components/FiltersInput";
 
 const HomePage = () => {
   const todos: todoType[] = useGetTodos();
@@ -40,7 +41,40 @@ const HomePage = () => {
       <Title order={1} mb="sm">
         My Todos
       </Title>
-      <Group gap="xs" mb="sm">
+      <Stack flex="1" style={{ overflow: "auto" }}>
+        <Stack>
+          <Text size="xs">
+            Completed Todos: {getNumberOfCompletedTodos()} / {todos.length}
+          </Text>
+          <Progress value={getCompletedValue()} />
+        </Stack>
+        <Divider />
+        <Stack>
+          <Text size="xs">Pending</Text>
+          <Stack gap="xs">
+            {todos.map((todo: todoType) => {
+              if (!todo.isComplete) {
+                return <TodoItem key={todo.id} todo={todo} />;
+              }
+            })}
+          </Stack>
+        </Stack>
+        <Divider />
+        <Stack>
+          <Text size="xs">Completed</Text>
+          <Stack gap="xs">
+            {todos.map((todo: todoType) => {
+              if (todo.isComplete) {
+                return <TodoItem key={todo.id} todo={todo} />;
+              }
+            })}
+          </Stack>
+        </Stack>
+      </Stack>
+      <Group
+        gap="xs"
+        // mb="sm"
+      >
         <TextInput
           size="xs"
           placeholder="Enter todo ..."
@@ -58,34 +92,6 @@ const HomePage = () => {
           <IconPlus />
         </ActionIcon>
       </Group>
-      <Stack>
-        <Text size="xs">
-          Completed Todos: {getNumberOfCompletedTodos()} / {todos.length}
-        </Text>
-        <Progress value={getCompletedValue()} />
-      </Stack>
-      <Divider />
-      <Stack>
-        <Text size="xs">Pending</Text>
-        <Stack gap="xs">
-          {todos.map((todo: todoType) => {
-            if (!todo.isComplete) {
-              return <TodoItem key={todo.id} todo={todo} />;
-            }
-          })}
-        </Stack>
-      </Stack>
-      <Divider />
-      <Stack>
-        <Text size="xs">Completed</Text>
-        <Stack gap="xs">
-          {todos.map((todo: todoType) => {
-            if (todo.isComplete) {
-              return <TodoItem key={todo.id} todo={todo} />;
-            }
-          })}
-        </Stack>
-      </Stack>
     </>
   );
 };

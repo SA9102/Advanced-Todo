@@ -61,7 +61,7 @@ const EditTodoPage = () => {
       </Stack>
       <TagInput todoInput={todoInput} setTodoInput={setTodoInput} />
       <Group>
-        <Button flex="1" variant="default" component={Link} to={HOME}>
+        <Button flex="1" variant="outline" component={Link} to={HOME}>
           Cancel
         </Button>
         <Button

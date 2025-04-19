@@ -13,19 +13,23 @@ import TodoItem from "../components/TodoItem";
 import todoType from "../types/todoType";
 import { useGetTodos, useTodoActions } from "../store/todoStore";
 import { useState } from "react";
-import emptyTask from "../utils/emptyTodo";
 import { v4 as uuidv4 } from "uuid";
 import FiltersInput from "../components/FiltersInput";
+import emptyTodo from "../utils/emptyTodo";
+import todoFiltersType from "../types/todoFiltersType";
+import emptyTodoFilters from "../utils/emptyTodoFilters";
 
 const HomePage = () => {
   const todos: todoType[] = useGetTodos();
   // const createTodo = useCreateTodo();
   // const checkTodo = useCheckTodo();
   const { createTodo } = useTodoActions();
-  const [newTodo, setNewTodo] = useState<todoType>(emptyTask);
+  const [newTodo, setNewTodo] = useState<todoType>(emptyTodo);
+  const [todoFilters, setTodoFilters] =
+    useState<todoFiltersType>(emptyTodoFilters);
 
   const resetTodos = () => {
-    setNewTodo({ ...emptyTask, id: uuidv4() });
+    setNewTodo({ ...emptyTodo, id: uuidv4() });
   };
 
   const getNumberOfCompletedTodos = () => {
@@ -36,11 +40,29 @@ const HomePage = () => {
     return (getNumberOfCompletedTodos() / todos.length) * 100;
   };
 
+  const getFilteredTodos = () => {
+    let filtered = [...todos];
+    if (todoFilters.text.trim() !== "") {
+      filtered = filtered.filter(
+        (todo) =>
+          todo.task.toLowerCase().includes(todoFilters.text.toLowerCase()) ||
+          todo.description
+            .toLowerCase()
+            .includes(todoFilters.text.toLowerCase())
+      );
+    }
+    filtered = filtered.filter((todo) =>
+      todoFilters.priority.includes(todo.priority)
+    );
+    return filtered;
+  };
+
   return (
     <>
       <Title order={1} mb="sm">
         My Todos
       </Title>
+      <FiltersInput todoFilters={todoFilters} setTodoFilters={setTodoFilters} />
       <Stack flex="1" style={{ overflow: "auto" }}>
         <Stack>
           <Text size="xs">
@@ -52,7 +74,7 @@ const HomePage = () => {
         <Stack>
           <Text size="xs">Pending</Text>
           <Stack gap="xs">
-            {todos.map((todo: todoType) => {
+            {getFilteredTodos().map((todo: todoType) => {
               if (!todo.isComplete) {
                 return <TodoItem key={todo.id} todo={todo} />;
               }
@@ -63,7 +85,7 @@ const HomePage = () => {
         <Stack>
           <Text size="xs">Completed</Text>
           <Stack gap="xs">
-            {todos.map((todo: todoType) => {
+            {getFilteredTodos().map((todo: todoType) => {
               if (todo.isComplete) {
                 return <TodoItem key={todo.id} todo={todo} />;
               }

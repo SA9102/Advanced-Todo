@@ -1,5 +1,14 @@
 # Change Log
 
+## 19th May 2025
+
+- Can filter todos by text (within task and description) and priority
+
+## 18th May 2025
+
+- Todo input is fixed at bottom of screen
+- List of todos is scrollable
+
 ## 17th May 2025
 
 - You can assign multiple tags to a todo item.

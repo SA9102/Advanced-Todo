@@ -42,6 +42,7 @@ const HomePage = () => {
 
   const getFilteredTodos = () => {
     let filtered = [...todos];
+    // If the text input is not empty, then filter by text within task and/or description
     if (todoFilters.text.trim() !== "") {
       filtered = filtered.filter(
         (todo) =>
@@ -51,9 +52,25 @@ const HomePage = () => {
             .includes(todoFilters.text.toLowerCase())
       );
     }
+    // Filter by priority
     filtered = filtered.filter((todo) =>
       todoFilters.priority.includes(todo.priority)
     );
+
+    // Fitler by tags. If no tags are selected, then show todos belonging to all tags.
+    if (todoFilters.tags.length > 0) {
+      filtered = filtered.filter((todo) => {
+        for (let i = 0; i < todo.tags.length; i++) {
+          for (let j = 0; j < todoFilters.tags.length; j++) {
+            if (todo.tags[i] === todoFilters.tags[j]) {
+              console.log("OK");
+              return todo;
+            }
+          }
+        }
+      });
+    }
+
     return filtered;
   };
 

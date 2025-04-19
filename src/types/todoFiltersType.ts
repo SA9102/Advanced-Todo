@@ -1,7 +1,7 @@
 type todoFiltersType = {
   text: string;
   priority: string[];
-  categories: string[];
+  tags: string[];
 };
 
 export default todoFiltersType;

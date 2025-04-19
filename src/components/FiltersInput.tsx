@@ -3,6 +3,7 @@ import {
   Chip,
   Collapse,
   Group,
+  MultiSelect,
   Stack,
   Text,
   TextInput,
@@ -15,6 +16,7 @@ import {
 } from "@tabler/icons-react";
 import todoType from "../types/todoType";
 import todoFiltersType from "../types/todoFiltersType";
+import { useGetTags } from "../store/tagStore";
 
 type props = {
   todoFilters: todoFiltersType;
@@ -24,7 +26,7 @@ type props = {
 const FiltersInput = ({ todoFilters, setTodoFilters }: props) => {
   const [opened, { toggle }] = useDisclosure(false);
 
-  const theme = useMantineTheme();
+  const tags = useGetTags();
 
   return (
     <Stack>
@@ -52,8 +54,8 @@ const FiltersInput = ({ todoFilters, setTodoFilters }: props) => {
             <Chip.Group
               multiple
               value={todoFilters.priority}
-              onChange={(newVal) =>
-                setTodoFilters({ ...todoFilters, priority: newVal })
+              onChange={(newPri) =>
+                setTodoFilters({ ...todoFilters, priority: newPri })
               }
             >
               <Group>
@@ -70,6 +72,15 @@ const FiltersInput = ({ todoFilters, setTodoFilters }: props) => {
               </Group>
             </Chip.Group>
           </Stack>
+          <MultiSelect
+            label="Tags"
+            size="sm"
+            data={tags.map((tag) => tag.name)}
+            value={todoFilters.tags}
+            onChange={(newTags) =>
+              setTodoFilters({ ...todoFilters, tags: newTags })
+            }
+          />
         </Stack>
       </Collapse>
     </Stack>

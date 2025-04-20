@@ -63,7 +63,6 @@ const HomePage = () => {
         for (let i = 0; i < todo.tags.length; i++) {
           for (let j = 0; j < todoFilters.tags.length; j++) {
             if (todo.tags[i] === todoFilters.tags[j]) {
-              console.log("OK");
               return todo;
             }
           }

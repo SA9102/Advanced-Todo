@@ -10,6 +10,7 @@ const mockTodos: todoType[] = [
     priority: "2",
     isExpanded: false,
     tags: ["Food", "Entertainment"],
+    end: null,
   },
   {
     id: "2",
@@ -20,6 +21,7 @@ const mockTodos: todoType[] = [
     priority: "1",
     isExpanded: false,
     tags: ["Food"],
+    end: null,
   },
   {
     id: "3",
@@ -31,6 +33,7 @@ const mockTodos: todoType[] = [
     priority: "3",
     isExpanded: false,
     tags: ["Food", "Entertainment", "Lorem", "Ipsum", "Dolor", "Sit", "Amet"],
+    end: null,
   },
 ];
 

@@ -69,16 +69,23 @@ const TodoItem = ({ todo }: props) => {
 
   // Check if the todo has at least one tag with it
   const hasTags = () => {
-    console.log("HAS TAGS");
-    console.log(todo.tags.length);
     return todo.tags.length > 0;
+  };
+
+  // Check if todo has an end datetime specified
+  const hasEnd = () => {
+    return todo.end !== null;
   };
 
   // A todo item can only be expanded if it contains more information other
   // than the task
   const canBeExpanded = () => {
-    return hasDescription() || hasTags();
+    return hasDescription() || hasTags() || hasEnd();
   };
+
+  function formatDate(date: Date): string {
+    return date.toISOString().split("T")[0];
+  }
 
   return (
     <>
@@ -170,6 +177,9 @@ const TodoItem = ({ todo }: props) => {
           {todo.isExpanded && (
             <>
               {hasDescription() && <Text size="xs">{todo.description}</Text>}
+              {hasEnd() && (
+                <Text size="xs">End: {todo.end!.toDateString()}</Text>
+              )}
               {hasTags() && (
                 <Pill.Group>
                   {todo.tags.map((tag) => (

@@ -3,6 +3,8 @@
 ## 20th May 2025
 
 - Can filter todos by tags.
+- Todo task overflow is hidden if too long.
+- Todos now have an end date and time, which is displayed if todo is maximised.
 
 ## 19th May 2025
 

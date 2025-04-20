@@ -6,6 +6,7 @@ type todoType = {
   description: string;
   priority: "1" | "2" | "3"; // 1 is lowest, 3 is highest
   tags: string[];
+  end: Date | null;
   isComplete: boolean;
   isChangingTask: boolean;
   isExpanded: boolean;

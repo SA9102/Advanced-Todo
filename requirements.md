@@ -9,7 +9,7 @@
 - [x] Choose priority from "Low", "Medium" and "High"
 - [x] A todo optionally has one or more tags
 - [ ] A todo optionally has a start date
-- [ ] A todo optionally has an end date
+- [x] A todo optionally has an end date and time
 - [x] A todo can be deleted
 - [x] Quickly change todo task on home page
 - [x] Quickly delete todo on home page

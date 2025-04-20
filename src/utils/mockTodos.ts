@@ -13,7 +13,7 @@ const mockTodos: todoType[] = [
   },
   {
     id: "2",
-    task: "Feed cat",
+    task: "Feed cat adgfhiuadfh gasdfghiu sdfguih sdfiuhg sdfihgu sdfigu sdfgiu ",
     description: "",
     isComplete: false,
     isChangingTask: false,
@@ -23,13 +23,14 @@ const mockTodos: todoType[] = [
   },
   {
     id: "3",
-    task: "Eat lunch",
-    description: "",
+    task: "Eat lunch aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    description:
+      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolores odit iusto eos natus, amet harum? Consectetur, veniam! Adipisci delectus, inventore, nemo at saepe soluta corrupti sed enim ratione qui molestias ab. Laboriosam vel nobis accusamus alias aut minus eius voluptatibus quasi, beatae quas, laborum expedita quos autem est ad? Nisi!",
     isComplete: true,
     isChangingTask: false,
     priority: "3",
     isExpanded: false,
-    tags: ["Food", "Entertainment"],
+    tags: ["Food", "Entertainment", "Lorem", "Ipsum", "Dolor", "Sit", "Amet"],
   },
 ];
 

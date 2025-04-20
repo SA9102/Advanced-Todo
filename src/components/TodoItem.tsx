@@ -14,7 +14,6 @@ import todoType from "../types/todoType";
 import { useTodoActions } from "../store/todoStore";
 import { useLongPress } from "use-long-press";
 import {
-  IconCancel,
   IconCheck,
   IconChevronDown,
   IconChevronUp,
@@ -22,8 +21,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useState } from "react";
-import { Link, NavLink } from "react-router";
-import { ROOT } from "../routes/routes";
+import { Link } from "react-router";
 
 type props = {
   todo: todoType;
@@ -39,17 +37,20 @@ const TodoItem = ({ todo }: props) => {
     console.log("Long pressed!");
   });
 
+  // If 'Save' is pressed when editing
   const handleConfirmChangeTask = () => {
     updateTodo(newTodo);
     setNewTodo(newTodo);
     changeTask(todo.id, false);
   };
 
+  // If 'Cancel' is pressed when editing
   const handleCancelChangeTask = () => {
     setNewTodo(todo);
     changeTask(todo.id, false);
   };
 
+  // Return the colour based on the todo item's priority
   const getPriorityColour = () => {
     switch (todo.priority) {
       case "1":
@@ -91,36 +92,46 @@ const TodoItem = ({ todo }: props) => {
         {...longPress()}
       >
         <Stack>
-          <Group justify="space-between">
-            <Group>
-              {todo.isChangingTask ? (
-                <>
-                  <TextInput
-                    size="xs"
-                    value={newTodo.task}
-                    onChange={(e) =>
-                      setNewTodo({ ...newTodo, task: e.target.value })
-                    }
-                  />
-                  <ActionIcon size="xs" onClick={handleConfirmChangeTask}>
-                    <IconCheck />
-                  </ActionIcon>
-                  <ActionIcon size="xs" onClick={handleCancelChangeTask}>
-                    <IconX />
-                  </ActionIcon>
-                </>
-              ) : (
-                <>
-                  <Checkbox
-                    checked={todo.isComplete}
-                    onChange={() => checkTodo(todo.id)}
-                  />
-                  <Text>{todo.task}</Text>
-                </>
-              )}
-            </Group>
+          <Group justify="space-between" wrap="nowrap">
+            {todo.isChangingTask ? (
+              <Group wrap="nowrap">
+                <TextInput
+                  size="xs"
+                  value={newTodo.task}
+                  onChange={(e) =>
+                    setNewTodo({ ...newTodo, task: e.target.value })
+                  }
+                />
+                <ActionIcon size="xs" onClick={handleConfirmChangeTask}>
+                  <IconCheck />
+                </ActionIcon>
+                <ActionIcon size="xs" onClick={handleCancelChangeTask}>
+                  <IconX />
+                </ActionIcon>
+              </Group>
+            ) : (
+              <Group style={{ flex: 1, overflow: "hidden" }} wrap="nowrap">
+                <Checkbox
+                  size="xs"
+                  checked={todo.isComplete}
+                  onChange={() => checkTodo(todo.id)}
+                />
+                <Text
+                  size="sm"
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    flex: 1,
+                    minWidth: 0,
+                  }}
+                >
+                  {todo.task}
+                </Text>
+              </Group>
+            )}
 
-            <Group>
+            <Group wrap="nowrap">
               {canBeExpanded() && (
                 <ActionIcon
                   onClick={() => toggleExpandTodo(todo.id)}
@@ -155,23 +166,18 @@ const TodoItem = ({ todo }: props) => {
               </Menu>
             </Group>
           </Group>
+
           {todo.isExpanded && (
             <>
-              {hasDescription() && (
-                // <Stack gap="xs">
-                //   <Text size="xs">Description</Text>
-                <Text size="sm">{todo.description}</Text>
-                // </Stack>
-              )}
+              {hasDescription() && <Text size="xs">{todo.description}</Text>}
               {hasTags() && (
-                // <Stack gap="xs">
-                //   <Text size="xs">Tags</Text>
-                <Group>
+                <Pill.Group>
                   {todo.tags.map((tag) => (
-                    <Pill>{tag}</Pill>
+                    <Pill size="xs" key={tag}>
+                      {tag}
+                    </Pill>
                   ))}
-                </Group>
-                // </Stack>
+                </Pill.Group>
               )}
             </>
           )}

@@ -59,7 +59,7 @@ const HomePage = () => {
       );
     }
 
-    // Filter by priority
+    // Filter by priority.
     filtered = filtered.filter((todo) =>
       todoFilters.priority.includes(todo.priority)
     );

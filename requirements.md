@@ -24,8 +24,6 @@
 - [x] By text for task/description
 - [x] By priority
 - [x] By tags
-- [ ] By start date
-- [ ] By end date
 
 ## User Inteface
 

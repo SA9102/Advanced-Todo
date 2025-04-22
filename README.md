@@ -7,7 +7,8 @@ Currently work-in-progress.
 [View live demo on GitHub Pages](https://sa9102.github.io/Advanced-Todo/)
 
 ![Main page showing the list of pending and completed todo, as well as an input for todos, and a progress bar](./public/preview1.png)
-![Edit page showing fields where you can edit the todo task, description, priority and tags](./public/preview2.png)
+![Main page showing filtering options: task/description, priority, tags, and pending/completed/upcoming/overdue](./public/preview2.png)
+![Edit page showing fields where you can edit the todo task, description, priority and tags](./public/preview3.png)
 
 ## Current Features
 

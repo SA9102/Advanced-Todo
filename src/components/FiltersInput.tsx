@@ -21,9 +21,16 @@ import { useGetTags } from "../store/tagStore";
 type props = {
   todoFilters: todoFiltersType;
   setTodoFilters: (arg: todoFiltersType) => void;
+  filterGroups: string[];
+  setFilterGroups: (arg: string[]) => void;
 };
 
-const FiltersInput = ({ todoFilters, setTodoFilters }: props) => {
+const FiltersInput = ({
+  todoFilters,
+  setTodoFilters,
+  filterGroups,
+  setFilterGroups,
+}: props) => {
   const [opened, { toggle }] = useDisclosure(false);
 
   const tags = useGetTags();
@@ -85,10 +92,8 @@ const FiltersInput = ({ todoFilters, setTodoFilters }: props) => {
             <Text size="xs">Groups</Text>
             <Chip.Group
               multiple
-              // value={todoFilters.priority}
-              // onChange={(newPri) =>
-              //   setTodoFilters({ ...todoFilters, priority: newPri })
-              // }
+              value={filterGroups}
+              onChange={(newFilterGroup) => setFilterGroups(newFilterGroup)}
             >
               <Group>
                 <Chip value="pending" size="xs">

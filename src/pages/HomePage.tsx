@@ -111,7 +111,12 @@ const HomePage = () => {
       <Title order={1} mb="sm">
         My Todos
       </Title>
-      <FiltersInput todoFilters={todoFilters} setTodoFilters={setTodoFilters} />
+      <FiltersInput
+        todoFilters={todoFilters}
+        setTodoFilters={setTodoFilters}
+        filterGroups={filterGroups}
+        setFilterGroups={setFilterGroups}
+      />
       <Stack flex="1" style={{ overflow: "auto" }}>
         <Stack>
           <Text size="xs">
@@ -119,58 +124,74 @@ const HomePage = () => {
           </Text>
           <Progress value={getCompletedValue()} />
         </Stack>
-        <Divider />
-        <Stack>
-          <Text size="xs">Pending</Text>
-          <Stack gap="xs">
-            {/* Pending todos */}
-            {getFilteredTodos().map((todo: todoType) => {
-              if (
-                !todo.isComplete &&
-                hasExceededStart(todo) &&
-                !hasExceededEnd(todo)
-              ) {
-                return <TodoItem key={todo.id} todo={todo} />;
-              }
-            })}
-          </Stack>
-        </Stack>
-        <Divider />
-        <Stack>
-          <Text size="xs">Upcoming</Text>
-          <Stack gap="xs">
-            {/* Upcoming todos */}
-            {getFilteredTodos().map((todo: todoType) => {
-              if (!todo.isComplete && !hasExceededStart(todo)) {
-                return <TodoItem key={todo.id} todo={todo} />;
-              }
-            })}
-          </Stack>
-        </Stack>
-        <Divider />
-        <Stack>
-          <Text size="xs">Overdue</Text>
-          <Stack gap="xs">
-            {/* Overdue todos */}
-            {getFilteredTodos().map((todo: todoType) => {
-              if (!todo.isComplete && hasExceededEnd(todo)) {
-                return <TodoItem key={todo.id} todo={todo} />;
-              }
-            })}
-          </Stack>
-        </Stack>
-        <Divider />
-        <Stack>
-          <Text size="xs">Completed</Text>
-          <Stack gap="xs">
-            {/* Completed todos */}
-            {getFilteredTodos().map((todo: todoType) => {
-              if (todo.isComplete) {
-                return <TodoItem key={todo.id} todo={todo} />;
-              }
-            })}
-          </Stack>
-        </Stack>
+        {filterGroups.includes("pending") && (
+          <>
+            <Divider />
+            <Stack>
+              <Text size="xs">Pending</Text>
+              <Stack gap="xs">
+                {/* Pending todos */}
+                {getFilteredTodos().map((todo: todoType) => {
+                  if (
+                    !todo.isComplete &&
+                    hasExceededStart(todo) &&
+                    !hasExceededEnd(todo)
+                  ) {
+                    return <TodoItem key={todo.id} todo={todo} />;
+                  }
+                })}
+              </Stack>
+            </Stack>
+          </>
+        )}
+        {filterGroups.includes("upcoming") && (
+          <>
+            <Divider />
+            <Stack>
+              <Text size="xs">Upcoming</Text>
+              <Stack gap="xs">
+                {/* Upcoming todos */}
+                {getFilteredTodos().map((todo: todoType) => {
+                  if (!todo.isComplete && !hasExceededStart(todo)) {
+                    return <TodoItem key={todo.id} todo={todo} />;
+                  }
+                })}
+              </Stack>
+            </Stack>
+          </>
+        )}
+        {filterGroups.includes("overdue") && (
+          <>
+            <Divider />
+            <Stack>
+              <Text size="xs">Overdue</Text>
+              <Stack gap="xs">
+                {/* Overdue todos */}
+                {getFilteredTodos().map((todo: todoType) => {
+                  if (!todo.isComplete && hasExceededEnd(todo)) {
+                    return <TodoItem key={todo.id} todo={todo} />;
+                  }
+                })}
+              </Stack>
+            </Stack>
+          </>
+        )}
+        {filterGroups.includes("completed") && (
+          <>
+            <Divider />
+            <Stack>
+              <Text size="xs">Completed</Text>
+              <Stack gap="xs">
+                {/* Completed todos */}
+                {getFilteredTodos().map((todo: todoType) => {
+                  if (todo.isComplete) {
+                    return <TodoItem key={todo.id} todo={todo} />;
+                  }
+                })}
+              </Stack>
+            </Stack>
+          </>
+        )}
       </Stack>
       <Group
         gap="xs"

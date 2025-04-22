@@ -6,6 +6,7 @@
 - Will be categoried into 'Pending', 'Upcoming' or 'Overdue'.
 - No start means it will be starting immediately.
 - No end means it will have no deadline.
+- Can now choose to show or hide pending, upcoming, overdue and completed todos.
 
 ## 20th May 2025
 

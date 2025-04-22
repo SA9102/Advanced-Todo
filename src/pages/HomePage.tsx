@@ -20,13 +20,17 @@ import todoFiltersType from "../types/todoFiltersType";
 import emptyTodoFilters from "../utils/emptyTodoFilters";
 
 const HomePage = () => {
-  const todos: todoType[] = useGetTodos();
-  // const createTodo = useCreateTodo();
-  // const checkTodo = useCheckTodo();
-  const { createTodo } = useTodoActions();
-  const [newTodo, setNewTodo] = useState<todoType>(emptyTodo);
+  const todos: todoType[] = useGetTodos(); // Get all todos from store
+  const { createTodo } = useTodoActions(); // Function for creating a todo
+  const [newTodo, setNewTodo] = useState<todoType>(emptyTodo); // Input for adding a new todo
   const [todoFilters, setTodoFilters] =
-    useState<todoFiltersType>(emptyTodoFilters);
+    useState<todoFiltersType>(emptyTodoFilters); // Input for todo filters
+  const [filterGroups, setFilterGroups] = useState([
+    "pending",
+    "completed",
+    "upcoming",
+    "overdue",
+  ]);
 
   const resetTodos = () => {
     setNewTodo({ ...emptyTodo, id: uuidv4() });
@@ -36,12 +40,14 @@ const HomePage = () => {
     return todos.filter((todo: todoType) => todo.isComplete).length;
   };
 
+  // Return percentage of completed todos
   const getCompletedValue = () => {
     return (getNumberOfCompletedTodos() / todos.length) * 100;
   };
 
   const getFilteredTodos = () => {
     let filtered = [...todos];
+
     // If the text input is not empty, then filter by text within task and/or description
     if (todoFilters.text.trim() !== "") {
       filtered = filtered.filter(
@@ -52,6 +58,7 @@ const HomePage = () => {
             .includes(todoFilters.text.toLowerCase())
       );
     }
+
     // Filter by priority
     filtered = filtered.filter((todo) =>
       todoFilters.priority.includes(todo.priority)
@@ -73,6 +80,32 @@ const HomePage = () => {
     return filtered;
   };
 
+  // Check if the todo item has a start date and, if it does then check
+  // if the current time is past this start date.
+  const hasExceededStart = (todo: todoType) => {
+    if (todo.start !== null) {
+      if (Date.now() >= todo.start.getTime()) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  };
+
+  const hasExceededEnd = (todo: todoType) => {
+    if (todo.end !== null) {
+      if (Date.now() >= todo.end.getTime()) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  };
+
   return (
     <>
       <Title order={1} mb="sm">
@@ -90,8 +123,37 @@ const HomePage = () => {
         <Stack>
           <Text size="xs">Pending</Text>
           <Stack gap="xs">
+            {/* Pending todos */}
             {getFilteredTodos().map((todo: todoType) => {
-              if (!todo.isComplete) {
+              if (
+                !todo.isComplete &&
+                hasExceededStart(todo) &&
+                !hasExceededEnd(todo)
+              ) {
+                return <TodoItem key={todo.id} todo={todo} />;
+              }
+            })}
+          </Stack>
+        </Stack>
+        <Divider />
+        <Stack>
+          <Text size="xs">Upcoming</Text>
+          <Stack gap="xs">
+            {/* Upcoming todos */}
+            {getFilteredTodos().map((todo: todoType) => {
+              if (!todo.isComplete && !hasExceededStart(todo)) {
+                return <TodoItem key={todo.id} todo={todo} />;
+              }
+            })}
+          </Stack>
+        </Stack>
+        <Divider />
+        <Stack>
+          <Text size="xs">Overdue</Text>
+          <Stack gap="xs">
+            {/* Overdue todos */}
+            {getFilteredTodos().map((todo: todoType) => {
+              if (!todo.isComplete && hasExceededEnd(todo)) {
                 return <TodoItem key={todo.id} todo={todo} />;
               }
             })}
@@ -101,6 +163,7 @@ const HomePage = () => {
         <Stack>
           <Text size="xs">Completed</Text>
           <Stack gap="xs">
+            {/* Completed todos */}
             {getFilteredTodos().map((todo: todoType) => {
               if (todo.isComplete) {
                 return <TodoItem key={todo.id} todo={todo} />;

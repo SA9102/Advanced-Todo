@@ -10,6 +10,8 @@ const emptyTodo: todoType = {
   isExpanded: false,
   priority: "1",
   tags: [],
+  start: null,
+  end: null,
 };
 
 export default emptyTodo;

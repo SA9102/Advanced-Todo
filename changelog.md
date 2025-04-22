@@ -1,5 +1,12 @@
 # Change Log
 
+## 22nd May 2025
+
+- Todos now have start and end dates and times, which work.
+- Will be categoried into 'Pending', 'Upcoming' or 'Overdue'.
+- No start means it will be starting immediately.
+- No end means it will have no deadline.
+
 ## 20th May 2025
 
 - Can filter todos by tags.

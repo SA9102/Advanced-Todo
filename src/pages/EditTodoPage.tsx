@@ -63,6 +63,15 @@ const EditTodoPage = () => {
             />
           </Stack>
           <DateTimePicker
+            label="Start"
+            // valueFormat="M YYYY hh:mm"
+            value={todoInput.start}
+            onChange={(newStart) =>
+              setTodoInput({ ...todoInput, start: newStart })
+            }
+            clearable
+          />
+          <DateTimePicker
             label="End"
             // valueFormat="M YYYY hh:mm"
             value={todoInput.end}

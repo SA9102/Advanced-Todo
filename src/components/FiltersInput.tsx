@@ -81,6 +81,31 @@ const FiltersInput = ({ todoFilters, setTodoFilters }: props) => {
               setTodoFilters({ ...todoFilters, tags: newTags })
             }
           />
+          <Stack gap="xs">
+            <Text size="xs">Groups</Text>
+            <Chip.Group
+              multiple
+              // value={todoFilters.priority}
+              // onChange={(newPri) =>
+              //   setTodoFilters({ ...todoFilters, priority: newPri })
+              // }
+            >
+              <Group>
+                <Chip value="pending" size="xs">
+                  Pending
+                </Chip>
+                <Chip value="completed" size="xs">
+                  Completed
+                </Chip>
+                <Chip value="upcoming" size="xs">
+                  Upcoming
+                </Chip>
+                <Chip value="overdue" size="xs">
+                  Overdue
+                </Chip>
+              </Group>
+            </Chip.Group>
+          </Stack>
         </Stack>
       </Collapse>
     </Stack>

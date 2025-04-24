@@ -7,6 +7,8 @@
 - No start means it will be starting immediately.
 - No end means it will have no deadline.
 - Can now choose to show or hide pending, upcoming, overdue and completed todos.
+- Show start and end datetimes when expanded
+- Cannot set end datetime before start datetime
 
 ## 20th May 2025
 

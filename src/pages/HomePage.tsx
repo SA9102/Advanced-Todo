@@ -1,14 +1,23 @@
 import {
   ActionIcon,
+  Button,
   Divider,
+  Flex,
   Group,
   Progress,
+  SegmentedControl,
   Stack,
   Text,
   TextInput,
   Title,
+  VisuallyHidden,
 } from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
+import {
+  IconLayout2Filled,
+  IconLayoutList,
+  IconLayoutListFilled,
+  IconPlus,
+} from "@tabler/icons-react";
 import TodoItem from "../components/TodoItem";
 import todoType from "../types/todoType";
 import { useGetTodos, useTodoActions } from "../store/todoStore";
@@ -31,6 +40,7 @@ const HomePage = () => {
     "upcoming",
     "overdue",
   ]);
+  const [layout, setLayout] = useState("list");
 
   const resetTodos = () => {
     setNewTodo({ ...emptyTodo, id: uuidv4() });
@@ -117,6 +127,42 @@ const HomePage = () => {
         filterGroups={filterGroups}
         setFilterGroups={setFilterGroups}
       />
+      <Stack gap="xs">
+        <SegmentedControl
+          style={{ alignSelf: "flex-start" }}
+          size="xs"
+          value={layout}
+          onChange={setLayout}
+          data={[
+            {
+              value: "list",
+              label: (
+                <>
+                  <IconLayoutListFilled
+                    size="20"
+                    stroke="1.5"
+                    style={{ display: "block" }}
+                  />
+                  <VisuallyHidden>List Layout</VisuallyHidden>
+                </>
+              ),
+            },
+            {
+              value: "grid",
+              label: (
+                <>
+                  <IconLayout2Filled
+                    size="20"
+                    stroke="1.5"
+                    style={{ display: "block" }}
+                  />
+                  <VisuallyHidden>Grid Layout</VisuallyHidden>
+                </>
+              ),
+            },
+          ]}
+        />
+      </Stack>
       <Stack flex="1" style={{ overflow: "auto" }}>
         <Stack>
           <Text size="xs">
@@ -130,6 +176,7 @@ const HomePage = () => {
             <Stack>
               <Text size="xs">Pending</Text>
               <Stack gap="xs">
+                {/* <Flex wrap="wrap" gap="xs"> */}
                 {/* Pending todos */}
                 {getFilteredTodos().map((todo: todoType) => {
                   if (
@@ -140,6 +187,7 @@ const HomePage = () => {
                     return <TodoItem key={todo.id} todo={todo} />;
                   }
                 })}
+                {/* </Flex> */}
               </Stack>
             </Stack>
           </>

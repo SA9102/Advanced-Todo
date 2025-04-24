@@ -27,6 +27,16 @@ type props = {
   todo: todoType;
 };
 
+const options = {
+  weekday: "short",
+  month: "short",
+  day: "2-digit",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+};
+
 // Renders a todo item
 const TodoItem = ({ todo }: props) => {
   const { updateTodo, checkTodo, deleteTodo, changeTask, toggleExpandTodo } =
@@ -72,10 +82,12 @@ const TodoItem = ({ todo }: props) => {
     return todo.tags.length > 0;
   };
 
+  // Check if todo has a start datetime specified
+
+  const hasStart = () => todo.start !== null;
+
   // Check if todo has an end datetime specified
-  const hasEnd = () => {
-    return todo.end !== null;
-  };
+  const hasEnd = () => todo.end !== null;
 
   // A todo item can only be expanded if it contains more information other
   // than the task
@@ -92,6 +104,7 @@ const TodoItem = ({ todo }: props) => {
       <Card
         style={{
           borderLeft: `2px solid var(--mantine-color-${getPriorityColour()}-9)`,
+          // flexGrow: "1",
         }}
         key={todo.id}
         shadow="xs"
@@ -117,25 +130,18 @@ const TodoItem = ({ todo }: props) => {
                 </ActionIcon>
               </Group>
             ) : (
-              <Group style={{ flex: 1, overflow: "hidden" }} wrap="nowrap">
-                <Checkbox
-                  size="xs"
-                  checked={todo.isComplete}
-                  onChange={() => checkTodo(todo.id)}
-                />
-                <Text
-                  size="sm"
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    flex: 1,
-                    minWidth: 0,
-                  }}
-                >
-                  {todo.task}
-                </Text>
-              </Group>
+              <Text
+                size="sm"
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  flex: 1,
+                  minWidth: 0,
+                }}
+              >
+                {todo.task}
+              </Text>
             )}
 
             <Group wrap="nowrap">
@@ -177,8 +183,25 @@ const TodoItem = ({ todo }: props) => {
           {todo.isExpanded && (
             <>
               {hasDescription() && <Text size="xs">{todo.description}</Text>}
+              {hasStart() && (
+                <Text size="xs">
+                  Start:{" "}
+                  {todo.start!.toLocaleDateString("en-GB", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                  })}
+                </Text>
+              )}
               {hasEnd() && (
-                <Text size="xs">End: {todo.end!.toDateString()}</Text>
+                <Text size="xs">
+                  End:{" "}
+                  {todo.end!.toLocaleDateString("en-GB", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                  })}
+                </Text>
               )}
               {hasTags() && (
                 <Pill.Group>

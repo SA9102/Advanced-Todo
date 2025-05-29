@@ -9,8 +9,9 @@ Currently work-in-progress.
 ![Main page showing the list of pending and completed todo, as well as an input for todos, and a progress bar](./public/preview1.png)
 ![Main page showing filtering options: task/description, priority, tags, and pending/completed/upcoming/overdue](./public/preview2.png)
 ![Edit page showing fields where you can edit the todo task, description, priority and tags](./public/preview3.png)
+![Grid layout of todo items](./public/preview4.png)
 
-## Current Features
+## :toolbox: Current Features
 
 These are the current features that this application contains right now. More coming soon.
 
@@ -20,8 +21,9 @@ These are the current features that this application contains right now. More co
 - Check off todos
 - Todos are categorised into 'Pending' and 'Completed'
 - A progress bar tracks all completed todos
+- Display todo items either in a list or grid format
 
-## Upcoming Features
+## :test_tube: Upcoming Features
 
 An outline of some of the features I plan to implement:
 
@@ -31,7 +33,11 @@ An outline of some of the features I plan to implement:
 - Sort todos
 - Start and end dates
 
-## Installation
+## Notes
+
+- Grid layout isn't perfect. I wanted to achieve some sort of 'masonry layout' with the todo items, which can be hard to do with normal CSS. I may edit it in the future, but for now I think it's good enough.
+
+## :rocket: Installation
 
 1. Clone repository
 
@@ -57,7 +63,7 @@ npm i
 npm run dev
 ```
 
-## Tech Stack + Libraries
+## :computer: Tech Stack + Libraries
 
 - React
 - TypeScript
@@ -66,18 +72,18 @@ npm run dev
 - Mantine
 - React Router
 
-## Development
+## :hammer_and_wrench: Development
 
-I have set myself a challenge to take a basic todo application, and see how far I can go and turn it into a real productivity tool that is responsive, intuitive and efficient from a user endpoint. I have also ensured, to the best of my abilities, that the code written is maintainable and broken down into reusable components.
+I wanted to take a basic todo application, and see how much I could transform it into a real productivity tool that is responsive, intuitive and efficient from a user endpoint. In addition, I am ensuring that, to the best of my abilities (as someone with currently no real-world experience), the code written is maintainable and broken down into reusable components.
 
 This application will be one of my more sophisticated ones, not only in terms of the scope, but also the tech stack and good development practices that I will use, such as separating the UI from the logic. This project is an opportunity to not only consolidate what I have learnt on my journey of web development, but also to really level up my software development skills and knowledge.
 
-Some key points to note about this project from a development perspective:
+Some notes about this project from a development perspective:
 
 - A mobile-frst design approach is used - first building for mobile devices, then scaling up the design to be responsive for larger screens
-- I decided to use some global state management as this would make it easier to scale up the application. For this, I am learning how to use Zustand.
+- Using global state management, as this would make it easier to scale up the application. Learning Zustand for this.
 
-## Requirements
+## :ballot_box_with_check: Requirements
 
 See [requirements.md](requirements.md) for more information about the planned, and already-implemented, features.
 

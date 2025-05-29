@@ -22,6 +22,7 @@ import {
 } from "@tabler/icons-react";
 import { useState } from "react";
 import { Link } from "react-router";
+import { useGetLayout } from "../store/layoutStore";
 
 type props = {
   todo: todoType;
@@ -42,6 +43,7 @@ const TodoItem = ({ todo }: props) => {
   const { updateTodo, checkTodo, deleteTodo, changeTask, toggleExpandTodo } =
     useTodoActions();
   const [newTodo, setNewTodo] = useState(todo);
+  const layout = useGetLayout();
 
   const longPress = useLongPress(() => {
     console.log("Long pressed!");
@@ -104,11 +106,14 @@ const TodoItem = ({ todo }: props) => {
       <Card
         style={{
           borderLeft: `2px solid var(--mantine-color-${getPriorityColour()}-9)`,
-          // flexGrow: "1",
+          flexGrow: "1",
+          display: "inline-block",
+          width: "100%",
         }}
         key={todo.id}
         shadow="xs"
         padding="xs"
+        // flex="1"
         {...longPress()}
       >
         <Stack>
@@ -143,7 +148,6 @@ const TodoItem = ({ todo }: props) => {
                 {todo.task}
               </Text>
             )}
-
             <Group wrap="nowrap">
               {canBeExpanded() && (
                 <ActionIcon

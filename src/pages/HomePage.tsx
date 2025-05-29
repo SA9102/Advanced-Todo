@@ -1,8 +1,10 @@
 import {
   ActionIcon,
+  Box,
   Button,
   Divider,
   Flex,
+  Grid,
   Group,
   Progress,
   SegmentedControl,
@@ -27,6 +29,7 @@ import FiltersInput from "../components/FiltersInput";
 import emptyTodo from "../utils/emptyTodo";
 import todoFiltersType from "../types/todoFiltersType";
 import emptyTodoFilters from "../utils/emptyTodoFilters";
+import { useGetLayout, useSetLayout } from "../store/layoutStore";
 
 const HomePage = () => {
   const todos: todoType[] = useGetTodos(); // Get all todos from store
@@ -40,7 +43,8 @@ const HomePage = () => {
     "upcoming",
     "overdue",
   ]);
-  const [layout, setLayout] = useState("list");
+  const layout = useGetLayout();
+  const setLayout = useSetLayout();
 
   const resetTodos = () => {
     setNewTodo({ ...emptyTodo, id: uuidv4() });
@@ -175,8 +179,13 @@ const HomePage = () => {
             <Divider />
             <Stack>
               <Text size="xs">Pending</Text>
-              <Stack gap="xs">
-                {/* <Flex wrap="wrap" gap="xs"> */}
+              {/* <Stack gap="xs"> */}
+              <Box
+                style={{
+                  columnCount: layout == "grid" ? "2" : "1",
+                  gap: "1rem",
+                }}
+              >
                 {/* Pending todos */}
                 {getFilteredTodos().map((todo: todoType) => {
                   if (
@@ -187,8 +196,9 @@ const HomePage = () => {
                     return <TodoItem key={todo.id} todo={todo} />;
                   }
                 })}
-                {/* </Flex> */}
-              </Stack>
+              </Box>
+
+              {/* </Stack> */}
             </Stack>
           </>
         )}
@@ -267,3 +277,42 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+// {/* <Text>FLEXBOX</Text>
+//               <Flex
+//                 direction={layout === "list" ? "column" : "row"}
+//                 wrap="wrap"
+//                 gap="xs"
+//               >
+//                 {/* Pending todos */}
+//                 {getFilteredTodos().map((todo: todoType) => {
+//                   if (
+//                     !todo.isComplete &&
+//                     hasExceededStart(todo) &&
+//                     !hasExceededEnd(todo)
+//                   ) {
+//                     return <TodoItem key={todo.id} todo={todo} />;
+//                   }
+//                 })}
+//               </Flex>
+//               <Text>GRID</Text>
+//               <Grid
+//               // direction={layout === "list" ? "column" : "row"}
+//               // wrap="wrap"
+//               // gap="xs"
+//               >
+//                 {/* Pending todos */}
+//                 {getFilteredTodos().map((todo: todoType) => {
+//                   if (
+//                     !todo.isComplete &&
+//                     hasExceededStart(todo) &&
+//                     !hasExceededEnd(todo)
+//                   ) {
+//                     return (
+//                       <Grid.Col span={12}>
+//                         <TodoItem key={todo.id} todo={todo} />
+//                       </Grid.Col>
+//                     );
+//                   }
+//                 })}
+//               </Grid> */}

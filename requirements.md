@@ -16,7 +16,7 @@
 - [x] Check off todo as completed
 - [x] A progress bar to see percentage of tasks that are completed
 - [x] A todo can be maximised to see more details
-- [ ] View todos as a list or as tiles
+- [x] View todos as a list or grid
 - [ ] Sort tasks
 
 ### Filtering

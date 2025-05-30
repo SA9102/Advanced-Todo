@@ -1,5 +1,9 @@
 # Change Log
 
+## 30th May 2025
+
+- Clicking on a todo item marks it as complete/not complete (removed checkbox)
+
 ## 29th May 2025 (month later due to university exams)
 
 - Can switch between list and grid layout

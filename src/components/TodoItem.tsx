@@ -109,11 +109,13 @@ const TodoItem = ({ todo }: props) => {
           flexGrow: "1",
           display: "inline-block",
           width: "100%",
+          cursor: "pointer",
         }}
         key={todo.id}
         shadow="xs"
         padding="xs"
         // flex="1"
+        onClick={() => checkTodo(todo.id)}
         {...longPress()}
       >
         <Stack>
@@ -127,10 +129,22 @@ const TodoItem = ({ todo }: props) => {
                     setNewTodo({ ...newTodo, task: e.target.value })
                   }
                 />
-                <ActionIcon size="xs" onClick={handleConfirmChangeTask}>
+                <ActionIcon
+                  size="xs"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleConfirmChangeTask();
+                  }}
+                >
                   <IconCheck />
                 </ActionIcon>
-                <ActionIcon size="xs" onClick={handleCancelChangeTask}>
+                <ActionIcon
+                  size="xs"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCancelChangeTask();
+                  }}
+                >
                   <IconX />
                 </ActionIcon>
               </Group>
@@ -151,7 +165,10 @@ const TodoItem = ({ todo }: props) => {
             <Group wrap="nowrap">
               {canBeExpanded() && (
                 <ActionIcon
-                  onClick={() => toggleExpandTodo(todo.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleExpandTodo(todo.id);
+                  }}
                   variant="transparent"
                   size="xs"
                 >
@@ -164,19 +181,37 @@ const TodoItem = ({ todo }: props) => {
               )}
               <Menu>
                 <Menu.Target>
-                  <ActionIcon variant="transparent" size="xs">
+                  <ActionIcon
+                    variant="transparent"
+                    size="xs"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <IconDotsVertical color="white" />
                   </ActionIcon>
                 </Menu.Target>
 
                 <Menu.Dropdown>
-                  <Menu.Item onClick={() => changeTask(todo.id, true)}>
+                  <Menu.Item
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      changeTask(todo.id, true);
+                    }}
+                  >
                     Change Task
                   </Menu.Item>
                   <Link to={todo.id}>
-                    <Menu.Item>Edit</Menu.Item>
+                    {/* <Menu.Item> */}
+                    <Menu.Item onClick={(e) => e.stopPropagation()}>
+                      Edit
+                    </Menu.Item>
                   </Link>
-                  <Menu.Item color="red" onClick={() => deleteTodo(todo.id)}>
+                  <Menu.Item
+                    color="red"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteTodo(todo.id);
+                    }}
+                  >
                     Delete
                   </Menu.Item>
                 </Menu.Dropdown>

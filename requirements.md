@@ -17,7 +17,8 @@
 - [x] A progress bar to see percentage of tasks that are completed
 - [x] A todo can be maximised to see more details
 - [x] View todos as a list or grid
-- [ ] Sort tasks
+- [ ] Sort tasks by name
+- [ ] Sort tasks by priority
 
 ### Filtering
 

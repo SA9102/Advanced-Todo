@@ -6,6 +6,7 @@ import {
   Flex,
   Grid,
   Group,
+  NativeSelect,
   Progress,
   SegmentedControl,
   Stack,
@@ -37,12 +38,14 @@ const HomePage = () => {
   const [newTodo, setNewTodo] = useState<todoType>(emptyTodo); // Input for adding a new todo
   const [todoFilters, setTodoFilters] =
     useState<todoFiltersType>(emptyTodoFilters); // Input for todo filters
+  // The different 'states' that a todo item can be in
   const [filterGroups, setFilterGroups] = useState([
     "pending",
     "completed",
     "upcoming",
     "overdue",
   ]);
+  const [sortBy, setSortBy] = useState<"name" | "priority">("priority");
   const layout = useGetLayout();
   const setLayout = useSetLayout();
 
@@ -94,6 +97,27 @@ const HomePage = () => {
     return filtered;
   };
 
+  const sortTodos = () => {
+    let filteredTodos = getFilteredTodos();
+
+    if (sortBy === "name") {
+      filteredTodos = filteredTodos.sort((a, b) =>
+        a.task.localeCompare(b.task)
+      );
+    } else if (sortBy === "priority") {
+      filteredTodos = filteredTodos.sort((a, b) => {
+        if (a.priority > b.priority) {
+          return -1;
+        } else if (a.priority < b.priority) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+
+    return filteredTodos;
+  };
+
   // Check if the todo item has a start date and, if it does then check
   // if the current time is past this start date.
   const hasExceededStart = (todo: todoType) => {
@@ -108,6 +132,7 @@ const HomePage = () => {
     }
   };
 
+  // If the current datetime is past the end datetime of a particular todo
   const hasExceededEnd = (todo: todoType) => {
     if (todo.end !== null) {
       if (Date.now() >= todo.end.getTime()) {
@@ -167,7 +192,19 @@ const HomePage = () => {
           ]}
         />
       </Stack>
+      {/* Main part */}
       <Stack flex="1" style={{ overflow: "auto" }}>
+        <Stack>
+          <Text>Sort by:</Text>
+          <NativeSelect
+            value={sortBy}
+            onChange={(e) => setSortBy(e.currentTarget.value)}
+            data={[
+              { label: "Name", value: "name" },
+              { label: "Priority", value: "priority" },
+            ]}
+          />
+        </Stack>
         <Stack>
           <Text size="xs">
             Completed Todos: {getNumberOfCompletedTodos()} / {todos.length}
@@ -187,7 +224,7 @@ const HomePage = () => {
                 }}
               >
                 {/* Pending todos */}
-                {getFilteredTodos().map((todo: todoType) => {
+                {sortTodos().map((todo: todoType) => {
                   if (
                     !todo.isComplete &&
                     hasExceededStart(todo) &&
@@ -209,7 +246,7 @@ const HomePage = () => {
               <Text size="xs">Upcoming</Text>
               <Stack gap="xs">
                 {/* Upcoming todos */}
-                {getFilteredTodos().map((todo: todoType) => {
+                {sortTodos().map((todo: todoType) => {
                   if (!todo.isComplete && !hasExceededStart(todo)) {
                     return <TodoItem key={todo.id} todo={todo} />;
                   }
@@ -225,7 +262,7 @@ const HomePage = () => {
               <Text size="xs">Overdue</Text>
               <Stack gap="xs">
                 {/* Overdue todos */}
-                {getFilteredTodos().map((todo: todoType) => {
+                {sortTodos().map((todo: todoType) => {
                   if (!todo.isComplete && hasExceededEnd(todo)) {
                     return <TodoItem key={todo.id} todo={todo} />;
                   }
@@ -241,7 +278,7 @@ const HomePage = () => {
               <Text size="xs">Completed</Text>
               <Stack gap="xs">
                 {/* Completed todos */}
-                {getFilteredTodos().map((todo: todoType) => {
+                {sortTodos().map((todo: todoType) => {
                   if (todo.isComplete) {
                     return <TodoItem key={todo.id} todo={todo} />;
                   }

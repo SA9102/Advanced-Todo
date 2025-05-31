@@ -1,5 +1,9 @@
 # Change Log
 
+## 31st May 2025
+
+- Can sort tasks by priority and name.
+
 ## 30th May 2025
 
 - Clicking on a todo item marks it as complete/not complete (removed checkbox)

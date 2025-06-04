@@ -13,27 +13,31 @@ Currently work-in-progress.
 
 ## :toolbox: Current Features
 
-These are the current features that this application contains right now. More coming soon.
+Current features:
 
-- Create, update and delete todos
-- Quickly delete or change task while on the home screen
-- Go to a todo's 'edit page' to add a description, tags, and change priority
-- Check off todos
-- Todos are categorised into 'Pending' and 'Completed'
-- A progress bar tracks all completed todos
-- Display todo items either in a list or grid format
+- Create, update and delete todos.
+- Quickly delete or change task while on the home screen.
+- Go to a todo's 'edit page' to add a description, tags, and change priority.
+- Check off todos.
+- Todos are categorised into one of four statuses: 'Pending', 'Upcoming', 'Overdue' and 'Completed'.
+- A progress bar that tracks all completed todos.
+- Display todo items either in a list or grid format.
+- Filter todo items by name, description, tags, and status.
+- Sort by name and priority.
+
+More coming soon.
 
 ## :test_tube: Upcoming Features
 
 An outline of some of the features I plan to implement:
 
-- Filter todos by task, description, tags etc.
 - Create, edit and delete tags
-- Export todos
-- Sort todos
-- Start and end dates
+- Export todos as a spreadsheet
+- Import a spreadsheet (of a certain format) into the app
+- Responsive for larger screens
+- Authentication system to organise tasks from any machine
 
-## Notes
+## :memo: Notes
 
 - Grid layout isn't perfect. I wanted to achieve some sort of 'masonry layout' with the todo items, which can be hard to do with normal CSS. I may edit it in the future, but for now I think it's good enough.
 

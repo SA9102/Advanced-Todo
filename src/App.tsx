@@ -4,6 +4,7 @@ import {
   AppShell,
   Group,
   Stack,
+  Text,
   useMantineColorScheme,
 } from "@mantine/core";
 import { IconMoon, IconPaint, IconSun } from "@tabler/icons-react";
@@ -28,22 +29,29 @@ const App = () => {
       </AppShell.Main>
       <AppShell.Header>
         <Group p="0.3rem" gap="xs">
-          <ActionIcon
-            size="sm"
-            variant="default"
-            onClick={() =>
-              setColorScheme(colorScheme === "light" ? "dark" : "light")
-            }
-          >
-            {colorScheme === "light" ? (
-              <IconSun size="16" />
-            ) : (
-              <IconMoon size="16" />
-            )}
-          </ActionIcon>
-          <ActionIcon size="sm" variant="default">
-            <IconPaint size="16" />
-          </ActionIcon>
+          <Group justify="space-between" w="100%">
+            <Text size="lg" fw={700}>
+              My Todos
+            </Text>
+            <Group gap={5}>
+              <ActionIcon
+                size="sm"
+                variant="default"
+                onClick={() =>
+                  setColorScheme(colorScheme === "light" ? "dark" : "light")
+                }
+              >
+                {colorScheme === "light" ? (
+                  <IconSun size="16" />
+                ) : (
+                  <IconMoon size="16" />
+                )}
+              </ActionIcon>
+              <ActionIcon size="sm" variant="default">
+                <IconPaint size="16" />
+              </ActionIcon>
+            </Group>
+          </Group>
         </Group>
       </AppShell.Header>
     </AppShell>

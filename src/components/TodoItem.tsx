@@ -9,6 +9,7 @@ import {
   TextInput,
   Stack,
   Pill,
+  useMantineColorScheme,
 } from "@mantine/core";
 import todoType from "../types/todoType";
 import { useTodoActions } from "../store/todoStore";
@@ -44,6 +45,7 @@ const TodoItem = ({ todo }: props) => {
     useTodoActions();
   const [newTodo, setNewTodo] = useState(todo);
   const layout = useGetLayout();
+  const { colorScheme } = useMantineColorScheme();
 
   const longPress = useLongPress(() => {
     console.log("Long pressed!");
@@ -100,6 +102,8 @@ const TodoItem = ({ todo }: props) => {
   function formatDate(date: Date): string {
     return date.toISOString().split("T")[0];
   }
+
+  const iconColor = colorScheme === "light" ? "gray" : "white";
 
   return (
     <>
@@ -173,9 +177,9 @@ const TodoItem = ({ todo }: props) => {
                   size="xs"
                 >
                   {todo.isExpanded ? (
-                    <IconChevronUp color="white" />
+                    <IconChevronUp color={iconColor} />
                   ) : (
-                    <IconChevronDown color="white" />
+                    <IconChevronDown color={iconColor} />
                   )}
                 </ActionIcon>
               )}
@@ -186,7 +190,7 @@ const TodoItem = ({ todo }: props) => {
                     size="xs"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <IconDotsVertical color="white" />
+                    <IconDotsVertical color={iconColor} />
                   </ActionIcon>
                 </Menu.Target>
 

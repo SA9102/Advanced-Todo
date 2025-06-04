@@ -10,7 +10,7 @@ import "@mantine/dates/styles.css";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <MantineProvider defaultColorScheme="dark" theme={theme}>
+      <MantineProvider theme={theme}>
         <App />
       </MantineProvider>
     </BrowserRouter>

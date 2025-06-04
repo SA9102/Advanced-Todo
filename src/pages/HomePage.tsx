@@ -190,9 +190,6 @@ const HomePage = () => {
 
   return (
     <>
-      <Title order={1} mb="sm">
-        My Todos
-      </Title>
       <FiltersInput
         todoFilters={todoFilters}
         setTodoFilters={setTodoFilters}

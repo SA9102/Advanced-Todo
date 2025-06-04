@@ -1,10 +1,18 @@
 // The section that renders the list of todos
 // These todos could be one of 'Pending', 'Upcoming', 'Overdue' or 'Completed'
 
-import { Box, Text, Divider, Stack, useMantineTheme } from "@mantine/core";
+import {
+  Box,
+  Text,
+  Divider,
+  Stack,
+  useMantineTheme,
+  useMantineColorScheme,
+} from "@mantine/core";
 import { useGetLayout } from "../store/layoutStore";
 import todoType from "../types/todoType";
 import TodoItem from "./TodoItem";
+import { useColorScheme } from "@mantine/hooks";
 
 type props = {
   todos: todoType[];
@@ -13,14 +21,19 @@ type props = {
 
 const TodoSection = ({ todos, status }: props) => {
   const theme = useMantineTheme();
+  const { colorScheme } = useMantineColorScheme();
   const layout = useGetLayout();
+  console.log(colorScheme);
 
   return (
     <>
       <Divider />
       <Stack
         style={{
-          backgroundColor: theme.colors.dark[8],
+          backgroundColor:
+            colorScheme === "dark"
+              ? theme.colors.dark[8]
+              : theme.colors.gray[3],
           padding: "0.5rem",
           borderRadius: theme.radius[theme.defaultRadius],
         }}
@@ -33,7 +46,12 @@ const TodoSection = ({ todos, status }: props) => {
           }}
         >
           {todos.length === 0 ? (
-            <Text size="sm" style={{ color: theme.colors.dark[3] }}>
+            <Text
+              size="sm"
+              style={{
+                color: theme.colors.dark[3],
+              }}
+            >
               No todos here.
             </Text>
           ) : (

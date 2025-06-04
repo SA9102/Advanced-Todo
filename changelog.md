@@ -4,6 +4,7 @@
 
 - Refactoring to split off components and improve maintainability.
 - Improved design.
+- Added light theme.
 
 ## 31st May 2025
 

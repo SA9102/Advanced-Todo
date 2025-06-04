@@ -32,7 +32,6 @@ const EditTodoPage = () => {
     <>
       {todoInput ? (
         <>
-          <Title>Edit Todo</Title>
           <TextInput
             label="Task"
             value={todoInput.task}

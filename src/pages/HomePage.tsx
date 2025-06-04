@@ -13,6 +13,7 @@ import {
   Text,
   TextInput,
   Title,
+  useMantineTheme,
   VisuallyHidden,
 } from "@mantine/core";
 import {
@@ -31,23 +32,33 @@ import emptyTodo from "../utils/emptyTodo";
 import todoFiltersType from "../types/todoFiltersType";
 import emptyTodoFilters from "../utils/emptyTodoFilters";
 import { useGetLayout, useSetLayout } from "../store/layoutStore";
+import TodoSection from "../components/TodoSection";
 
 const HomePage = () => {
-  const todos: todoType[] = useGetTodos(); // Get all todos from store
-  const { createTodo } = useTodoActions(); // Function for creating a todo
-  const [newTodo, setNewTodo] = useState<todoType>(emptyTodo); // Input for adding a new todo
+  // Mantine theme
+  const theme = useMantineTheme();
+  // Get all todos from store
+  const todos: todoType[] = useGetTodos();
+  // Function for creating a todo
+  const { createTodo } = useTodoActions();
+  // Get current layout of todos
+  const layout = useGetLayout();
+  // Set layout of todos
+  const setLayout = useSetLayout();
+  // Input for adding a new todo
+  const [newTodo, setNewTodo] = useState<todoType>(emptyTodo);
+  // Input for todo filters
   const [todoFilters, setTodoFilters] =
-    useState<todoFiltersType>(emptyTodoFilters); // Input for todo filters
+    useState<todoFiltersType>(emptyTodoFilters);
   // The different 'states' that a todo item can be in
   const [filterGroups, setFilterGroups] = useState([
-    "pending",
-    "completed",
-    "upcoming",
-    "overdue",
+    "Pending",
+    "Completed",
+    "Upcoming",
+    "Overdue",
   ]);
+  // By what the todos are sorted
   const [sortBy, setSortBy] = useState<"name" | "priority">("priority");
-  const layout = useGetLayout();
-  const setLayout = useSetLayout();
 
   const resetTodos = () => {
     setNewTodo({ ...emptyTodo, id: uuidv4() });
@@ -97,15 +108,15 @@ const HomePage = () => {
     return filtered;
   };
 
-  const sortTodos = () => {
-    let filteredTodos = getFilteredTodos();
-
+  // Sorts todos (NOTE: this is done after the todos are split into
+  // the different status e.g. Pending, hence the reason why it takes
+  // an argument of an array of todos. These todos would be of the same
+  // status
+  const sortTodos = (todos: todoType[]) => {
     if (sortBy === "name") {
-      filteredTodos = filteredTodos.sort((a, b) =>
-        a.task.localeCompare(b.task)
-      );
+      todos = todos.sort((a, b) => a.task.localeCompare(b.task));
     } else if (sortBy === "priority") {
-      filteredTodos = filteredTodos.sort((a, b) => {
+      todos = todos.sort((a, b) => {
         if (a.priority > b.priority) {
           return -1;
         } else if (a.priority < b.priority) {
@@ -115,7 +126,7 @@ const HomePage = () => {
       });
     }
 
-    return filteredTodos;
+    return todos;
   };
 
   // Check if the todo item has a start date and, if it does then check
@@ -132,7 +143,8 @@ const HomePage = () => {
     }
   };
 
-  // If the current datetime is past the end datetime of a particular todo
+  // Check if the todo item has an end date and, if it does then check
+  // if the current time is past this end date.
   const hasExceededEnd = (todo: todoType) => {
     if (todo.end !== null) {
       if (Date.now() >= todo.end.getTime()) {
@@ -143,6 +155,37 @@ const HomePage = () => {
     } else {
       return false;
     }
+  };
+
+  // Organises the todos into their statuses, namely 'Pending', 'Upcoming',
+  // 'Overdue' and 'Complete'. (NOTE: this is done AFTER the todos have been
+  // filtered, to avoid unnecessary allocation of todos.).
+  const organiseTodosByStatus = () => {
+    let pending: todoType[] = [];
+    let upcoming: todoType[] = [];
+    let overdue: todoType[] = [];
+    let completed: todoType[] = [];
+    const filteredTodos = getFilteredTodos();
+
+    for (let i = 0; i < filteredTodos.length; i++) {
+      const todo = filteredTodos[i];
+      if (!todo.isComplete && hasExceededStart(todo) && !hasExceededEnd(todo)) {
+        pending = [...pending, todo];
+      } else if (!todo.isComplete && !hasExceededStart(todo)) {
+        upcoming = [...upcoming, todo];
+      } else if (!todo.isComplete && hasExceededEnd(todo)) {
+        overdue = [...overdue, todo];
+      } else if (todo.isComplete) {
+        completed = [...completed, todo];
+      }
+    }
+
+    return [
+      { status: "Pending", todos: sortTodos(pending) },
+      { status: "Upcoming", todos: sortTodos(upcoming) },
+      { status: "Overdue", todos: sortTodos(overdue) },
+      { status: "Completed", todos: sortTodos(completed) },
+    ];
   };
 
   return (
@@ -211,82 +254,11 @@ const HomePage = () => {
           </Text>
           <Progress value={getCompletedValue()} />
         </Stack>
-        {filterGroups.includes("pending") && (
-          <>
-            <Divider />
-            <Stack>
-              <Text size="xs">Pending</Text>
-              {/* <Stack gap="xs"> */}
-              <Box
-                style={{
-                  columnCount: layout == "grid" ? "2" : "1",
-                  gap: "1rem",
-                }}
-              >
-                {/* Pending todos */}
-                {sortTodos().map((todo: todoType) => {
-                  if (
-                    !todo.isComplete &&
-                    hasExceededStart(todo) &&
-                    !hasExceededEnd(todo)
-                  ) {
-                    return <TodoItem key={todo.id} todo={todo} />;
-                  }
-                })}
-              </Box>
-
-              {/* </Stack> */}
-            </Stack>
-          </>
-        )}
-        {filterGroups.includes("upcoming") && (
-          <>
-            <Divider />
-            <Stack>
-              <Text size="xs">Upcoming</Text>
-              <Stack gap="xs">
-                {/* Upcoming todos */}
-                {sortTodos().map((todo: todoType) => {
-                  if (!todo.isComplete && !hasExceededStart(todo)) {
-                    return <TodoItem key={todo.id} todo={todo} />;
-                  }
-                })}
-              </Stack>
-            </Stack>
-          </>
-        )}
-        {filterGroups.includes("overdue") && (
-          <>
-            <Divider />
-            <Stack>
-              <Text size="xs">Overdue</Text>
-              <Stack gap="xs">
-                {/* Overdue todos */}
-                {sortTodos().map((todo: todoType) => {
-                  if (!todo.isComplete && hasExceededEnd(todo)) {
-                    return <TodoItem key={todo.id} todo={todo} />;
-                  }
-                })}
-              </Stack>
-            </Stack>
-          </>
-        )}
-        {filterGroups.includes("completed") && (
-          <>
-            <Divider />
-            <Stack>
-              <Text size="xs">Completed</Text>
-              <Stack gap="xs">
-                {/* Completed todos */}
-                {sortTodos().map((todo: todoType) => {
-                  if (todo.isComplete) {
-                    return <TodoItem key={todo.id} todo={todo} />;
-                  }
-                })}
-              </Stack>
-            </Stack>
-          </>
-        )}
+        {organiseTodosByStatus().map((val) => {
+          if (filterGroups.includes(val.status)) {
+            return <TodoSection todos={val.todos} status={val.status} />;
+          }
+        })}
       </Stack>
       <Group
         gap="xs"
@@ -314,42 +286,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-
-// {/* <Text>FLEXBOX</Text>
-//               <Flex
-//                 direction={layout === "list" ? "column" : "row"}
-//                 wrap="wrap"
-//                 gap="xs"
-//               >
-//                 {/* Pending todos */}
-//                 {getFilteredTodos().map((todo: todoType) => {
-//                   if (
-//                     !todo.isComplete &&
-//                     hasExceededStart(todo) &&
-//                     !hasExceededEnd(todo)
-//                   ) {
-//                     return <TodoItem key={todo.id} todo={todo} />;
-//                   }
-//                 })}
-//               </Flex>
-//               <Text>GRID</Text>
-//               <Grid
-//               // direction={layout === "list" ? "column" : "row"}
-//               // wrap="wrap"
-//               // gap="xs"
-//               >
-//                 {/* Pending todos */}
-//                 {getFilteredTodos().map((todo: todoType) => {
-//                   if (
-//                     !todo.isComplete &&
-//                     hasExceededStart(todo) &&
-//                     !hasExceededEnd(todo)
-//                   ) {
-//                     return (
-//                       <Grid.Col span={12}>
-//                         <TodoItem key={todo.id} todo={todo} />
-//                       </Grid.Col>
-//                     );
-//                   }
-//                 })}
-//               </Grid> */}

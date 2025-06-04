@@ -1,5 +1,10 @@
 # Change Log
 
+## 4th June 2025
+
+- Refactoring to split off components and improve maintainability.
+- Improved design.
+
 ## 31st May 2025
 
 - Can sort tasks by priority and name.

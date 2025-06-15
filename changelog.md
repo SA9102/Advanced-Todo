@@ -1,5 +1,11 @@
 # Change Log
 
+## 15th June 2025
+
+- Can create tags and assign these tags to todos.
+- Each tag has a colour, and they appear with the colour assigned to them.
+- Re-added the checklist due to bugs when going to the edit page of a todo.
+
 ## 4th June 2025
 
 - Refactoring to split off components and improve maintainability.

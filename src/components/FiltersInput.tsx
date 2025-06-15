@@ -31,8 +31,8 @@ const FiltersInput = ({
   filterGroups,
   setFilterGroups,
 }: props) => {
+  const theme = useMantineTheme();
   const [opened, { toggle }] = useDisclosure(false);
-
   const tags = useGetTags();
 
   return (
@@ -46,7 +46,12 @@ const FiltersInput = ({
       >
         {opened ? "Close" : "Open"} Filters
       </Button>
-      <Collapse in={opened} bg="dark.8" p="xs">
+      <Collapse
+        in={opened}
+        bg="dark.8"
+        p="xs"
+        style={{ borderRadius: theme.radius[theme.defaultRadius] }}
+      >
         <Stack gap="xs">
           <TextInput
             label="Task/Description"
@@ -81,7 +86,7 @@ const FiltersInput = ({
           </Stack>
           <MultiSelect
             label="Tags"
-            size="sm"
+            size="xs"
             data={tags.map((tag) => tag.name)}
             value={todoFilters.tags}
             onChange={(newTags) =>

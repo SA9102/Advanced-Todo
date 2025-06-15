@@ -190,53 +190,62 @@ const HomePage = () => {
 
   return (
     <>
-      <FiltersInput
-        todoFilters={todoFilters}
-        setTodoFilters={setTodoFilters}
-        filterGroups={filterGroups}
-        setFilterGroups={setFilterGroups}
-      />
-      <Stack gap="xs">
-        <SegmentedControl
-          style={{ alignSelf: "flex-start" }}
-          size="xs"
-          value={layout}
-          onChange={setLayout}
-          data={[
-            {
-              value: "list",
-              label: (
-                <>
-                  <IconLayoutListFilled
-                    size="20"
-                    stroke="1.5"
-                    style={{ display: "block" }}
-                  />
-                  <VisuallyHidden>List Layout</VisuallyHidden>
-                </>
-              ),
-            },
-            {
-              value: "grid",
-              label: (
-                <>
-                  <IconLayout2Filled
-                    size="20"
-                    stroke="1.5"
-                    style={{ display: "block" }}
-                  />
-                  <VisuallyHidden>Grid Layout</VisuallyHidden>
-                </>
-              ),
-            },
-          ]}
-        />
-      </Stack>
-      {/* Main part */}
-      <Stack flex="1" style={{ overflow: "auto" }}>
-        <Stack>
-          <Text>Sort by:</Text>
+      <Stack
+        p="0.5rem"
+        style={{
+          backgroundColor: theme.colors.dark[6],
+          borderRadius: theme.radius[theme.defaultRadius],
+        }}
+      >
+        <Stack gap="xs">
+          <Text size="xs">
+            Completed Todos: {getNumberOfCompletedTodos()} / {todos.length}
+          </Text>
+          <Progress value={getCompletedValue()} />
+        </Stack>
+        {/* Set the layout of the todos to list or grid */}
+        <Stack gap="xs">
+          <Text size="xs">Layout</Text>
+          <SegmentedControl
+            style={{ alignSelf: "flex-start" }}
+            size="xs"
+            value={layout}
+            onChange={setLayout}
+            data={[
+              {
+                value: "list",
+                label: (
+                  <>
+                    <IconLayoutListFilled
+                      size="20"
+                      stroke="1.5"
+                      style={{ display: "block" }}
+                    />
+                    <VisuallyHidden>List Layout</VisuallyHidden>
+                  </>
+                ),
+              },
+              {
+                value: "grid",
+                label: (
+                  <>
+                    <IconLayout2Filled
+                      size="20"
+                      stroke="1.5"
+                      style={{ display: "block" }}
+                    />
+                    <VisuallyHidden>Grid Layout</VisuallyHidden>
+                  </>
+                ),
+              },
+            ]}
+          />
+        </Stack>
+        {/* Sort todos */}
+        <Stack gap="xs">
+          <Text size="xs">Sort by:</Text>
           <NativeSelect
+            size="xs"
             value={sortBy}
             onChange={(e) => setSortBy(e.currentTarget.value)}
             data={[
@@ -245,22 +254,14 @@ const HomePage = () => {
             ]}
           />
         </Stack>
-        <Stack>
-          <Text size="xs">
-            Completed Todos: {getNumberOfCompletedTodos()} / {todos.length}
-          </Text>
-          <Progress value={getCompletedValue()} />
-        </Stack>
-        {organiseTodosByStatus().map((val) => {
-          if (filterGroups.includes(val.status)) {
-            return <TodoSection todos={val.todos} status={val.status} />;
-          }
-        })}
+        <FiltersInput
+          todoFilters={todoFilters}
+          setTodoFilters={setTodoFilters}
+          filterGroups={filterGroups}
+          setFilterGroups={setFilterGroups}
+        />
       </Stack>
-      <Group
-        gap="xs"
-        // mb="sm"
-      >
+      <Group>
         <TextInput
           size="xs"
           placeholder="Enter todo ..."
@@ -277,6 +278,26 @@ const HomePage = () => {
         >
           <IconPlus />
         </ActionIcon>
+      </Group>
+      {/* Main part */}
+      <Stack flex="1" style={{ overflow: "auto" }}>
+        {organiseTodosByStatus().map((val) => {
+          if (filterGroups.includes(val.status)) {
+            return <TodoSection todos={val.todos} status={val.status} />;
+          }
+        })}
+      </Stack>
+      <Group
+        gap="xs"
+        // mb="sm"
+      ></Group>
+      <Group gap="xs">
+        <Button size="xs" variant="outline" flex="1">
+          New Todo
+        </Button>
+        <Button size="xs" variant="outline" flex="1">
+          New Tag
+        </Button>
       </Group>
     </>
   );

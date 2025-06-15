@@ -29,29 +29,42 @@ const TagInput = ({ todoInput, setTodoInput }: props) => {
 
   const [tagSearch, setTagSearch] = useState("");
 
-  const handleTagSelect = (tag: string) => {
+  const handleTagSelect = (tagName: string) => {
+    // From the 'allTags' array consisting of all tag objects, extract
+    // the tag object whose name is the equal to tagName. This is so we can
+    // extract its id.
+    const tagId = allTags.find((tag) => tag.name === tagName)!.id;
     let newTags;
-
-    if (todoInput.tags.includes(tag)) {
-      newTags = todoInput.tags.filter((t) => t !== tag);
+    if (todoInput.tags.includes(tagId)) {
+      newTags = todoInput.tags.filter((tag) => tag !== tagId);
     } else {
-      newTags = [...todoInput.tags, tag];
+      newTags = [...todoInput.tags, tagId];
     }
 
     setTodoInput({ ...todoInput, tags: newTags });
   };
 
-  const handleTagRemove = (tag: string) => {
-    const newTags = todoInput.tags.filter((t) => t !== tag);
+  const handleTagRemove = (tagId: string) => {
+    const newTags = todoInput.tags.filter((t) => t !== tagId);
 
     setTodoInput({ ...todoInput, tags: newTags });
   };
 
-  const values = todoInput.tags.map((tag) => (
-    <Pill key={tag} withRemoveButton onRemove={() => handleTagRemove(tag)}>
-      {tag}
-    </Pill>
-  ));
+  const values = todoInput.tags.map((tagId) => {
+    console.log("TAG ID");
+    console.log(tagId);
+    const tagObj = allTags.find((tag) => tag.id === tagId);
+
+    return (
+      <Pill
+        key={tagObj!.id}
+        withRemoveButton
+        onRemove={() => handleTagRemove(tagObj!.id)}
+      >
+        {tagObj!.name}
+      </Pill>
+    );
+  });
 
   const options = allTags
     .filter((tag: tagType) =>

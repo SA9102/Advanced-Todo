@@ -29,15 +29,14 @@ const useTagStore = create<state>((set) => ({
           return tag;
         }),
       })),
-    deleteTag: (tagId: string) =>
-      set((state) => ({
-        tags: state.tags.filter((tag: tagType) => tag.id !== tagId),
-      })),
+    // deleteTag: (tagId: string) =>
+    //   set((state) => ({
+    //     tags: state.tags.filter((tag: tagType) => tag.id !== tagId),
+    //   })),
   },
 }));
 
 export const useGetTags = () => useTagStore((state) => state.tags);
 // export const useGetTodo = (id: string) =>
 //   useTodoStore((state) => state.todos.find((todo) => todo.id === id));
-
 export const useTagActions = () => useTagStore((state) => state.actions);

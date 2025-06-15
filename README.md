@@ -16,6 +16,7 @@ Currently work-in-progress.
 Current features:
 
 - Create, update and delete todos.
+- Create tags, and assign tags to todos.
 - Quickly delete or change task while on the home screen.
 - Go to a todo's 'edit page' to add a description, tags, and change priority.
 - Check off todos.
@@ -78,9 +79,7 @@ npm run dev
 
 ## :hammer_and_wrench: Development
 
-I wanted to take a basic todo application, and see how much I could transform it into a real productivity tool that is responsive, intuitive and efficient from a user endpoint. In addition, I am ensuring that, to the best of my abilities (as someone with currently no real-world experience), the code written is maintainable and broken down into reusable components.
-
-This application will be one of my more sophisticated ones, not only in terms of the scope, but also the tech stack and good development practices that I will use, such as separating the UI from the logic. This project is an opportunity to not only consolidate what I have learnt on my journey of web development, but also to really level up my software development skills and knowledge.
+This project began as a simple to-do application, but quickly evolved into a more advanced productivity tool. The goal of this project is to challenge myself by enhancing functionality, while also keeping the user interface responsive, intuitive and efficient. Throughout development, I am focusing on writing clean, maintainable and self-documenting code. Thus, this project serves as an opportunity to not only apply what I have learned, but also to level-up my software development skills.
 
 Some notes about this project from a development perspective:
 

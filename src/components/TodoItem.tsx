@@ -24,6 +24,8 @@ import {
 import { useState } from "react";
 import { Link } from "react-router";
 import { useGetLayout } from "../store/layoutStore";
+import tagType from "../types/tagType";
+import { useGetTags } from "../store/tagStore";
 
 type props = {
   todo: todoType;
@@ -43,8 +45,13 @@ const options = {
 const TodoItem = ({ todo }: props) => {
   const { updateTodo, checkTodo, deleteTodo, changeTask, toggleExpandTodo } =
     useTodoActions();
+
+  const allTags: tagType[] = useGetTags();
+
   const [newTodo, setNewTodo] = useState(todo);
+
   const layout = useGetLayout();
+
   const { colorScheme } = useMantineColorScheme();
 
   const longPress = useLongPress(() => {
@@ -113,13 +120,13 @@ const TodoItem = ({ todo }: props) => {
           flexGrow: "1",
           display: "inline-block",
           width: "100%",
-          cursor: "pointer",
         }}
         key={todo.id}
         shadow="xs"
-        padding="xs"
+        px="xs"
+        py="0.4rem"
         // flex="1"
-        onClick={() => checkTodo(todo.id)}
+        // onClick={() => checkTodo(todo.id)}
         {...longPress()}
       >
         <Stack>
@@ -153,18 +160,24 @@ const TodoItem = ({ todo }: props) => {
                 </ActionIcon>
               </Group>
             ) : (
-              <Text
-                size="sm"
-                style={{
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  flex: 1,
-                  minWidth: 0,
-                }}
-              >
-                {todo.task}
-              </Text>
+              <Group>
+                <Checkbox
+                  checked={todo.isComplete}
+                  onClick={() => checkTodo(todo.id)}
+                />
+                <Text
+                  size="sm"
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    flex: 1,
+                    minWidth: 0,
+                  }}
+                >
+                  {todo.task}
+                </Text>
+              </Group>
             )}
             <Group wrap="nowrap">
               {canBeExpanded() && (
@@ -204,10 +217,7 @@ const TodoItem = ({ todo }: props) => {
                     Change Task
                   </Menu.Item>
                   <Link to={todo.id}>
-                    {/* <Menu.Item> */}
-                    <Menu.Item onClick={(e) => e.stopPropagation()}>
-                      Edit
-                    </Menu.Item>
+                    <Menu.Item>Edit</Menu.Item>
                   </Link>
                   <Menu.Item
                     color="red"
@@ -248,11 +258,18 @@ const TodoItem = ({ todo }: props) => {
               )}
               {hasTags() && (
                 <Pill.Group>
-                  {todo.tags.map((tag) => (
-                    <Pill size="xs" key={tag}>
-                      {tag}
-                    </Pill>
-                  ))}
+                  {todo.tags.map((tagId) => {
+                    const tagObj = allTags.find((tag) => tag.id === tagId);
+                    return (
+                      <Pill
+                        size="xs"
+                        key={tagObj!.id}
+                        style={{ backgroundColor: tagObj!.colour }}
+                      >
+                        {tagObj!.name}
+                      </Pill>
+                    );
+                  })}
                 </Pill.Group>
               )}
             </>

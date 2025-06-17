@@ -29,10 +29,10 @@ const useTagStore = create<state>((set) => ({
           return tag;
         }),
       })),
-    // deleteTag: (tagId: string) =>
-    //   set((state) => ({
-    //     tags: state.tags.filter((tag: tagType) => tag.id !== tagId),
-    //   })),
+    deleteTag: (tagId: string) =>
+      set((state) => ({
+        tags: state.tags.filter((tag: tagType) => tag.id !== tagId),
+      })),
   },
 }));
 

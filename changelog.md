@@ -1,5 +1,9 @@
 # Change Log
 
+## 17th June 2025
+
+- Can delete tags. They will also be removed from the todos to which they are assigned.
+
 ## 15th June 2025
 
 - Can create tags and assign these tags to todos.

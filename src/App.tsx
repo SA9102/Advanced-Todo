@@ -2,7 +2,6 @@
 import {
   ActionIcon,
   AppShell,
-  Box,
   Button,
   Drawer,
   Group,
@@ -13,29 +12,53 @@ import {
 import { IconMoon, IconPaint, IconSun, IconMenu2 } from "@tabler/icons-react";
 import { Link, Route, Routes, useLocation } from "react-router";
 import HomePage from "./pages/HomePage";
-import { CREATE_TAG, HOME, UPDATE_TODO } from "./routes/routes";
+import { CREATE_TAG, HOME, EDIT_TODO, EDIT_TAGS } from "./routes/routes";
 import EditTodoPage from "./pages/EditTodoPage";
 import "./index.css";
 import { useDisclosure } from "@mantine/hooks";
 import TagPage from "./pages/TagPage";
+import EditTagsPage from "./pages/EditTagsPage";
+
+const BUTTONS = [
+  {
+    text: "My Todos",
+    path: HOME,
+  },
+  {
+    text: "New Todo",
+    path: HOME,
+  },
+  {
+    text: "New Tag",
+    path: CREATE_TAG,
+  },
+  {
+    text: "Edit Tags",
+    path: EDIT_TAGS,
+  },
+];
 
 const App = () => {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
+
   const [opened, { open, close }] = useDisclosure(false);
+
   const path = useLocation();
+
   return (
     <AppShell>
       <Drawer opened={opened} onClose={close} title="ASd">
         <Stack>
-          <Button variant="subtle">New Todo</Button>
-          <Button
-            variant="subtle"
-            onClick={close}
-            component={Link}
-            to={CREATE_TAG}
-          >
-            New Tag
-          </Button>
+          {BUTTONS.map((button) => (
+            <Button
+              variant="subtle"
+              onClick={close}
+              component={Link}
+              to={button.path}
+            >
+              {button.text}
+            </Button>
+          ))}
         </Stack>
       </Drawer>
       <AppShell.Main>
@@ -43,7 +66,8 @@ const App = () => {
           <Routes>
             <Route path={HOME} element={<HomePage />} />
             <Route path={CREATE_TAG} element={<TagPage />} />
-            <Route path={UPDATE_TODO} element={<EditTodoPage />} />
+            <Route path={EDIT_TODO} element={<EditTodoPage />} />
+            <Route path={EDIT_TAGS} element={<EditTagsPage />} />
           </Routes>
         </Stack>
       </AppShell.Main>
@@ -65,6 +89,7 @@ const App = () => {
             </Group>
             <Group gap={5}>
               <ActionIcon
+                disabled
                 size="sm"
                 variant="default"
                 onClick={() =>

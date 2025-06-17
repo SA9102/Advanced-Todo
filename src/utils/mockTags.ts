@@ -4,17 +4,17 @@ const mockTags: tagType[] = [
   {
     id: "1",
     name: "Food",
-    colour: "#ff0000",
+    colour: "#ff000055",
   },
   {
     id: "2",
     name: "Work",
-    colour: "#ffff00",
+    colour: "#ffff0055",
   },
   {
     id: "3",
     name: "Entertainment",
-    colour: "#ff00ff",
+    colour: "#ff00ff55",
   },
 ];
 

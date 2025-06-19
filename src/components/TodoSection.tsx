@@ -23,7 +23,6 @@ const TodoSection = ({ todos, status }: props) => {
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
   const layout = useGetLayout();
-  console.log(colorScheme);
 
   return (
     <>

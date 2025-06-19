@@ -51,8 +51,6 @@ const TagInput = ({ todoInput, setTodoInput }: props) => {
   };
 
   const values = todoInput.tags.map((tagId) => {
-    console.log("TAG ID");
-    console.log(tagId);
     const tagObj = allTags.find((tag) => tag.id === tagId);
 
     return (

@@ -3,6 +3,7 @@
 ## 19th June 2025
 
 - Can edit tags (name and colour). All todos to which the tag is assigned will receive these changes.
+- Fixed bug where filtering by tags would not work.
 
 ## 17th June 2025
 

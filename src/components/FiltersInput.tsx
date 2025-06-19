@@ -87,11 +87,13 @@ const FiltersInput = ({
           <MultiSelect
             label="Tags"
             size="xs"
-            data={tags.map((tag) => tag.name)}
+            data={tags.map((tag) => ({ label: tag.name, value: tag.id }))}
             value={todoFilters.tags}
-            onChange={(newTags) =>
-              setTodoFilters({ ...todoFilters, tags: newTags })
-            }
+            onChange={(newTags) => {
+              console.log("NEW TAGS");
+              console.log(newTags);
+              setTodoFilters({ ...todoFilters, tags: newTags });
+            }}
           />
           <Stack gap="xs">
             <Text size="xs">Groups</Text>

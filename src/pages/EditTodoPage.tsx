@@ -66,7 +66,6 @@ const EditTodoPage = () => {
             valueFormat="DD MMMM YYYY H:mm"
             value={todoInput.start}
             onChange={(newStart) => {
-              console.log(newStart);
               setTodoInput({ ...todoInput, start: newStart });
             }}
             clearable

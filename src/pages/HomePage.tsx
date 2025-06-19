@@ -187,7 +187,8 @@ const HomePage = () => {
       { status: "Completed", todos: sortTodos(completed) },
     ];
   };
-
+  console.log("TODO FILTERS");
+  console.log(todoFilters);
   return (
     <>
       <Stack

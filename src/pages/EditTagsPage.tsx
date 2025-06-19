@@ -2,8 +2,9 @@
 
 import { ActionIcon, Button, Card, Group, Text } from "@mantine/core";
 import { useGetTags, useTagActions } from "../store/tagStore";
-import { IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { useGetTodos, useTodoActions } from "../store/todoStore";
+import { Link } from "react-router";
 
 const EditTagsPage = () => {
   const allTodos = useGetTodos();
@@ -33,6 +34,11 @@ const EditTagsPage = () => {
           {/* <Card style={{ backgroundColor: tagObj.colour }}> */}
           <Group>
             <Text>{tagObj.name}</Text>
+            <Link to={tagObj.id}>
+              <ActionIcon size="sm" onClick={() => {}}>
+                <IconEdit />
+              </ActionIcon>
+            </Link>
             <ActionIcon
               color="red"
               size="sm"

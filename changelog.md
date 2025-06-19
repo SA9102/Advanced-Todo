@@ -1,5 +1,9 @@
 # Change Log
 
+## 19th June 2025
+
+- Can edit tags (name and colour). All todos to which the tag is assigned will receive these changes.
+
 ## 17th June 2025
 
 - Can delete tags. They will also be removed from the todos to which they are assigned.

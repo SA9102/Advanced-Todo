@@ -12,12 +12,19 @@ import {
 import { IconMoon, IconPaint, IconSun, IconMenu2 } from "@tabler/icons-react";
 import { Link, Route, Routes, useLocation } from "react-router";
 import HomePage from "./pages/HomePage";
-import { CREATE_TAG, HOME, EDIT_TODO, EDIT_TAGS } from "./routes/routes";
+import {
+  CREATE_TAG,
+  HOME,
+  EDIT_TODO,
+  EDIT_TAGS,
+  EDIT_TAG,
+} from "./routes/routes";
 import EditTodoPage from "./pages/EditTodoPage";
 import "./index.css";
 import { useDisclosure } from "@mantine/hooks";
 import TagPage from "./pages/TagPage";
 import EditTagsPage from "./pages/EditTagsPage";
+import EditTagPage from "./pages/EditTagPage";
 
 const BUTTONS = [
   {
@@ -68,6 +75,7 @@ const App = () => {
             <Route path={CREATE_TAG} element={<TagPage />} />
             <Route path={EDIT_TODO} element={<EditTodoPage />} />
             <Route path={EDIT_TAGS} element={<EditTagsPage />} />
+            <Route path={EDIT_TAG} element={<EditTagPage />} />
           </Routes>
         </Stack>
       </AppShell.Main>

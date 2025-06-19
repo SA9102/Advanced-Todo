@@ -37,6 +37,6 @@ const useTagStore = create<state>((set) => ({
 }));
 
 export const useGetTags = () => useTagStore((state) => state.tags);
-// export const useGetTodo = (id: string) =>
-//   useTodoStore((state) => state.todos.find((todo) => todo.id === id));
+export const useGetTag = (id: string) =>
+  useTagStore((state) => state.tags.find((tag) => tag.id === id));
 export const useTagActions = () => useTagStore((state) => state.actions);

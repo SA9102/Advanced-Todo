@@ -17,6 +17,7 @@ Current features:
 
 - Create, update and delete todos.
 - Create tags, and assign tags to todos.
+- Edit and delete tags.
 - Quickly delete or change task while on the home screen.
 - Go to a todo's 'edit page' to add a description, tags, and change priority.
 - Check off todos.
@@ -32,7 +33,6 @@ More coming soon.
 
 An outline of some of the features I plan to implement:
 
-- Create, edit and delete tags
 - Export todos as a spreadsheet
 - Import a spreadsheet (of a certain format) into the app
 - Responsive for larger screens

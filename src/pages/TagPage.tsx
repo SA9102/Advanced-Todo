@@ -9,7 +9,6 @@ import emptyTag from "../utils/emptyTag";
 const TagPage = () => {
   const { createTag } = useTagActions();
   const [tagInput, setTagInput] = useState<tagType>(emptyTag);
-  console.log(tagInput);
   return (
     <>
       <TextInput

@@ -85,6 +85,7 @@ Some notes about this project from a development perspective:
 
 - A mobile-frst design approach is used - first building for mobile devices, then scaling up the design to be responsive for larger screens
 - Using global state management, as this would make it easier to scale up the application. Learning Zustand for this.
+- Backend code is structured using MVC.
 
 ## :ballot_box_with_check: Requirements
 

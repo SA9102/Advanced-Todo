@@ -1,6 +1,10 @@
 # Change Log
 
-## (X weeks of refactoring code - adding backend + auth and JWT)
+## 14th August 2025
+
+- (Finally) added authentication using Express, MongoDB and JWT for permanent note storage.
+
+## (Around 2 months of refactoring code - adding backend + auth and JWT)
 
 ## 19th June 2025
 

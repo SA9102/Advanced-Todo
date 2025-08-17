@@ -35,6 +35,8 @@ import { useContext, useEffect } from "react";
 import HomePageNew from "./pages/HomePageNew";
 import AuthContext from "./context/AuthProvider";
 import useLogout from "./hooks/useLogout";
+import PersistLogin from "./components/PersistLogin";
+import usePersistLogin from "./hooks/usePersistLogin";
 
 const BUTTONS = [
   {
@@ -66,6 +68,9 @@ const App = () => {
   const { auth } = useContext(AuthContext);
   const logout = useLogout();
   console.log(auth);
+
+  usePersistLogin();
+
   return (
     <AppShell>
       <Drawer opened={opened} onClose={close} title="ASd">
@@ -85,14 +90,16 @@ const App = () => {
       <AppShell.Main>
         <Stack gap="sm" pt="3rem" p="xs" h="100vh">
           <Routes>
+            {/* <Route element={<PersistLogin />}> */}
             <Route path={HOME} element={<HomePage />} />
             <Route path={CREATE_TAG} element={<TagPage />} />
             <Route path={EDIT_TODO} element={<EditTodoPage />} />
             <Route path={EDIT_TAGS} element={<EditTagsPage />} />
             <Route path={EDIT_TAG} element={<EditTagPage />} />
+            <Route path={TEST} element={<TestPage />} />
+            {/* </Route> */}
             <Route path={REGISTER} element={<RegisterPage />} />
             <Route path={LOGIN} element={<LoginPage />} />
-            <Route path={TEST} element={<TestPage />} />
           </Routes>
         </Stack>
       </AppShell.Main>

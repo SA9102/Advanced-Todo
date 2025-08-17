@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 
 // Get all todos of a particular user
 exports.getAllTodos = async (req, res) => {
-  console.log(req.cookies);
   const decoded = jwt.verify(
     req.cookies.token,
     process.env.REFRESH_TOKEN_SECRET

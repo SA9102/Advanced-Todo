@@ -20,6 +20,7 @@ const useRefreshToken = () => {
         username: res.data.username,
         accessToken: res.data.accessToken,
       });
+      return res.data.accessToken;
     } catch (err) {
       console.log("PRINTING ERROR");
       console.log(err);

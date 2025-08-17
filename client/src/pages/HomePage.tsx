@@ -68,6 +68,8 @@ const HomePage = () => {
   // By what the todos are sorted
   const [sortBy, setSortBy] = useState<"name" | "priority">("priority");
 
+  const refresh = useRefreshToken();
+
   const { auth } = useContext(AuthContext);
   // Checks if the user is logged in, and if so then get their todos.
   // useCheckAuth();
@@ -257,24 +259,12 @@ const HomePage = () => {
 
   // useCheckAuthNew();
 
-  usePersistLogin();
-  // const refresh = useRefreshToken();
-
-  // useEffect(() => {
-  //   refresh();
-  // }, []);
-
   useEffect(() => {
+    console.log("auth useeffect is executed");
     if (auth) {
       handleFetchTodos();
     }
   }, [auth]);
-
-  console.log("AUTH");
-  console.log(auth);
-
-  console.log("--- TODOS ---");
-  console.log(todos);
   return (
     <>
       {auth ? (

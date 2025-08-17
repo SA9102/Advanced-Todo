@@ -8,11 +8,8 @@ exports.register = (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  console.log(req.body);
   try {
     const user = await User.findOne({ username: req.body.username }).exec();
-    console.log("USER");
-    console.log(user);
     if (!user)
       return res
         .status(401)
@@ -22,17 +19,16 @@ exports.login = async (req, res) => {
       { id: user._id },
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "5m",
+        expiresIn: "1m",
       }
     );
     const refreshToken = jwt.sign(
       { id: user._id },
       process.env.REFRESH_TOKEN_SECRET,
       {
-        expiresIn: "10m",
+        expiresIn: "2m",
       }
     );
-    console.log(refreshToken);
     user.refreshToken = refreshToken;
     await user.save();
     res
@@ -73,24 +69,37 @@ exports.logout = async (req, res) => {
 };
 
 exports.refreshToken = async (req, res) => {
+  console.log("IN REFRESH TOKEN");
   const cookies = req.cookies;
-  console.log(req.cookies.jwt);
+  // If the refresh token in the cookie is absent
   if (!cookies?.token) {
+    console.log("UNAUTHORIZED");
     return res.status(401).json({ message: "Unauthorized" });
   }
+
   const refreshToken = cookies.token;
 
+  // Find the user in the database with this refresh token.
   const user = await User.findOne({ refreshToken }).exec();
+  // If not found, then the given refresh token is invalid.
   if (!user) {
+    console.log("FORBIDDEN");
     res.status(403).json({ message: "Forbidden" });
   }
-  console.log(refreshToken);
 
   try {
+    console.log("IN TRY");
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    if (user._id !== decoded._id) {
+    // Verify that the user is indeed who they say they are
+    if (user._id.toString() !== decoded.id) {
+      console.log(user._id.toString());
+      console.log(decoded.id);
+      console.log("USER NOT EQUAL TO DECODED");
       return res.sendStatus(403);
     }
+
+    // By this point, the refresh token is valid and the user is authorized, so
+    // send a new access token.
     const accessToken = jwt.sign(
       { id: user._id },
       process.env.ACCESS_TOKEN_SECRET,

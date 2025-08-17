@@ -1,7 +1,7 @@
 import { Button, PasswordInput, TextInput } from "@mantine/core";
 import axios from "axios";
 import bcrypt from "bcryptjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
 import { useContext } from "react";
 import AuthContext from "../context/AuthProvider";
@@ -21,7 +21,7 @@ const LoginPage = () => {
   });
   const navigate = useNavigate();
 
-  const { setAuth } = useContext(AuthContext);
+  const { setAuth, persist, setPersist } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,11 +40,20 @@ const LoginPage = () => {
         username: formInput.username,
         accessToken: res.data.accessToken,
       });
+      setPersist(true);
       navigate(HOME);
     } catch (err) {
       console.log(err);
     }
   };
+
+  // const togglePersist = () => {
+  //   setPersist(prev => !prev)
+  // }
+
+  useEffect(() => {
+    localStorage.setItem("persist", persist);
+  }, [persist]);
 
   return (
     <>

@@ -15,7 +15,6 @@ const TagPage = () => {
   const { auth } = useContext(AuthContext);
   const handleSaveToDB = async () => {
     try {
-      console.log("TRYING...");
       await axios.post(
         `${API_BASE_URL}/tag`,
         {
@@ -33,13 +32,10 @@ const TagPage = () => {
           headers: { Authorization: auth.accessToken },
         }
       );
-      console.log("SUCCESS");
     } catch (err) {
-      console.log("THERE WAS AN ERROR");
       console.error(err);
     }
   };
-  console.log(tagInput);
 
   return (
     <>

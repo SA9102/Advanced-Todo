@@ -90,8 +90,6 @@ const FiltersInput = ({
             data={tags.map((tag) => ({ label: tag.label, value: tag.tagId }))}
             value={todoFilters.tags}
             onChange={(newTags) => {
-              console.log("NEW TAGS");
-              console.log(newTags);
               setTodoFilters({ ...todoFilters, tags: newTags });
             }}
           />

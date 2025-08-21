@@ -13,8 +13,6 @@ const useRefreshToken = () => {
       const res = await axios.get(`${API_BASE_URL}/auth/refreshToken`, {
         withCredentials: true,
       });
-      console.log("PRINTING RES");
-      console.log(res);
       setAuth({
         _id: res.data._id,
         username: res.data.username,
@@ -22,7 +20,6 @@ const useRefreshToken = () => {
       });
       return res.data.accessToken;
     } catch (err) {
-      console.log("PRINTING ERROR");
       console.log(err);
     }
   };

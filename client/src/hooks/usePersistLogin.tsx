@@ -14,7 +14,6 @@ const usePersistLogin = () => {
       try {
         await refresh();
       } catch (err) {
-        console.log("An error occurred in the 'usePersistLogin' hook");
         console.log(err);
       }
     };

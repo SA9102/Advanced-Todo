@@ -160,7 +160,6 @@ const HomePage = () => {
 
     // Fitler by tags. If no tags are selected, then show todos belonging to all tags.
     if (todoFilters.tags.length > 0) {
-      console.log("THIS IS EXECUTED");
       filtered = filtered.filter((todo) => {
         for (let i = 0; i < todo.tags.length; i++) {
           for (let j = 0; j < todoFilters.tags.length; j++) {
@@ -260,7 +259,6 @@ const HomePage = () => {
   // useCheckAuthNew();
 
   useEffect(() => {
-    console.log("auth useeffect is executed");
     if (auth) {
       handleFetchTodos();
     }

@@ -35,8 +35,6 @@ const EditTodoPage = () => {
   const handleSaveToDB = async () => {
     try {
       // await axios.put(`${API_BASE_URL}/`)
-      console.log("TODO TAGS");
-      console.log(todoInput.tags);
       await axios.patch(
         `${API_BASE_URL}/todo`,
 
@@ -65,8 +63,6 @@ const EditTodoPage = () => {
       console.log(err);
     }
   };
-  console.log("TODO INPUT");
-  console.log(todoInput);
   return (
     <>
       {todoInput ? (

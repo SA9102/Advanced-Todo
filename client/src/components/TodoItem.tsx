@@ -125,9 +125,6 @@ const TodoItem = ({ todo }: props) => {
 
   const iconColor = colorScheme === "light" ? "gray" : "white";
 
-  console.log("IS EXPANDED??");
-  console.log(todo.isExpanded);
-
   useEffect(() => {
     const handleFetchTags = async () => {
       try {
@@ -136,11 +133,9 @@ const TodoItem = ({ todo }: props) => {
           headers: { Authorization: auth.accessToken },
         });
         const tags = data.data.data;
-        console.log("TAGS HAVE BEEN FETCHED !!!");
         setAllTags(tags);
         setTagsFetched(true);
       } catch (err) {
-        console.log("NO TAGS FETCHED !!!");
         console.error(err);
       }
     };
@@ -148,8 +143,6 @@ const TodoItem = ({ todo }: props) => {
     handleFetchTags();
   }, []);
 
-  console.log("TAGS FETCHED");
-  console.log(tagsFetched);
   return (
     <>
       <Card
@@ -302,8 +295,6 @@ const TodoItem = ({ todo }: props) => {
                 <Pill.Group>
                   {todo.tags.map((tagId) => {
                     const tagObj = allTags.find((tag) => tag.tagId === tagId);
-                    console.log("PRINTING TAGOBJ");
-                    console.log(tagObj);
                     return (
                       <Pill
                         size="xs"

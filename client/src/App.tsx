@@ -30,7 +30,6 @@ import EditTagsPage from "./pages/EditTagsPage";
 import EditTagPage from "./pages/EditTagPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import TestPage from "./pages/TestPage";
 import { useContext, useEffect } from "react";
 import HomePageNew from "./pages/HomePageNew";
 import AuthContext from "./context/AuthProvider";
@@ -96,7 +95,6 @@ const App = () => {
             <Route path={EDIT_TODO} element={<EditTodoPage />} />
             <Route path={EDIT_TAGS} element={<EditTagsPage />} />
             <Route path={EDIT_TAG} element={<EditTagPage />} />
-            <Route path={TEST} element={<TestPage />} />
             {/* </Route> */}
             <Route path={REGISTER} element={<RegisterPage />} />
             <Route path={LOGIN} element={<LoginPage />} />

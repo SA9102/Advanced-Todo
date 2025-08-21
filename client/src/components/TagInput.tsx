@@ -39,7 +39,6 @@ const TagInput = ({ todoInput, setTodoInput }: props) => {
     // From the 'allTags' array consisting of all tag objects, extract
     // the tag object whose name is the equal to tagName. This is so we can
     // extract its id.
-    console.log("HANDLE TAG SELECT");
     const tagId = allTags.find((tag) => tag.label === tagName)!.tagId;
     let newTags;
     if (todoInput.tags.includes(tagId)) {
@@ -47,7 +46,6 @@ const TagInput = ({ todoInput, setTodoInput }: props) => {
     } else {
       newTags = [...todoInput.tags, tagId];
     }
-    console.log(newTags);
     setTodoInput({ ...todoInput, tags: newTags });
   };
 
@@ -59,8 +57,6 @@ const TagInput = ({ todoInput, setTodoInput }: props) => {
 
   const values = todoInput.tags.map((tagId) => {
     let tagObj = allTags.find((tag) => tag.tagId === tagId);
-    console.log("------------------ tagObj");
-    console.log(tagObj);
     if (!tagObj) {
       tagObj = [];
     }
@@ -93,7 +89,6 @@ const TagInput = ({ todoInput, setTodoInput }: props) => {
     ));
 
   useEffect(() => {
-    console.log("USE EFFECT EXECUTED");
     const handleFetchTags = async () => {
       try {
         const data = await axios.get(`${API_BASE_URL}/tag`, {
@@ -102,10 +97,7 @@ const TagInput = ({ todoInput, setTodoInput }: props) => {
         });
         const tags = data.data.data;
         const tagIds = tags.map((tag) => tag.tagId);
-        console.log(tagIds);
         setFetchedTags(tagIds);
-        console.log("TAGS");
-        console.log(tags);
         setAllTags(tags);
       } catch (err) {
         console.error(err);

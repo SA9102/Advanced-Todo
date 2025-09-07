@@ -7,6 +7,7 @@ import {
   Stack,
   Text,
   TextInput,
+  Title,
   useMantineTheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -53,6 +54,9 @@ const FiltersInput = ({
         style={{ borderRadius: theme.radius[theme.defaultRadius] }}
       >
         <Stack gap="xs">
+          <Title component="h1" size="h4">
+            Filters
+          </Title>
           <TextInput
             label="Task/Description"
             size="xs"

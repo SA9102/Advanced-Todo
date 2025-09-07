@@ -3,7 +3,7 @@ import { createTheme, virtualColor } from "@mantine/core";
 const theme = createTheme({
   primaryColor: "primary",
 
-  defaultRadius: "md",
+  defaultRadius: "sm",
   cursorType: "pointer",
   colors: {
     primary: virtualColor({

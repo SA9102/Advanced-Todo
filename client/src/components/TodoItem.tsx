@@ -25,7 +25,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useGetLayout } from "../store/layoutStore";
 import tagType from "../types/tagType";
-import { useGetTags } from "../store/tagStore";
+import { useGetTags, useTagActions } from "../store/tagStore";
 import { useSynced, useSetSynced } from "../store/syncStore";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
@@ -49,6 +49,8 @@ const options = {
 const TodoItem = ({ todo }: props) => {
   const { updateTodo, checkTodo, deleteTodo, changeTask, toggleExpandTodo } =
     useTodoActions();
+
+  const { setTags } = useTagActions();
 
   const sync = useSynced();
   const setSynced = useSetSynced();
@@ -140,8 +142,24 @@ const TodoItem = ({ todo }: props) => {
       }
     };
 
-    handleFetchTags();
+    const handleFetchTagsLS = () => {
+      let tagsLS = JSON.parse(localStorage.getItem("tags"));
+      if (!tagsLS) {
+        tagsLS = [];
+      }
+      setTags(tagsLS);
+      setAllTags(tagsLS);
+      setTagsFetched(true);
+    };
+
+    if (auth) {
+      handleFetchTags();
+    } else {
+      handleFetchTagsLS();
+    }
   }, []);
+
+  // console.log
 
   return (
     <>
@@ -295,15 +313,19 @@ const TodoItem = ({ todo }: props) => {
                 <Pill.Group>
                   {todo.tags.map((tagId) => {
                     const tagObj = allTags.find((tag) => tag.tagId === tagId);
-                    return (
-                      <Pill
-                        size="xs"
-                        key={tagObj!.tagId}
-                        style={{ backgroundColor: tagObj!.colour }}
-                      >
-                        {tagObj!.label}
-                      </Pill>
-                    );
+                    if (tagObj) {
+                      return (
+                        <Pill
+                          size="xs"
+                          key={tagObj!.tagId}
+                          style={{
+                            backgroundColor: tagObj!.colour,
+                          }}
+                        >
+                          {tagObj!.label}
+                        </Pill>
+                      );
+                    }
                   })}
                 </Pill.Group>
               )}

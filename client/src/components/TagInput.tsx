@@ -104,7 +104,22 @@ const TagInput = ({ todoInput, setTodoInput }: props) => {
       }
     };
 
-    handleFetchTags();
+    const handleFetchTagsLS = () => {
+      let tagsLS = JSON.parse(localStorage.getItem("tags"));
+      if (!tagsLS) {
+        tagsLS = [];
+      }
+
+      const tagIds = tagsLS.map((tag) => tag.tagId);
+      setFetchedTags(tagIds);
+      setAllTags(tagsLS);
+    };
+
+    if (auth) {
+      handleFetchTags();
+    } else {
+      handleFetchTagsLS();
+    }
   }, []);
 
   return (

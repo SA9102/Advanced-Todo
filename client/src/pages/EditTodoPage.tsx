@@ -22,6 +22,7 @@ import { DatePickerInput, DateTimePicker } from "@mantine/dates";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
 import AuthContext from "../context/AuthProvider";
+import todoType from "../types/todoType";
 
 const EditTodoPage = () => {
   const todoId = useParams().id; // Get the todo id from the url
@@ -63,6 +64,29 @@ const EditTodoPage = () => {
       console.log(err);
     }
   };
+
+  const handleSaveToLS = () => {
+    let todosLS = JSON.parse(localStorage.getItem("todos"));
+
+    if (!todosLS) {
+      todosLS = [todoInput];
+    } else {
+      todosLS = todosLS.map((todo: todoType) => {
+        if (todo.taskId === todoInput?.taskId) {
+          return todoInput;
+        } else {
+          return todo;
+        }
+      });
+    }
+
+    localStorage.setItem("todos", JSON.stringify(todosLS));
+    navigate(HOME);
+  };
+  console.log("START");
+  console.log(typeof todoInput?.start);
+  console.log(todoInput);
+  console.log(todoInput.start);
   return (
     <>
       {todoInput ? (
@@ -121,7 +145,11 @@ const EditTodoPage = () => {
               flex="1"
               onClick={() => {
                 updateTodo(todoInput);
-                handleSaveToDB();
+                if (auth) {
+                  handleSaveToDB();
+                } else {
+                  handleSaveToLS();
+                }
               }}
             >
               Save

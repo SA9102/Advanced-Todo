@@ -3,6 +3,7 @@ import {
   Button,
   Group,
   NativeSelect,
+  Notification,
   Progress,
   SegmentedControl,
   Stack,
@@ -15,6 +16,7 @@ import {
   IconLayout2Filled,
   IconLayoutListFilled,
   IconPlus,
+  IconExclamationMark,
 } from "@tabler/icons-react";
 import todoType from "../types/todoType";
 import { useGetTodos, useTodoActions } from "../store/todoStore";
@@ -24,7 +26,7 @@ import FiltersInput from "../components/FiltersInput";
 import emptyTodo from "../utils/emptyTodo";
 import todoFiltersType from "../types/todoFiltersType";
 import emptyTodoFilters from "../utils/emptyTodoFilters";
-import { useGetLayout, useSetLayout } from "../store/layoutStore";
+
 import TodoSection from "../components/TodoSection";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
@@ -38,10 +40,9 @@ import { Link, useNavigate } from "react-router";
 import useRefreshToken from "../hooks/useRefreshToken";
 import usePersistLogin from "../hooks/usePersistLogin";
 import { CREATE_TAG } from "../routes/routes";
+import DisplayOptions from "../components/DisplayOptions";
 
 const HomePage = () => {
-  // Mantine theme
-  const theme = useMantineTheme();
   // Get all todos from store
   const todos: todoType[] = useGetTodos();
   // const [todos, setTodos] = useState<todoType[]>([]);
@@ -49,10 +50,9 @@ const HomePage = () => {
   const setSynced = useSetSynced();
   // Function for creating a todo
   const { createTodo, setTodos } = useTodoActions();
-  // Get current layout of todos
-  const layout = useGetLayout();
-  // Set layout of todos
-  const setLayout = useSetLayout();
+
+  const { auth } = useContext(AuthContext);
+
   // Input for adding a new todo
   const [newTodo, setNewTodo] = useState<todoType>(emptyTodo);
   // Input for todo filters
@@ -68,13 +68,18 @@ const HomePage = () => {
   // By what the todos are sorted
   const [sortBy, setSortBy] = useState<"name" | "priority">("priority");
 
+  const [loginNotification, setLoginNotification] = useState(
+    localStorage.getItem("loginNotification") ? true : false
+  );
+
   const refresh = useRefreshToken();
 
-  const { auth } = useContext(AuthContext);
   // Checks if the user is logged in, and if so then get their todos.
   // useCheckAuth();
-
+  console.log("TODOS -----------");
+  console.log(todos);
   const handleSyncDB = async () => {
+    console.log("1");
     const formattedTodos = todos.map((todo) => ({
       taskId: todo.taskId,
       userId: todo.userId,
@@ -91,8 +96,10 @@ const HomePage = () => {
         { _id: auth._id, username: auth.username, data: formattedTodos },
         { withCredentials: true, headers: { Authorization: auth.accessToken } }
       );
+      console.log("2");
       setSynced(true);
     } catch (err) {
+      console.log("3");
       console.log(err);
     }
   };
@@ -124,20 +131,44 @@ const HomePage = () => {
     }
   };
 
+  // Fetches todos that are saved to local storage if the user is
+  // not logged in
+  const handleFetchTodosLS = () => {
+    let todosLS = JSON.parse(localStorage.getItem("todos"));
+    // When we fetch the data from local storage, the date values will
+    // no longer be date objects but a strings instead, so we must convert
+    // these back into date objects.
+    todosLS = todosLS.map((todo) => {
+      let start = null;
+      let end = null;
+      if (todo.start) {
+        start = new Date(todo.start);
+      }
+
+      if (todo.end) {
+        end = new Date(todo.end);
+      }
+
+      return { ...todo, start, end };
+    });
+    setTodos(todosLS);
+    console.log(todosLS);
+  };
+
   // Set the current todo input to empty
   const resetTodo = () => {
     setNewTodo({ ...emptyTodo, taskId: uuidv4() });
   };
 
-  // Get the number of todos that have been checked off as completed
-  const getNumberOfCompletedTodos = () => {
-    return todos.filter((todo: todoType) => todo.isComplete).length;
-  };
+  // // Get the number of todos that have been checked off as completed
+  // const getNumberOfCompletedTodos = () => {
+  //   return todos.filter((todo: todoType) => todo.isComplete).length;
+  // };
 
-  // Get percentage of completed todos
-  const getCompletedValue = () => {
-    return (getNumberOfCompletedTodos() / todos.length) * 100;
-  };
+  // // Get percentage of completed todos
+  // const getCompletedValue = () => {
+  //   return (getNumberOfCompletedTodos() / todos.length) * 100;
+  // };
 
   const getFilteredTodos = () => {
     let filtered = [...todos];
@@ -261,145 +292,94 @@ const HomePage = () => {
   useEffect(() => {
     if (auth) {
       handleFetchTodos();
+    } else {
+      handleFetchTodosLS();
     }
   }, [auth]);
   return (
     <>
-      {auth ? (
-        <>
-          <Button
-            style={{ alignSelf: "start" }}
-            size="compact-xs"
-            disabled={synced ? true : false}
-            onClick={handleSyncDB}
-          >
-            Sync to DB
-          </Button>
-          <Stack
-            p="0.5rem"
-            style={{
-              backgroundColor: theme.colors.dark[6],
-              borderRadius: theme.radius[theme.defaultRadius],
-            }}
-          >
-            <Stack gap="xs">
-              <Text size="xs">
-                Completed Todos: {getNumberOfCompletedTodos()} / {todos.length}
-              </Text>
-              <Progress value={getCompletedValue()} />
-            </Stack>
-            {/* Set the layout of the todos to list or grid */}
-            <Stack gap="xs">
-              <Text size="xs">Layout</Text>
-              <SegmentedControl
-                style={{ alignSelf: "flex-start" }}
-                size="xs"
-                value={layout}
-                onChange={setLayout}
-                data={[
-                  {
-                    value: "list",
-                    label: (
-                      <>
-                        <IconLayoutListFilled
-                          size="20"
-                          stroke="1.5"
-                          style={{ display: "block" }}
-                        />
-                        <VisuallyHidden>List Layout</VisuallyHidden>
-                      </>
-                    ),
-                  },
-                  {
-                    value: "grid",
-                    label: (
-                      <>
-                        <IconLayout2Filled
-                          size="20"
-                          stroke="1.5"
-                          style={{ display: "block" }}
-                        />
-                        <VisuallyHidden>Grid Layout</VisuallyHidden>
-                      </>
-                    ),
-                  },
-                ]}
-              />
-            </Stack>
-            {/* Sort todos */}
-            <Stack gap="xs">
-              <Text size="xs">Sort by:</Text>
-              <NativeSelect
-                size="xs"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.currentTarget.value)}
-                data={[
-                  { label: "Name", value: "name" },
-                  { label: "Priority", value: "priority" },
-                ]}
-              />
-            </Stack>
-            <FiltersInput
-              todoFilters={todoFilters}
-              setTodoFilters={setTodoFilters}
-              filterGroups={filterGroups}
-              setFilterGroups={setFilterGroups}
-            />
-          </Stack>
-          <Group>
-            <TextInput
-              size="xs"
-              placeholder="Enter todo ..."
-              value={newTodo.task}
-              onChange={(e) => setNewTodo({ ...newTodo, task: e.target.value })}
-              flex="1"
-            />
-            <ActionIcon
-              size="md"
-              onClick={() => {
-                createTodo(newTodo);
-                resetTodo();
-              }}
-            >
-              <IconPlus />
-            </ActionIcon>
-          </Group>
-          {/* Main part */}
-          <Stack flex="1" style={{ overflow: "auto" }}>
-            {organiseTodosByStatus().map((val) => {
-              if (filterGroups.includes(val.status)) {
-                return (
-                  <TodoSection
-                    key={val.status}
-                    todos={val.todos}
-                    status={val.status}
-                  />
-                );
-              }
-            })}
-          </Stack>
-          <Group
-            gap="xs"
-            // mb="sm"
-          ></Group>
-          <Group gap="xs">
-            <Button size="xs" variant="outline" flex="1">
-              New Todo
-            </Button>
-            <Button
-              size="xs"
-              variant="outline"
-              flex="1"
-              component={Link}
-              to={CREATE_TAG}
-            >
-              New Tag
-            </Button>
-          </Group>
-        </>
-      ) : (
-        <Text>Unauthorised</Text>
+      {loginNotification && (
+        <Notification
+          icon={<IconExclamationMark />}
+          onClose={() => {
+            setLoginNotification(false);
+            localStorage.removeItem("loginNotification");
+          }}
+        >
+          Your data is saved locally in this browser. Log in to save it to the
+          cloud.
+        </Notification>
       )}
+
+      {auth && (
+        <Button
+          style={{ alignSelf: "start" }}
+          size="compact-xs"
+          disabled={synced ? true : false}
+          onClick={handleSyncDB}
+        >
+          Sync to DB
+        </Button>
+      )}
+      <DisplayOptions
+        todos={todos}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        todoFilters={todoFilters}
+        setTodoFilters={setTodoFilters}
+        filterGroups={filterGroups}
+        setFilterGroups={setFilterGroups}
+      />
+      <Group>
+        <TextInput
+          size="xs"
+          placeholder="Enter todo ..."
+          value={newTodo.task}
+          onChange={(e) => setNewTodo({ ...newTodo, task: e.target.value })}
+          flex="1"
+        />
+        <ActionIcon
+          size="md"
+          onClick={() => {
+            createTodo({ ...newTodo, userId: auth._id });
+            resetTodo();
+          }}
+        >
+          <IconPlus />
+        </ActionIcon>
+      </Group>
+      {/* Main part */}
+      <Stack flex="1" style={{ overflow: "auto" }}>
+        {organiseTodosByStatus().map((val) => {
+          if (filterGroups.includes(val.status)) {
+            return (
+              <TodoSection
+                key={val.status}
+                todos={val.todos}
+                status={val.status}
+              />
+            );
+          }
+        })}
+      </Stack>
+      <Group
+        gap="xs"
+        // mb="sm"
+      ></Group>
+      <Group gap="xs">
+        <Button size="xs" variant="outline" flex="1">
+          New Todo
+        </Button>
+        <Button
+          size="xs"
+          variant="outline"
+          flex="1"
+          component={Link}
+          to={CREATE_TAG}
+        >
+          New Tag
+        </Button>
+      </Group>
     </>
   );
 };

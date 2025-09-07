@@ -8,6 +8,7 @@ type state = {
 };
 
 type actions = {
+  setTags: (tags: tagType[]) => void;
   createTag: (newTag: tagType) => void;
   updateTag: (updatedTag: tagType) => void;
   deleteTag: (tagId: string) => void;
@@ -16,6 +17,7 @@ type actions = {
 const useTagStore = create<state>((set) => ({
   tags: [],
   actions: {
+    setTags: (tags: tagType[]) => set((state) => ({ tags })),
     createTag: (newTag: tagType) =>
       set((state) => ({
         tags: [...state.tags, newTag],

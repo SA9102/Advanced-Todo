@@ -60,6 +60,54 @@ const BUTTONS = [
   },
 ];
 
+// localStorage.setItem(
+//   "todos",
+//   JSON.stringify([
+//     {
+//       taskId: "1",
+//       userId: "abc",
+//       task: "Get groceries",
+//       description: "",
+//       isComplete: false,
+//       isChangingTask: false,
+//       priority: "2",
+//       isExpanded: false,
+//       tags: [],
+//       // start: new Date("06 August 2025 0:00"),
+//       // start: new Date("04/22/2025 12:12"),
+//       start: null,
+//       // start: null,
+//       end: null,
+//     },
+//   ])
+// );
+
+localStorage.setItem(
+  "tags",
+  JSON.stringify([
+    {
+      tagId: "1",
+      label: "Food",
+      colour: "#ff0000",
+      userId: "abc",
+    },
+    {
+      tagId: "2",
+      label: "Work",
+      colour: "#00ff00",
+      userId: "",
+    },
+    {
+      tagId: "3",
+      label: "Travel",
+      colour: "#0000ff",
+      userId: "abc",
+    },
+  ])
+);
+
+// localStorage.setItem("loginNotification", JSON.stringify("on"));
+
 const App = () => {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const [opened, { open, close }] = useDisclosure(false);

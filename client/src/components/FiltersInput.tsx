@@ -105,16 +105,16 @@ const FiltersInput = ({
               onChange={(newFilterGroup) => setFilterGroups(newFilterGroup)}
             >
               <Group>
-                <Chip value="pending" size="xs">
+                <Chip value="Pending" size="xs">
                   Pending
                 </Chip>
-                <Chip value="completed" size="xs">
+                <Chip value="Completed" size="xs">
                   Completed
                 </Chip>
-                <Chip value="upcoming" size="xs">
+                <Chip value="Upcoming" size="xs">
                   Upcoming
                 </Chip>
-                <Chip value="overdue" size="xs">
+                <Chip value="Overdue" size="xs">
                   Overdue
                 </Chip>
               </Group>

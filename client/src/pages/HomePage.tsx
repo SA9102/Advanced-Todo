@@ -343,6 +343,8 @@ const HomePage = () => {
   };
 
   // useCheckAuthNew();
+  console.log("FILTER GROUPS");
+  console.log(filterGroups);
 
   useEffect(() => {
     if (auth) {
@@ -437,6 +439,8 @@ const HomePage = () => {
       {/* Main part */}
       <Stack flex="1" style={{ overflow: "auto" }}>
         {organiseTodosByStatus().map((val) => {
+          console.log("VAL");
+          console.log(val);
           if (filterGroups.includes(val.status)) {
             return (
               <TodoSection

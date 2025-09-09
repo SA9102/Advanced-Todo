@@ -67,10 +67,16 @@ const HomePage = () => {
   ]);
   // By what the todos are sorted
   const [sortBy, setSortBy] = useState<"name" | "priority">("priority");
-
+  console.log("AUTH");
+  console.log(auth);
   const [loginNotification, setLoginNotification] = useState(
-    localStorage.getItem("loginNotification") ? true : false
+    !auth && localStorage.getItem("loginNotification") === "on" ? true : false
   );
+
+  const [LSNotification, setLSNotification] = useState(false);
+
+  console.log("LSNotification");
+  console.log(LSNotification);
 
   const refresh = useRefreshToken();
 
@@ -102,6 +108,12 @@ const HomePage = () => {
       console.log("3");
       console.log(err);
     }
+  };
+
+  const handleSaveToLS = () => {
+    let todosLS = JSON.parse(localStorage.getItem("todos"));
+    todosLS = [...todosLS, { ...newTodo, userId: "" }];
+    localStorage.setItem("todos", JSON.stringify(todosLS));
   };
 
   const handleFetchTodos = async () => {
@@ -136,23 +148,66 @@ const HomePage = () => {
   const handleFetchTodosLS = () => {
     let todosLS = JSON.parse(localStorage.getItem("todos"));
     // When we fetch the data from local storage, the date values will
-    // no longer be date objects but a strings instead, so we must convert
+    // no longer be date objects but strings instead, so we must convert
     // these back into date objects.
-    todosLS = todosLS.map((todo) => {
-      let start = null;
-      let end = null;
-      if (todo.start) {
-        start = new Date(todo.start);
-      }
+    if (todosLS) {
+      todosLS = todosLS.map((todo) => {
+        let start = null;
+        let end = null;
+        if (todo.start) {
+          start = new Date(todo.start);
+        }
 
-      if (todo.end) {
-        end = new Date(todo.end);
-      }
+        if (todo.end) {
+          end = new Date(todo.end);
+        }
 
-      return { ...todo, start, end };
-    });
-    setTodos(todosLS);
+        return { ...todo, start, end };
+      });
+      setTodos(todosLS);
+    } else {
+      setTodos([]);
+    }
     console.log(todosLS);
+  };
+
+  const handleTransferLSTodosToDB = async () => {
+    let todosLS = JSON.parse(localStorage.getItem("todos"));
+    // When we fetch the data from local storage, the date values will
+    // no longer be date objects but strings instead, so we must convert
+    // these back into date objects.
+    if (todosLS) {
+      todosLS = todosLS.map((todo) => {
+        let start = null;
+        let end = null;
+        if (todo.start) {
+          start = new Date(todo.start);
+        }
+
+        if (todo.end) {
+          end = new Date(todo.end);
+        }
+
+        return { ...todo, start, end, userId: auth._id };
+      });
+      const newTodos = [...todos, ...todosLS];
+      try {
+        const res = await axios.put(
+          `${API_BASE_URL}/todo/`,
+          { _id: auth._id, username: auth.username, data: newTodos },
+          {
+            withCredentials: true,
+            headers: { Authorization: auth.accessToken },
+          }
+        );
+        console.log("2");
+        setTodos(newTodos);
+        localStorage.setItem("todos", JSON.stringify([]));
+      } catch (err) {
+        console.log("3");
+        console.log(err);
+      }
+    }
   };
 
   // Set the current todo input to empty
@@ -296,6 +351,20 @@ const HomePage = () => {
       handleFetchTodosLS();
     }
   }, [auth]);
+
+  useEffect(() => {
+    if (auth) {
+      const todosLS = localStorage.getItem("todos");
+      if (todosLS) {
+        setLSNotification(true);
+      } else {
+        setLSNotification(false);
+      }
+    } else {
+      setLSNotification(false);
+    }
+  }, [auth]);
+
   return (
     <>
       {loginNotification && (
@@ -303,11 +372,25 @@ const HomePage = () => {
           icon={<IconExclamationMark />}
           onClose={() => {
             setLoginNotification(false);
-            localStorage.removeItem("loginNotification");
+            localStorage.setItem("loginNotification", "off");
           }}
         >
           Your data is saved locally in this browser. Log in to save it to the
           cloud.
+        </Notification>
+      )}
+      {LSNotification && (
+        <Notification
+          icon={<IconExclamationMark />}
+          onClose={() => {
+            setLSNotification(false);
+          }}
+        >
+          You have some data saved in local storage. Would you like to transfer
+          these to your account?
+          <Button size="compact-xs" onClick={handleTransferLSTodosToDB}>
+            Yes
+          </Button>
         </Notification>
       )}
 
@@ -341,7 +424,10 @@ const HomePage = () => {
         <ActionIcon
           size="md"
           onClick={() => {
-            createTodo({ ...newTodo, userId: auth._id });
+            createTodo({ ...newTodo, userId: auth ? auth._id : "" });
+            if (!auth) {
+              handleSaveToLS();
+            }
             resetTodo();
           }}
         >

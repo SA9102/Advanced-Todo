@@ -60,6 +60,11 @@ const BUTTONS = [
   },
 ];
 
+const todosLS = localStorage.getItem("todos");
+if (!todosLS) {
+  localStorage.setItem("todos", JSON.stringify([]));
+}
+
 // localStorage.setItem(
 //   "todos",
 //   JSON.stringify([
@@ -82,31 +87,33 @@ const BUTTONS = [
 //   ])
 // );
 
-localStorage.setItem(
-  "tags",
-  JSON.stringify([
-    {
-      tagId: "1",
-      label: "Food",
-      colour: "#ff0000",
-      userId: "abc",
-    },
-    {
-      tagId: "2",
-      label: "Work",
-      colour: "#00ff00",
-      userId: "",
-    },
-    {
-      tagId: "3",
-      label: "Travel",
-      colour: "#0000ff",
-      userId: "abc",
-    },
-  ])
-);
-
-// localStorage.setItem("loginNotification", JSON.stringify("on"));
+// localStorage.setItem(
+//   "tags",
+//   JSON.stringify([
+//     {
+//       tagId: "1",
+//       label: "Food",
+//       colour: "#ff0000",
+//       userId: "abc",
+//     },
+//     {
+//       tagId: "2",
+//       label: "Work",
+//       colour: "#00ff00",
+//       userId: "",
+//     },
+//     {
+//       tagId: "3",
+//       label: "Travel",
+//       colour: "#0000ff",
+//       userId: "abc",
+//     },
+//   ])
+// );
+const loginNotification = localStorage.getItem("loginNotification");
+if (!loginNotification) {
+  localStorage.setItem("loginNotification", "on");
+}
 
 const App = () => {
   const { colorScheme, setColorScheme } = useMantineColorScheme();

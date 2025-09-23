@@ -19,6 +19,8 @@ exports.getAllTodos = async (req, res) => {
   }
 };
 
+exports.createTodo = async (req, res) => {};
+
 exports.updateTodo = async (req, res) => {
   try {
     await Todo.findOneAndUpdate(

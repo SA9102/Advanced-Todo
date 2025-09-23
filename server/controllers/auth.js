@@ -1,36 +1,55 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
-exports.register = (req, res) => {
-  const user = new User(req.body);
-  user.save();
-  res.json({ message: "Success" });
+exports.register = async (req, res) => {
+  try {
+    const existingUser = await User.findOne({
+      username: req.body.username,
+    }).exec();
+    if (existingUser) {
+      return res.status(409).json({ msg: "Username already taken" });
+    }
+    const user = new User(req.body);
+    user.save();
+    res.status(200).json({ msg: "Account successfully created" });
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({ msg: err.message });
+  }
 };
 
 exports.login = async (req, res) => {
   try {
+    console.log("1");
     const user = await User.findOne({ username: req.body.username }).exec();
-    if (!user)
+    console.log("2");
+    if (!user) {
+      console.log("3");
       return res
         .status(401)
         .json({ message: "Invalid username and/or password" });
+    }
 
+    console.log("4");
     const accessToken = jwt.sign(
       { id: user._id },
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "1m",
+        expiresIn: "15m",
       }
     );
+    console.log("5");
     const refreshToken = jwt.sign(
       { id: user._id },
       process.env.REFRESH_TOKEN_SECRET,
       {
-        expiresIn: "2m",
+        expiresIn: "15d",
       }
     );
+    console.log("6");
     user.refreshToken = refreshToken;
     await user.save();
+    console.log("7");
     res
       .cookie("token", refreshToken, {
         httpOnly: true, // This prevents JavaScript from accessing the cookie via document.cookie. Helps protect against XSS attacks.
@@ -39,6 +58,7 @@ exports.login = async (req, res) => {
       })
       .json({ _id: user._id, accessToken });
   } catch (err) {
+    console.log("8");
     console.log(err);
     res.status(500).json({ message: "Internal Server Error" });
   }

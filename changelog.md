@@ -1,5 +1,29 @@
 # Change Log
 
+## 23rd September 2025
+
+- Switched from Mantine to MUI as I did not like the interface, plus MUI is much more supported (many changes were required).
+- Better user interface (but still to improve), with custom colour scheme.
+- Editing a todo no longer switches to a new page, but instead opens a dialog.
+
+## 9th September 2025
+
+- Todos that are saved in local storage can now be optionally transferred to a user's account when logged in.
+- Fixed bug where filtering the groups would not work.
+
+## 7th September 2025
+
+- Can create todos while not logged in. These are saved in local storage (but cannot yet be transferred to account if the user then logs in).
+- Fixed bug involving a fixed user id.
+
+## 21st August 2025
+
+- Completed validation for registration and login pages, and added error messages.
+
+## 17th August 2025
+
+- Refreshing page no longer logs user out.
+
 ## 14th August 2025
 
 - (Finally) added authentication using Express, MongoDB and JWT for permanent note storage.

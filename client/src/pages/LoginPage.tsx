@@ -1,4 +1,3 @@
-import { Button, PasswordInput, Text, TextInput, Title } from "@mantine/core";
 import axios from "axios";
 import bcrypt from "bcryptjs";
 import { useEffect, useState } from "react";
@@ -7,6 +6,7 @@ import { useContext } from "react";
 import AuthContext from "../context/AuthProvider";
 import { useNavigate } from "react-router";
 import { HOME } from "../routes/routes";
+import { Button, TextField, Typography } from "@mui/material";
 
 type form = {
   username: string;
@@ -50,8 +50,11 @@ const LoginPage = () => {
         username: formInput.username,
         accessToken: res.data.accessToken,
       });
-      setPersist(true);
-      navigate(HOME);
+      const todosLS = JSON.parse(localStorage.getItem("todos"));
+
+      if (!todosLS || (todosLS && todosLS.length === 0)) {
+        navigate(HOME);
+      } else if (todos) setPersist(true);
     } catch (err) {
       setIncorrect(true);
       console.log(err);
@@ -68,10 +71,12 @@ const LoginPage = () => {
 
   return (
     <>
-      <Title order={1} size="h2">
+      <Typography
+      //  order={1} size="h2"
+      >
         Login
-      </Title>
-      <TextInput
+      </Typography>
+      <TextField
         label="Username"
         value={formInput.username}
         onChange={(e) => {
@@ -79,13 +84,14 @@ const LoginPage = () => {
           setIncorrect(false);
           setFormInput({ ...formInput, username: e.target.value });
         }}
-        error={
-          error && formInput.username === ""
-            ? "Username required"
-            : incorrect && "Username and/or password incorrect"
-        }
+        // error={
+        //   error && formInput.username === ""
+        //     ? "Username required"
+        //     : incorrect && "Username and/or password incorrect"
+        // }
       />
-      <PasswordInput
+      <TextField
+        type="password"
         label="Password"
         value={formInput.password}
         onChange={(e) => {
@@ -93,11 +99,11 @@ const LoginPage = () => {
           setIncorrect(false);
           setFormInput({ ...formInput, password: e.target.value });
         }}
-        error={
-          error && formInput.password === ""
-            ? "Password required"
-            : incorrect && "Username and/or password incorrect"
-        }
+        // error={
+        //   error && formInput.password === ""
+        //     ? "Password required"
+        //     : incorrect && "Username and/or password incorrect"
+        // }
       />
       <Button onClick={handleSubmit} loading={loading}>
         Log In

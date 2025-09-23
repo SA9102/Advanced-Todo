@@ -1,4 +1,3 @@
-import { Button, ColorPicker, Group, TextInput } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
 import tagType from "../types/tagType";
 import { Link } from "react-router";
@@ -8,6 +7,7 @@ import emptyTag from "../utils/emptyTag";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
 import AuthContext from "../context/AuthProvider";
+import { Button, Stack, TextField } from "@mui/material";
 
 const TagPage = () => {
   const { createTag } = useTagActions();
@@ -39,26 +39,30 @@ const TagPage = () => {
 
   return (
     <>
-      <TextInput
+      <TextField
         label="Name"
-        size="xs"
+        // size="xs"
         value={tagInput.label}
         onChange={(e) => setTagInput({ ...tagInput, label: e.target.value })}
       />
-      <ColorPicker
+      {/* <ColorPicker
         format="hex"
         value={tagInput.colour}
         onChange={(newColour) =>
           setTagInput({ ...tagInput, colour: newColour })
         }
-      />
-      <Group>
-        <Button size="xs" flex="1" variant="outline" component={Link} to={HOME}>
+      /> */}
+      <Stack direction="row">
+        <Button
+          // size="xs" flex="1" variant="outline"
+          component={Link}
+          to={HOME}
+        >
           Cancel
         </Button>
         <Button
-          size="xs"
-          flex="1"
+          // size="xs"
+          // flex="1"
           component={Link}
           to={HOME}
           onClick={() => {
@@ -68,7 +72,7 @@ const TagPage = () => {
         >
           Save
         </Button>
-      </Group>
+      </Stack>
     </>
   );
 };

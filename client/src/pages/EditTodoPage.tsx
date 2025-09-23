@@ -1,16 +1,3 @@
-import {
-  Button,
-  Group,
-  MultiSelect,
-  Pill,
-  PillsInput,
-  SegmentedControl,
-  Stack,
-  Text,
-  Textarea,
-  TextInput,
-  Title,
-} from "@mantine/core";
 import { Link, useNavigate, useParams } from "react-router";
 import { useGetTodo, useTodoActions } from "../store/todoStore";
 import { useContext, useState } from "react";
@@ -18,11 +5,21 @@ import { HOME } from "../routes/routes";
 import tagType from "../types/tagType";
 import { useGetTags } from "../store/tagStore";
 import TagInput from "../components/TagInput";
-import { DatePickerInput, DateTimePicker } from "@mantine/dates";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
 import AuthContext from "../context/AuthProvider";
 import todoType from "../types/todoType";
+import {
+  Button,
+  ButtonGroup,
+  Stack,
+  TextareaAutosize,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 const EditTodoPage = () => {
   const todoId = useParams().id; // Get the todo id from the url
@@ -86,63 +83,80 @@ const EditTodoPage = () => {
   console.log("START");
   console.log(typeof todoInput?.start);
   console.log(todoInput);
-  console.log(todoInput.start);
+  // console.log(todoInput.start);
   return (
     <>
       {todoInput ? (
-        <>
-          <TextInput
+        <Stack gap="1rem">
+          <TextField
             label="Task"
             value={todoInput.task}
             onChange={(e) =>
               setTodoInput({ ...todoInput, task: e.target.value })
             }
           />
-          <Textarea
-            label="Description"
-            value={todoInput.description}
-            onChange={(e) =>
-              setTodoInput({ ...todoInput, description: e.target.value })
-            }
-          />
+          <TextField label="Description" multiline maxRows={4} rows={4} />
+
           <Stack gap="xs">
-            <Text size="sm">Priority</Text>
-            <SegmentedControl
-              withItemsBorders={false}
-              data={[
-                { label: "Low", value: "1" },
-                { label: "Medium", value: "2" },
-                { label: "High", value: "3" },
-              ]}
-              value={todoInput.priority}
-              onChange={(e) =>
-                setTodoInput({ ...todoInput, priority: e as "1" | "2" | "3" })
-              }
-            />
+            <Typography
+            // size="sm"
+            >
+              Priority
+            </Typography>
+            <ButtonGroup>
+              <Button
+                size="small"
+                variant={todoInput.priority === "1" ? "contained" : "outlined"}
+                onClick={() => setTodoInput({ ...todoInput, priority: "1" })}
+              >
+                Low
+              </Button>
+              <Button
+                size="small"
+                variant={todoInput.priority === "2" ? "contained" : "outlined"}
+                onClick={() => setTodoInput({ ...todoInput, priority: "2" })}
+              >
+                Medium
+              </Button>
+              <Button
+                size="small"
+                variant={todoInput.priority === "3" ? "contained" : "outlined"}
+                onClick={() => setTodoInput({ ...todoInput, priority: "3" })}
+              >
+                High
+              </Button>
+            </ButtonGroup>
           </Stack>
-          <DateTimePicker
-            label="Start"
-            valueFormat="DD MMMM YYYY H:mm"
-            value={todoInput.start}
-            onChange={(newStart) => {
-              setTodoInput({ ...todoInput, start: newStart });
-            }}
-            clearable
-          />
-          <DateTimePicker
-            label="End"
-            valueFormat="DD MMMM YYYY H:mm"
-            value={todoInput.end}
-            onChange={(newEnd) => setTodoInput({ ...todoInput, end: newEnd })}
-            clearable
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateTimePicker
+              label="Start"
+              onChange={(newValue) => {
+                const datetime = new Date(newValue);
+                setTodoInput({ ...todoInput, start: datetime });
+              }}
+            />
+          </LocalizationProvider>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateTimePicker
+              label="End"
+              onChange={(newValue) => {
+                const datetime = new Date(newValue);
+                setTodoInput({ ...todoInput, start: datetime });
+              }}
+            />
+          </LocalizationProvider>
           <TagInput todoInput={todoInput} setTodoInput={setTodoInput} />
-          <Group>
-            <Button flex="1" variant="outline" component={Link} to={HOME}>
+          <Stack direction="row" justifyContent="space-evenly">
+            <Button
+              // flex="1"
+              //  variant="outline"
+              component={Link}
+              to={HOME}
+            >
               Cancel
             </Button>
             <Button
-              flex="1"
+              // flex="1"
               onClick={() => {
                 updateTodo(todoInput);
                 if (auth) {
@@ -154,8 +168,8 @@ const EditTodoPage = () => {
             >
               Save
             </Button>
-          </Group>
-        </>
+          </Stack>
+        </Stack>
       ) : (
         <p>Not found</p>
       )}

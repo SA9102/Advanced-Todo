@@ -1,21 +1,28 @@
+import TagInput from "./TagInput";
+import { Stack, TextareaAutosize, TextField, Typography } from "@mui/material";
+
 const TodoInputs = () => {
   return (
     <>
-      <TextInput
+      <TextField
         label="Task"
         value={todoInput.task}
         onChange={(e) => setTodoInput({ ...todoInput, task: e.target.value })}
       />
-      <Textarea
-        label="Description"
+      <TextareaAutosize
+        // label="Description"
         value={todoInput.description}
         onChange={(e) =>
           setTodoInput({ ...todoInput, description: e.target.value })
         }
       />
       <Stack gap="xs">
-        <Text size="sm">Priority</Text>
-        <SegmentedControl
+        <Typography
+        // size="sm"
+        >
+          Priority
+        </Typography>
+        {/* <SegmentedControl
           withItemsBorders={false}
           data={[
             { label: "Low", value: "1" },
@@ -26,9 +33,9 @@ const TodoInputs = () => {
           onChange={(e) =>
             setTodoInput({ ...todoInput, priority: e as "1" | "2" | "3" })
           }
-        />
+        /> */}
       </Stack>
-      <DateTimePicker
+      {/* <DateTimePicker
         label="Start"
         valueFormat="DD MMMM YYYY H:mm"
         value={todoInput.start}
@@ -43,7 +50,7 @@ const TodoInputs = () => {
         value={todoInput.end}
         onChange={(newEnd) => setTodoInput({ ...todoInput, end: newEnd })}
         clearable
-      />
+      /> */}
       <TagInput todoInput={todoInput} setTodoInput={setTodoInput} />
     </>
   );

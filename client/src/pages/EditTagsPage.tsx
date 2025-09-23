@@ -1,11 +1,11 @@
 // Renders all the available tags, which the user can edit or delete.
 
-import { ActionIcon, Button, Card, Group, Text } from "@mantine/core";
 import { useGetTags, useTagActions } from "../store/tagStore";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { useGetTodos, useTodoActions } from "../store/todoStore";
 import { Link } from "react-router";
 import { CREATE_TAG } from "../routes/routes";
+import { Button, Card, IconButton, Stack, Typography } from "@mui/material";
 
 const EditTagsPage = () => {
   const allTodos = useGetTodos();
@@ -29,29 +29,35 @@ const EditTagsPage = () => {
 
   return (
     <>
-      <Button variant="light" component={Link} to={CREATE_TAG}>
+      <Button
+        // variant="light"
+        component={Link}
+        to={CREATE_TAG}
+      >
         New Tag
       </Button>
       {allTags.map((tagObj) => (
         <Card>
-          <Group>
-            <Text>{tagObj.name}</Text>
+          <Stack direction="row">
+            <Typography>{tagObj.name}</Typography>
             <Link to={tagObj.id}>
-              <ActionIcon size="sm">
+              <IconButton
+              // size="sm"
+              >
                 <IconEdit />
-              </ActionIcon>
+              </IconButton>
             </Link>
-            <ActionIcon
-              color="red"
-              size="sm"
+            <IconButton
+              // color="red"
+              // size="sm"
               onClick={() => {
                 deleteTag(tagObj.id);
                 removeTagFromTodos(tagObj.id);
               }}
             >
               <IconTrash />
-            </ActionIcon>
-          </Group>
+            </IconButton>
+          </Stack>
         </Card>
       ))}
     </>

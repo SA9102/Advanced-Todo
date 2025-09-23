@@ -1,23 +1,20 @@
-import {
-  Button,
-  Chip,
-  Collapse,
-  Group,
-  MultiSelect,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-  useMantineTheme,
-} from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import {
-  IconAdjustmentsHorizontal,
-  IconFilterFilled,
-} from "@tabler/icons-react";
 import todoType from "../types/todoType";
 import todoFiltersType from "../types/todoFiltersType";
 import { useGetTags } from "../store/tagStore";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Chip,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useState } from "react";
 
 type props = {
   todoFilters: todoFiltersType;
@@ -32,97 +29,289 @@ const FiltersInput = ({
   filterGroups,
   setFilterGroups,
 }: props) => {
-  const theme = useMantineTheme();
   const [opened, { toggle }] = useDisclosure(false);
   const tags = useGetTags();
 
-  return (
-    <Stack>
-      <Button
-        style={{ alignSelf: "flex-start" }}
-        leftSection={<IconAdjustmentsHorizontal size="14" />}
-        onClick={toggle}
-        size="xs"
-        variant="light"
-      >
-        {opened ? "Close" : "Open"} Filters
-      </Button>
-      <Collapse
-        in={opened}
-        bg="dark.8"
-        p="xs"
-        style={{ borderRadius: theme.radius[theme.defaultRadius] }}
-      >
-        <Stack gap="xs">
-          <Title component="h1" size="h4">
-            Filters
-          </Title>
-          <TextInput
-            label="Task/Description"
-            size="xs"
-            value={todoFilters.text}
-            onChange={(e) =>
-              setTodoFilters({ ...todoFilters, text: e.target.value })
-            }
-          />
-          <Stack gap="xs">
-            <Text size="xs">Priority</Text>
-            <Chip.Group
-              multiple
-              value={todoFilters.priority}
-              onChange={(newPri) =>
-                setTodoFilters({ ...todoFilters, priority: newPri })
-              }
-            >
-              <Group>
-                <Chip value="1" size="xs">
-                  Low
-                </Chip>
+  const handleChangeFilterPriority = (val: "1" | "2" | "3") => {
+    let filterPriority = todoFilters.priority;
+    if (filterPriority.includes(val)) {
+      filterPriority = filterPriority.filter((currVal) => currVal !== val);
+    } else {
+      filterPriority = [...filterPriority, val];
+    }
+    setTodoFilters({ ...todoFilters, priority: filterPriority });
+  };
 
-                <Chip value="2" size="xs">
-                  Medium
-                </Chip>
-                <Chip value="3" size="xs">
-                  High
-                </Chip>
-              </Group>
-            </Chip.Group>
-          </Stack>
-          <MultiSelect
-            label="Tags"
-            size="xs"
-            data={tags.map((tag) => ({ label: tag.label, value: tag.tagId }))}
-            value={todoFilters.tags}
-            onChange={(newTags) => {
-              setTodoFilters({ ...todoFilters, tags: newTags });
+  const handleChangeFilterGroups = (
+    val: "Pending" | "Completed" | "Upcoming" | "Overdue"
+  ) => {
+    let newFilterGroups;
+    if (filterGroups.includes(val)) {
+      newFilterGroups = filterGroups.filter((currVal) => currVal !== val);
+    } else {
+      newFilterGroups = [...filterGroups, val];
+    }
+    setFilterGroups(newFilterGroups);
+  };
+
+  // console.log("TODO FILTERS TAGS")
+  // console.log(todoFilters.tags);
+  return (
+    <Stack gap="1rem">
+      <TextField
+        label="Task/Description"
+        size="small"
+        value={todoFilters.text}
+        onChange={(e) =>
+          setTodoFilters({ ...todoFilters, text: e.target.value })
+        }
+      />
+      <Stack gap="xs">
+        <Typography
+        // size="xs"
+        >
+          Priority
+        </Typography>
+        <Stack direction="row">
+          <Chip
+            label="Low"
+            size="small"
+            clickable
+            variant={todoFilters.priority.includes("1") ? "filled" : "outlined"}
+            onClick={() => {
+              handleChangeFilterPriority("1");
             }}
           />
-          <Stack gap="xs">
-            <Text size="xs">Groups</Text>
-            <Chip.Group
-              multiple
-              value={filterGroups}
-              onChange={(newFilterGroup) => setFilterGroups(newFilterGroup)}
-            >
-              <Group>
-                <Chip value="Pending" size="xs">
-                  Pending
-                </Chip>
-                <Chip value="Completed" size="xs">
-                  Completed
-                </Chip>
-                <Chip value="Upcoming" size="xs">
-                  Upcoming
-                </Chip>
-                <Chip value="Overdue" size="xs">
-                  Overdue
-                </Chip>
-              </Group>
-            </Chip.Group>
-          </Stack>
+          <Chip
+            label="Medium"
+            size="small"
+            clickable
+            variant={todoFilters.priority.includes("2") ? "filled" : "outlined"}
+            onClick={() => {
+              handleChangeFilterPriority("2");
+            }}
+          />
+          <Chip
+            label="High"
+            size="small"
+            clickable
+            variant={todoFilters.priority.includes("3") ? "filled" : "outlined"}
+            onClick={() => {
+              handleChangeFilterPriority("3");
+            }}
+          />
         </Stack>
-      </Collapse>
+      </Stack>
+      <Select
+        multiple
+        value={todoFilters.tags}
+        onChange={(e) => {
+          const {
+            target: { value },
+          } = e;
+          setTodoFilters({
+            ...todoFilters,
+            tags: typeof value === "string" ? value.split(",") : value,
+          });
+        }}
+        // renderValue={(selected) => (
+        //   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+        //     {selected.map((value) => (
+        //       <Chip key={value.tagId} label={value.label} />
+        //     ))}
+        //   </Box>
+        // )}
+      >
+        {tags.map((tag) => (
+          <MenuItem key={tag.tagId} value={tag.tagId}>
+            {tag.label}
+          </MenuItem>
+        ))}
+      </Select>
+      <Stack gap="xs">
+        <Typography
+        // size="xs"
+        >
+          Groups
+        </Typography>
+        <Stack direction="row">
+          <Chip
+            label="Pending"
+            size="small"
+            clickable
+            variant={filterGroups.includes("Pending") ? "filled" : "outlined"}
+            onClick={() => {
+              handleChangeFilterGroups("Pending");
+            }}
+          />
+          <Chip
+            label="Completed"
+            size="small"
+            clickable
+            variant={filterGroups.includes("Completed") ? "filled" : "outlined"}
+            onClick={() => {
+              handleChangeFilterGroups("Completed");
+            }}
+          />
+          <Chip
+            label="Upcoming"
+            size="small"
+            clickable
+            variant={filterGroups.includes("Upcoming") ? "filled" : "outlined"}
+            onClick={() => {
+              handleChangeFilterGroups("Upcoming");
+            }}
+          />
+          <Chip
+            label="Overdue"
+            size="small"
+            clickable
+            variant={filterGroups.includes("Overdue") ? "filled" : "outlined"}
+            onClick={() => {
+              handleChangeFilterGroups("Overdue");
+            }}
+          />
+        </Stack>
+      </Stack>
     </Stack>
+    // <Accordion style={{ flex: 1 }}>
+    //   <AccordionSummary>
+    //     <Typography>Filters</Typography>
+    //   </AccordionSummary>
+    //   <AccordionDetails>
+    //     <Stack gap="1rem">
+    //       <TextField
+    //         label="Task/Description"
+    //         size="small"
+    //         value={todoFilters.text}
+    //         onChange={(e) =>
+    //           setTodoFilters({ ...todoFilters, text: e.target.value })
+    //         }
+    //       />
+    //       <Stack gap="xs">
+    //         <Typography
+    //         // size="xs"
+    //         >
+    //           Priority
+    //         </Typography>
+    //         <Stack direction="row">
+    //           <Chip
+    //             label="Low"
+    //             size="small"
+    //             clickable
+    //             variant={
+    //               todoFilters.priority.includes("1") ? "filled" : "outlined"
+    //             }
+    //             onClick={() => {
+    //               handleChangeFilterPriority("1");
+    //             }}
+    //           />
+    //           <Chip
+    //             label="Medium"
+    //             size="small"
+    //             clickable
+    //             variant={
+    //               todoFilters.priority.includes("2") ? "filled" : "outlined"
+    //             }
+    //             onClick={() => {
+    //               handleChangeFilterPriority("2");
+    //             }}
+    //           />
+    //           <Chip
+    //             label="High"
+    //             size="small"
+    //             clickable
+    //             variant={
+    //               todoFilters.priority.includes("3") ? "filled" : "outlined"
+    //             }
+    //             onClick={() => {
+    //               handleChangeFilterPriority("3");
+    //             }}
+    //           />
+    //         </Stack>
+    //       </Stack>
+    //       <Select
+    //         multiple
+    //         value={todoFilters.tags}
+    //         onChange={(e) => {
+    //           const {
+    //             target: { value },
+    //           } = e;
+    //           setTodoFilters({
+    //             ...todoFilters,
+    //             tags: typeof value === "string" ? value.split(",") : value,
+    //           });
+    //         }}
+    //         // renderValue={(selected) => (
+    //         //   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+    //         //     {selected.map((value) => (
+    //         //       <Chip key={value.tagId} label={value.label} />
+    //         //     ))}
+    //         //   </Box>
+    //         // )}
+    //       >
+    //         {tags.map((tag) => (
+    //           <MenuItem key={tag.tagId} value={tag.tagId}>
+    //             {tag.label}
+    //           </MenuItem>
+    //         ))}
+    //       </Select>
+    //       <Stack gap="xs">
+    //         <Typography
+    //         // size="xs"
+    //         >
+    //           Groups
+    //         </Typography>
+    //         <Stack direction="row">
+    //           <Chip
+    //             label="Pending"
+    //             size="small"
+    //             clickable
+    //             variant={
+    //               filterGroups.includes("Pending") ? "filled" : "outlined"
+    //             }
+    //             onClick={() => {
+    //               handleChangeFilterGroups("Pending");
+    //             }}
+    //           />
+    //           <Chip
+    //             label="Completed"
+    //             size="small"
+    //             clickable
+    //             variant={
+    //               filterGroups.includes("Completed") ? "filled" : "outlined"
+    //             }
+    //             onClick={() => {
+    //               handleChangeFilterGroups("Completed");
+    //             }}
+    //           />
+    //           <Chip
+    //             label="Upcoming"
+    //             size="small"
+    //             clickable
+    //             variant={
+    //               filterGroups.includes("Upcoming") ? "filled" : "outlined"
+    //             }
+    //             onClick={() => {
+    //               handleChangeFilterGroups("Upcoming");
+    //             }}
+    //           />
+    //           <Chip
+    //             label="Overdue"
+    //             size="small"
+    //             clickable
+    //             variant={
+    //               filterGroups.includes("Overdue") ? "filled" : "outlined"
+    //             }
+    //             onClick={() => {
+    //               handleChangeFilterGroups("Overdue");
+    //             }}
+    //           />
+    //         </Stack>
+    //       </Stack>
+    //     </Stack>
+    //   </AccordionDetails>
+    // </Accordion>
   );
 };
 

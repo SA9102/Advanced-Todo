@@ -1,18 +1,10 @@
 import { useState } from "react";
-import {
-  Button,
-  PasswordInput,
-  TextInput,
-  Text,
-  List,
-  Card,
-  Title,
-} from "@mantine/core";
 import axios from "axios";
 import bcrypt from "bcryptjs";
 import { useNavigate } from "react-router";
 import { LOGIN } from "../routes/routes";
 import { API_BASE_URL } from "../config";
+import { Button, Card, TextField, Typography } from "@mui/material";
 
 type form = {
   username: string;
@@ -87,57 +79,61 @@ const RegisterPage = () => {
 
   return (
     <>
-      <Title order={1} size="h2">
+      <Typography
+      // order={1} size="h2"
+      >
         Register
-      </Title>
-      <TextInput
+      </Typography>
+      <TextField
         label="Username"
         value={formInput.username}
         onChange={(e) => {
           setError(false);
           setFormInput({ ...formInput, username: e.target.value });
         }}
-        error={error && formInput.username === "" ? "Username is required" : ""}
+        // error={error && formInput.username === "" ? "Username is required" : ""}
       />
-      <PasswordInput
+      <TextField
+        type="password"
         label="Password"
         value={formInput.password}
         onChange={(e) => {
           setError(false);
           setFormInput({ ...formInput, password: e.target.value });
         }}
-        error={
-          error && formInput.password === ""
-            ? "Password is required"
-            : error && !passwordValid
-            ? "Password does not match all of criteria"
-            : ""
-        }
+        // error={
+        //   error && formInput.password === ""
+        //     ? "Password is required"
+        //     : error && !passwordValid
+        //     ? "Password does not match all of criteria"
+        //     : ""
+        // }
       />
       <Card>
-        <Text>Password must:</Text>
-        <List>
+        <Typography>Password must:</Typography>
+        {/* <List>
           <List.Item>be at least 8 characters long</List.Item>
           <List.Item>have an uppercase letter</List.Item>
           <List.Item>have a lowercase letter</List.Item>
           <List.Item>have a digit</List.Item>
           <List.Item>have a symbol from: @ ! # & * ( )</List.Item>
-        </List>
+        </List> */}
       </Card>
-      <PasswordInput
+      <TextField
+        type="password"
         label="Confirm Password"
         value={formInput.confirmPassword}
         onChange={(e) => {
           setError(false);
           setFormInput({ ...formInput, confirmPassword: e.target.value });
         }}
-        error={
-          error && formInput.confirmPassword === ""
-            ? "Confirmation password is required"
-            : error && !passwordsMatch
-            ? "Passwords do not match"
-            : ""
-        }
+        // error={
+        //   error && formInput.confirmPassword === ""
+        //     ? "Confirmation password is required"
+        //     : error && !passwordsMatch
+        //     ? "Passwords do not match"
+        //     : ""
+        // }
       />
       <Button onClick={handleSubmit} loading={loading}>
         Register

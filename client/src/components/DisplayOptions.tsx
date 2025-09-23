@@ -1,41 +1,54 @@
-import {
-  Button,
-  Collapse,
-  NativeSelect,
-  Progress,
-  SegmentedControl,
-  Stack,
-  Text,
-  useMantineTheme,
-  VisuallyHidden,
-} from "@mantine/core";
-import {
-  IconAdjustmentsHorizontal,
-  IconLayout2Filled,
-  IconLayoutListFilled,
-} from "@tabler/icons-react";
 import FiltersInput from "./FiltersInput";
 import { useGetLayout, useSetLayout } from "../store/layoutStore";
 import todoType from "../types/todoType";
-import { useDisclosure } from "@mantine/hooks";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  Card,
+  CardContent,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+  InputLabel,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Select,
+  Stack,
+  Switch,
+  Typography,
+} from "@mui/material";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
+import { useState } from "react";
+import SortIcon from "@mui/icons-material/Sort";
 
 const DisplayOptions = ({
   todos,
   sortBy,
   setSortBy,
+  sortOrder,
+  setSortOrder,
   todoFilters,
   setTodoFilters,
   filterGroups,
   setFilterGroups,
 }) => {
-  // Mantine theme
-  const theme = useMantineTheme();
   // Get current layout of todos
   const layout = useGetLayout();
   // Set layout of todos
   const setLayout = useSetLayout();
 
-  const [opened, { toggle }] = useDisclosure(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const [sortByAnchor, setSortByAnchor] = useState(null);
+  const sortByOpen = Boolean(sortByAnchor);
+
+  const [sortOrderAnchor, setSortOrderAnchor] = useState(null);
+  const sortOrderOpen = Boolean(sortOrderAnchor);
 
   // Get the number of todos that have been checked off as completed
   const getNumberOfCompletedTodos = () => {
@@ -49,32 +62,37 @@ const DisplayOptions = ({
 
   return (
     <Stack
-      p="0.5rem"
-      style={{
-        backgroundColor: theme.colors.dark[6],
-        borderRadius: theme.radius[theme.defaultRadius],
-      }}
+    // p="0.5rem"
+    // style={{
+    //   backgroundColor: theme.colors.dark[6],
+    //   borderRadius: theme.radius[theme.defaultRadius],
+    // }}
     >
-      <Stack gap="xs">
-        <Text size="xs">
-          Completed Todos: {getNumberOfCompletedTodos()} / {todos.length}
-        </Text>
-        <Collapse in={opened}>
-          <Progress value={getCompletedValue()} />
-        </Collapse>
-      </Stack>
-      <Button
-        style={{ alignSelf: "flex-start" }}
-        // leftSection={<IconAdjustmentsHorizontal size="14" />}
-        onClick={toggle}
-        size="compact-xs"
-        variant="subtle"
-      >
-        {opened ? "Less" : "More"}
-      </Button>
-
-      <Collapse in={opened}>
-        {/* Set the layout of the todos to list or grid */}
+      {/* <Accordion style={{ flex: 1 }}>
+          <AccordionSummary>
+            <Typography>More</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Stack>
+              <Stack>
+                <FormControl>
+                  <InputLabel id="sort-by-label">Sort by</InputLabel>
+                  <Select
+                    size="small"
+                    labelId="sort-by-label"
+                    value={sortBy}
+                    label="Sort by"
+                    onChange={(e) => setSortBy(e.target.value)}
+                  >
+                    <MenuItem value="name">Name</MenuItem>
+                    <MenuItem value="priority">Priority</MenuItem>
+                  </Select>
+                </FormControl>
+              </Stack>
+            </Stack>
+          </AccordionDetails>
+        </Accordion> */}
+      {/* <Collapse in={opened}>
         <Stack gap="xs">
           <Text size="xs">Layout</Text>
           <SegmentedControl
@@ -112,7 +130,6 @@ const DisplayOptions = ({
             ]}
           />
         </Stack>
-        {/* Sort todos */}
         <Stack gap="xs">
           <Text size="xs">Sort by:</Text>
           <NativeSelect
@@ -125,13 +142,122 @@ const DisplayOptions = ({
             ]}
           />
         </Stack>
-      </Collapse>
-      <FiltersInput
-        todoFilters={todoFilters}
-        setTodoFilters={setTodoFilters}
-        filterGroups={filterGroups}
-        setFilterGroups={setFilterGroups}
-      />
+      </Collapse> */}
+      {/* <Stack direction="row" gap="1rem"> */}
+      <FormGroup>
+        <Stack direction="row" alignItems="center">
+          <Typography>Filters</Typography>
+          <Switch />
+        </Stack>
+      </FormGroup>
+      <Card
+        sx={{ padding: "0.7rem" }}
+        onClick={(e) => setSortByAnchor(e.currentTarget)}
+      >
+        <Typography>Sort by: {sortBy}</Typography>
+      </Card>
+      <Card
+        sx={{ padding: "0.7rem" }}
+        onClick={(e) => setSortOrderAnchor(e.currentTarget)}
+      >
+        <Typography>Sort order: {sortOrder}</Typography>
+      </Card>
+      {/* <Button
+          size="small"
+          variant={sortByOpen ? "contained" : "outlined"}
+          // style={{ alignSelf: "flex-start" }}
+          onClick={() => setSortByOpen(!sortByOpen)}
+        >
+          <SortIcon fontSize="small" />
+        </Button>
+        <Button
+          size="small"
+          variant={filtersOpen ? "contained" : "outlined"}
+          onClick={() => setFiltersOpen(!filtersOpen)}
+        >
+          <FilterAltIcon fontSize="small" />
+        </Button> */}
+      {/* </Stack> */}
+      {/* {sortByOpen && (
+        <Stack>
+          <FormControl>
+            <InputLabel id="sort-by-label">Sort by</InputLabel>
+            <Select
+              size="small"
+              labelId="sort-by-label"
+              value={sortBy}
+              label="Sort by"
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <MenuItem value="name">Name</MenuItem>
+              <MenuItem value="priority">Priority</MenuItem>
+            </Select>
+          </FormControl>
+        </Stack>
+      )} */}
+      {filtersOpen && (
+        <FiltersInput
+          todoFilters={todoFilters}
+          setTodoFilters={setTodoFilters}
+          filterGroups={filterGroups}
+          setFilterGroups={setFilterGroups}
+        />
+      )}
+      <Menu
+        anchorEl={sortByAnchor}
+        onClose={() => setSortByAnchor(null)}
+        open={sortByOpen}
+      >
+        <MenuItem>
+          <ListItemText>Date Created</ListItemText>
+        </MenuItem>
+        <MenuItem>
+          <ListItemText
+            onClick={() => {
+              setSortBy("name");
+              setSortByAnchor(null);
+            }}
+          >
+            Name
+          </ListItemText>
+        </MenuItem>
+        <MenuItem>
+          <ListItemText
+            onClick={() => {
+              setSortBy("priority");
+              setSortByAnchor(null);
+            }}
+          >
+            Priority
+          </ListItemText>
+        </MenuItem>
+      </Menu>
+      <Menu
+        anchorEl={sortOrderAnchor}
+        onClose={() => setSortOrderAnchor(null)}
+        open={sortOrderOpen}
+      >
+        <MenuItem>
+          <ListItemText
+            onClick={() => {
+              setSortOrder("ascending");
+              setSortOrderAnchor(null);
+            }}
+          >
+            Ascending
+          </ListItemText>
+        </MenuItem>
+        <MenuItem>
+          <ListItemText
+            onClick={() => {
+              setSortOrder("descending");
+              setSortOrderAnchor(null);
+            }}
+          >
+            Descending
+          </ListItemText>
+        </MenuItem>
+      </Menu>
     </Stack>
   );
 };

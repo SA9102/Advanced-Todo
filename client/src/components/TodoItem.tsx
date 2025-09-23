@@ -1,16 +1,3 @@
-import {
-  Card,
-  Group,
-  Checkbox,
-  Text,
-  ActionIcon,
-  Button,
-  Menu,
-  TextInput,
-  Stack,
-  Pill,
-  useMantineColorScheme,
-} from "@mantine/core";
 import todoType from "../types/todoType";
 import { useTodoActions } from "../store/todoStore";
 import { useLongPress } from "use-long-press";
@@ -21,6 +8,15 @@ import {
   IconDotsVertical,
   IconX,
 } from "@tabler/icons-react";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import EditDocumentIcon from "@mui/icons-material/EditDocument";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useGetLayout } from "../store/layoutStore";
@@ -30,6 +26,24 @@ import { useSynced, useSetSynced } from "../store/syncStore";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
 import AuthContext from "../context/AuthProvider";
+import {
+  Button,
+  Card,
+  Checkbox,
+  Chip,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { AnimatePresence, motion } from "motion/react";
+import EditTodoModal from "./EditTodoDialog";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 type props = {
   todo: todoType;
@@ -50,6 +64,20 @@ const TodoItem = ({ todo }: props) => {
   const { updateTodo, checkTodo, deleteTodo, changeTask, toggleExpandTodo } =
     useTodoActions();
 
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const getStatus = () => {
+    if (!todo.isComplete && hasExceededStart(todo) && !hasExceededEnd(todo)) {
+      return "pending";
+    } else if (!todo.isComplete && !hasExceededStart(todo)) {
+      return "upcoming";
+    } else if (!todo.isComplete && hasExceededEnd(todo)) {
+      return "overdue";
+    } else if (todo.isComplete) {
+      return "completed";
+    }
+  };
+
   const { setTags } = useTagActions();
 
   const sync = useSynced();
@@ -66,7 +94,14 @@ const TodoItem = ({ todo }: props) => {
 
   const layout = useGetLayout();
 
-  const { colorScheme } = useMantineColorScheme();
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const open = Boolean(menuAnchor);
+  const handleClick = (e) => {
+    setMenuAnchor(e.currentTarget);
+  };
+  const handleClose = () => {
+    setMenuAnchor(null);
+  };
 
   const longPress = useLongPress(() => {
     console.log("Long pressed!");
@@ -125,7 +160,7 @@ const TodoItem = ({ todo }: props) => {
     return date.toISOString().split("T")[0];
   }
 
-  const iconColor = colorScheme === "light" ? "gray" : "white";
+  // const iconColor = colorScheme === "light" ? "gray" : "white";
 
   useEffect(() => {
     const handleFetchTags = async () => {
@@ -161,94 +196,239 @@ const TodoItem = ({ todo }: props) => {
 
   // console.log
 
+  // Check if the todo item has a start date and, if it does then check
+  // if the current time is past this start date.
+  const hasExceededStart = (todo: todoType) => {
+    if (todo.start !== null) {
+      const todoStart = new Date(todo.start);
+      if (Date.now() >= todoStart.getTime()) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  };
+
+  // Check if the todo item has an end date and, if it does then check
+  // if the current time is past this end date.
+  const hasExceededEnd = (todo: todoType) => {
+    if (todo.end !== null) {
+      const todoEnd = new Date(todo.end);
+      if (Date.now() >= todoEnd.getTime()) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  };
+
+  const status = getStatus();
+
   return (
     <>
-      <Card
-        style={{
-          borderLeft: `2px solid var(--mantine-color-${getPriorityColour()}-9)`,
-          flexGrow: "1",
-          display: "inline-block",
-          width: "100%",
-        }}
-        key={todo.taskId}
-        shadow="xs"
-        px="xs"
-        py="0.4rem"
-        // flex="1"
-        // onClick={() => checkTodo(todo.taskId)}
-        {...longPress()}
-      >
-        <Stack>
-          <Group justify="space-between" wrap="nowrap">
-            {todo.isChangingTask ? (
-              <Group wrap="nowrap">
-                <TextInput
-                  size="xs"
-                  value={newTodo.task}
-                  onChange={(e) =>
-                    setNewTodo({ ...newTodo, task: e.target.value })
-                  }
-                />
-                <ActionIcon
-                  size="xs"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleConfirmChangeTask();
-                  }}
+      <AnimatePresence>
+        <Card
+          elevation={0}
+          // component={motion.div}
+          // initial={{ scale: 0.95 }}
+          // animate={{ scale: 1 }}
+          // style={{
+          //   // backgroundColor: "#212121",
+          //   borderLeft:
+          //     "3px solid " +
+          //     (todo.priority === "1"
+          //       ? "#00e676"
+          //       : todo.priority === "2"
+          //       ? "#ffab40"
+          //       : "#ff5252"),
+          // }}
+          // style={{
+          //   borderLeft: `2px solid var(--mantine-color-${getPriorityColour()}-9)`,
+          //   flexGrow: "1",
+          //   display: "inline-block",
+          //   width: "100%",
+          // }}
+          key={todo.taskId}
+          // shadow="xs"
+          // px="xs"
+          // py="0.4rem"
+          // flex="1"
+          // onClick={() => checkTodo(todo.taskId)}
+          {...longPress()}
+        >
+          <Stack>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              flexWrap="nowrap"
+            >
+              {todo.isChangingTask ? (
+                <Stack
+                  direction="row"
+                  // wrap="nowrap"
+                  // bgcolor="red"
                 >
-                  <IconCheck />
-                </ActionIcon>
-                <ActionIcon
-                  size="xs"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleCancelChangeTask();
-                  }}
-                >
-                  <IconX />
-                </ActionIcon>
-              </Group>
-            ) : (
-              <Group>
-                <Checkbox
-                  checked={todo.isComplete}
-                  onClick={() => {
-                    checkTodo(todo.taskId);
-                    setSynced(false);
-                  }}
-                />
-                <Text
-                  size="sm"
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    flex: 1,
-                    minWidth: 0,
-                  }}
-                >
-                  {todo.task}
-                </Text>
-              </Group>
-            )}
-            <Group wrap="nowrap">
-              {canBeExpanded() && (
-                <ActionIcon
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleExpandTodo(todo.taskId);
-                  }}
-                  variant="transparent"
-                  size="xs"
-                >
-                  {todo.isExpanded ? (
-                    <IconChevronUp color={iconColor} />
-                  ) : (
-                    <IconChevronDown color={iconColor} />
-                  )}
-                </ActionIcon>
+                  <TextField
+                    // size="xs"
+                    value={newTodo.task}
+                    onChange={(e) =>
+                      setNewTodo({ ...newTodo, task: e.target.value })
+                    }
+                  />
+                  <IconButton
+                    // size="xs"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleConfirmChangeTask();
+                    }}
+                  >
+                    <CheckIcon />
+                  </IconButton>
+                  <IconButton
+                    // size="xs"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCancelChangeTask();
+                    }}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </Stack>
+              ) : (
+                <Stack direction="row" alignItems="center">
+                  <Checkbox
+                    icon={<RadioButtonUncheckedIcon />}
+                    checkedIcon={<CheckCircleIcon />}
+                    size="small"
+                    checked={todo.isComplete}
+                    onClick={() => {
+                      checkTodo(todo.taskId);
+                      setSynced(false);
+                    }}
+                  />
+                  <Typography
+                  // size="sm"
+                  // style={{
+                  //   whiteSpace: "nowrap",
+                  //   overflow: "hidden",
+                  //   textOverflow: "ellipsis",
+                  //   flex: 1,
+                  //   minWidth: 0,
+                  // }}
+                  >
+                    {todo.task}
+                  </Typography>
+                </Stack>
               )}
-              <Menu>
+              <Stack
+                direction="row"
+                alignItems="center"
+                // wrap="nowrap"
+              >
+                {/* ebdb8f */}
+                <Typography
+                  variant="body2"
+                  style={{
+                    color:
+                      status === "pending"
+                        ? "#ebdb8f"
+                        : status === "upcoming"
+                        ? "#84dfe0"
+                        : status === "overdue"
+                        ? "#e08484"
+                        : "#8ae386",
+                  }}
+                >
+                  {status === "pending"
+                    ? "Pending"
+                    : status === "upcoming"
+                    ? "Upcoming"
+                    : status === "overdue"
+                    ? "Overdue"
+                    : "Completed"}
+                </Typography>
+                {canBeExpanded() && (
+                  <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleExpandTodo(todo.taskId);
+                    }}
+                    // variant="transparent"
+                    // size="xs"
+                  >
+                    {todo.isExpanded ? (
+                      // <IconChevronUp color={iconColor} />
+                      <ExpandLessIcon />
+                    ) : (
+                      // <IconChevronDown color={iconColor} />
+                      <ExpandMoreIcon />
+                    )}
+                  </IconButton>
+                )}
+                <IconButton onClick={handleClick}>
+                  <MoreVertIcon />
+                </IconButton>
+                <Menu
+                  // variant="menu"
+                  anchorEl={menuAnchor}
+                  onClose={handleClose}
+                  open={open}
+                >
+                  <MenuItem
+                    onClick={(e) => {
+                      handleClose();
+                      e.stopPropagation();
+                      setOpenDialog(true);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <EditDocumentIcon />
+                    </ListItemIcon>
+                    <ListItemText>Edit Todo</ListItemText>
+                  </MenuItem>
+                  <MenuItem
+                    onClick={(e) => {
+                      handleClose();
+                      e.stopPropagation();
+                      changeTask(todo.taskId, true);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <EditIcon />
+                    </ListItemIcon>
+                    <ListItemText>Change Task</ListItemText>
+                  </MenuItem>
+                  {/* <Link to={todo.taskId}>
+                    <MenuItem
+                      onClick={() => {
+                        handleClose;
+                      }}
+                    >
+                      <ListItemIcon>
+                        <EditNoteIcon />
+                      </ListItemIcon>
+                      <ListItemText>Edit</ListItemText>
+                    </MenuItem>
+                  </Link> */}
+                  <MenuItem
+                    onClick={(e) => {
+                      handleClose();
+                      e.stopPropagation();
+                      deleteTodo(todo.taskId);
+                      setSynced(false);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <DeleteIcon />
+                    </ListItemIcon>
+                    <ListItemText>Delete</ListItemText>
+                  </MenuItem>
+                </Menu>
+                {/* <Menu>
                 <Menu.Target>
                   <ActionIcon
                     variant="transparent"
@@ -282,34 +462,52 @@ const TodoItem = ({ todo }: props) => {
                     Delete
                   </Menu.Item>
                 </Menu.Dropdown>
-              </Menu>
-            </Group>
-          </Group>
+              </Menu> */}
+              </Stack>
+            </Stack>
 
-          {todo.isExpanded && tagsFetched && (
-            <>
-              {hasDescription() && <Text size="xs">{todo.description}</Text>}
-              {hasStart() && (
-                <Text size="xs">
-                  Start:{" "}
-                  {new Date(todo.start!).toLocaleDateString("en-GB", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false,
-                  })}
-                </Text>
-              )}
-              {hasEnd() && (
-                <Text size="xs">
-                  End:{" "}
-                  {new Date(todo.end!).toLocaleDateString("en-GB", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false,
-                  })}
-                </Text>
-              )}
-              {hasTags() && (
+            {todo.isExpanded && tagsFetched && (
+              <Stack px="1rem" py="0.5rem" gap="0.5rem">
+                {hasDescription() && (
+                  <Typography fontSize="0.7rem">{todo.description}</Typography>
+                )}
+                {hasStart() && (
+                  <Typography fontSize="0.7rem">
+                    Start:{" "}
+                    {new Date(todo.start!).toLocaleDateString("en-GB", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    })}
+                  </Typography>
+                )}
+                {hasEnd() && (
+                  <Typography fontSize="0.7rem">
+                    End:{" "}
+                    {new Date(todo.end!).toLocaleDateString("en-GB", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    })}
+                  </Typography>
+                )}
+                {hasTags() && (
+                  <Stack direction="row" gap="0.5rem">
+                    {todo.tags.map((tagId) => {
+                      const tagObj = allTags.find((tag) => tag.tagId === tagId);
+                      if (tagObj) {
+                        return (
+                          <Chip
+                            style={{ fontSize: "0.7rem" }}
+                            size="small"
+                            label={tagObj.label}
+                          />
+                        );
+                      }
+                    })}
+                  </Stack>
+                )}
+                {/* {hasTags() && (
                 <Pill.Group>
                   {todo.tags.map((tagId) => {
                     const tagObj = allTags.find((tag) => tag.tagId === tagId);
@@ -328,11 +526,13 @@ const TodoItem = ({ todo }: props) => {
                     }
                   })}
                 </Pill.Group>
-              )}
-            </>
-          )}
-        </Stack>
-      </Card>
+              )} */}
+              </Stack>
+            )}
+          </Stack>
+        </Card>
+      </AnimatePresence>
+      <EditTodoModal open={openDialog} setOpen={setOpenDialog} todo={todo} />
     </>
   );
 };

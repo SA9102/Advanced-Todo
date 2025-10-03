@@ -60,7 +60,7 @@ const options = {
 };
 
 // Renders a todo item
-const TodoItem = ({ todo }: props) => {
+const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
   const { updateTodo, checkTodo, deleteTodo, changeTask, toggleExpandTodo } =
     useTodoActions();
 
@@ -227,25 +227,26 @@ const TodoItem = ({ todo }: props) => {
   };
 
   const status = getStatus();
-
+  console.log("--- STATUS ---");
+  console.log(status);
   return (
-    <>
+    <Stack>
       <AnimatePresence>
         <Card
           elevation={0}
           // component={motion.div}
           // initial={{ scale: 0.95 }}
           // animate={{ scale: 1 }}
-          // style={{
-          //   // backgroundColor: "#212121",
-          //   borderLeft:
-          //     "3px solid " +
-          //     (todo.priority === "1"
-          //       ? "#00e676"
-          //       : todo.priority === "2"
-          //       ? "#ffab40"
-          //       : "#ff5252"),
-          // }}
+          style={{
+            // backgroundColor: "#212121",
+            borderLeft:
+              "1px solid " +
+              (todo.priority === "1"
+                ? "#008f49"
+                : todo.priority === "2"
+                ? "#946426"
+                : "#9c3232"),
+          }}
           // style={{
           //   borderLeft: `2px solid var(--mantine-color-${getPriorityColour()}-9)`,
           //   flexGrow: "1",
@@ -419,6 +420,7 @@ const TodoItem = ({ todo }: props) => {
                       handleClose();
                       e.stopPropagation();
                       deleteTodo(todo.taskId);
+                      onDeleteTodoLS(todo.taskId);
                       setSynced(false);
                     }}
                   >
@@ -533,7 +535,7 @@ const TodoItem = ({ todo }: props) => {
         </Card>
       </AnimatePresence>
       <EditTodoModal open={openDialog} setOpen={setOpenDialog} todo={todo} />
-    </>
+    </Stack>
   );
 };
 

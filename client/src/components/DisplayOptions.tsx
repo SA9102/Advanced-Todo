@@ -147,21 +147,34 @@ const DisplayOptions = ({
       <FormGroup>
         <Stack direction="row" alignItems="center">
           <Typography>Filters</Typography>
-          <Switch />
+          <Switch
+            checked={filtersOpen}
+            onChange={(e) => setFiltersOpen(e.target.checked)}
+          />
         </Stack>
       </FormGroup>
-      <Card
-        sx={{ padding: "0.7rem" }}
-        onClick={(e) => setSortByAnchor(e.currentTarget)}
-      >
-        <Typography>Sort by: {sortBy}</Typography>
-      </Card>
-      <Card
-        sx={{ padding: "0.7rem" }}
-        onClick={(e) => setSortOrderAnchor(e.currentTarget)}
-      >
-        <Typography>Sort order: {sortOrder}</Typography>
-      </Card>
+      {filtersOpen && (
+        <FiltersInput
+          todoFilters={todoFilters}
+          setTodoFilters={setTodoFilters}
+          filterGroups={filterGroups}
+          setFilterGroups={setFilterGroups}
+        />
+      )}
+      <Stack direction="row" gap="1rem">
+        <Card
+          sx={{ padding: "0.3rem 0.7rem", flex: "1" }}
+          onClick={(e) => setSortByAnchor(e.currentTarget)}
+        >
+          <Typography>Sort by: {sortBy}</Typography>
+        </Card>
+        <Card
+          sx={{ padding: "0.3rem 0.7rem", flex: "1" }}
+          onClick={(e) => setSortOrderAnchor(e.currentTarget)}
+        >
+          <Typography>Sort order: {sortOrder}</Typography>
+        </Card>
+      </Stack>
       {/* <Button
           size="small"
           variant={sortByOpen ? "contained" : "outlined"}
@@ -195,14 +208,7 @@ const DisplayOptions = ({
           </FormControl>
         </Stack>
       )} */}
-      {filtersOpen && (
-        <FiltersInput
-          todoFilters={todoFilters}
-          setTodoFilters={setTodoFilters}
-          filterGroups={filterGroups}
-          setFilterGroups={setFilterGroups}
-        />
-      )}
+
       <Menu
         anchorEl={sortByAnchor}
         onClose={() => setSortByAnchor(null)}

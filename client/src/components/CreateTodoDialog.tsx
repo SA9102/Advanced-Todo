@@ -24,16 +24,18 @@ import { API_BASE_URL } from "../config";
 import todoType from "../types/todoType";
 import emptyTodo from "../utils/emptyTodo";
 
-const EditTodoDialog = ({ open, setOpen, todo }) => {
+import { v4 as uuidv4 } from "uuid";
+
+const CreateTodoDialog = ({ open, setOpen }) => {
   // const [open, setOpen] = useState(false);
   // const todoId = useParams().id; // Get the todo id from the url
   // const todo = useGetTodo(todoId!);
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
   // const [todoInput, setTodoInput] = useState(useGetTodo(todoId!));
-  const { updateTodo } = useTodoActions();
+  const { createTodo } = useTodoActions();
   const tags = useGetTags();
-  const [todoInput, setTodoInput] = useState(todo ? todo : emptyTodo);
+  const [todoInput, setTodoInput] = useState(emptyTodo);
 
   const handleSaveToDB = async () => {
     try {
@@ -73,13 +75,7 @@ const EditTodoDialog = ({ open, setOpen, todo }) => {
     if (!todosLS) {
       todosLS = [todoInput];
     } else {
-      todosLS = todosLS.map((todo: todoType) => {
-        if (todo.taskId === todoInput?.taskId) {
-          return todoInput;
-        } else {
-          return todo;
-        }
-      });
+      todosLS = [...todosLS, todoInput];
     }
 
     localStorage.setItem("todos", JSON.stringify(todosLS));
@@ -176,28 +172,28 @@ const EditTodoDialog = ({ open, setOpen, todo }) => {
             </LocalizationProvider>
             <TagInput todoInput={todoInput} setTodoInput={setTodoInput} />
             {/* <Stack direction="row" justifyContent="space-evenly">
-              <Button
-                // flex="1"
-                //  variant="outline"
-                component={Link}
-                to={HOME}
-              >
-                Cancel
-              </Button>
-              <Button
-                // flex="1"
-                onClick={() => {
-                  updateTodo(todoInput);
-                  if (auth) {
-                    handleSaveToDB();
-                  } else {
-                    handleSaveToLS();
-                  }
-                }}
-              >
-                Save
-              </Button>
-            </Stack> */}
+                <Button
+                  // flex="1"
+                  //  variant="outline"
+                  component={Link}
+                  to={HOME}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  // flex="1"
+                  onClick={() => {
+                    updateTodo(todoInput);
+                    if (auth) {
+                      handleSaveToDB();
+                    } else {
+                      handleSaveToLS();
+                    }
+                  }}
+                >
+                  Save
+                </Button>
+              </Stack> */}
           </Stack>
         </DialogContent>
         <DialogActions>
@@ -212,7 +208,7 @@ const EditTodoDialog = ({ open, setOpen, todo }) => {
           <Button
             onClick={() => {
               setOpen(false);
-              updateTodo(todoInput);
+              createTodo(todoInput);
               if (auth) {
                 console.log("SAVE TO DB");
                 handleSaveToDB();
@@ -220,6 +216,7 @@ const EditTodoDialog = ({ open, setOpen, todo }) => {
                 console.log("SAVE TO LS");
                 handleSaveToLS();
               }
+              setTodoInput({ ...emptyTodo, taskId: uuidv4() });
             }}
           >
             Save
@@ -230,4 +227,4 @@ const EditTodoDialog = ({ open, setOpen, todo }) => {
   );
 };
 
-export default EditTodoDialog;
+export default CreateTodoDialog;

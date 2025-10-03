@@ -23,10 +23,15 @@ import { CREATE_TAG } from "../routes/routes";
 import DisplayOptions from "../components/DisplayOptions";
 import {
   Alert,
+  BottomNavigation,
+  BottomNavigationAction,
+  Box,
   Button,
   Card,
   CircularProgress,
+  Divider,
   IconButton,
+  InputAdornment,
   LinearProgress,
   Stack,
   TextField,
@@ -37,10 +42,15 @@ import { AnimatePresence, motion } from "motion/react";
 import TodoItem from "../components/TodoItem";
 import EditTodoModal from "../components/EditTodoDialog";
 import EditTodoDialog from "../components/EditTodoDialog";
+import NoteAddIcon from "@mui/icons-material/NoteAdd";
+import CreateTodoDialog from "../components/CreateTodoDialog";
 
 const HomePage = () => {
   // Get all todos from store
   const todos: todoType[] = useGetTodos();
+  // const todos = [];
+  // console.log("TODOS");
+  // console.log(todos);
   // const [todos, setTodos] = useState<todoType[]>([]);
   const synced = useSynced();
   const setSynced = useSetSynced();
@@ -63,6 +73,9 @@ const HomePage = () => {
     "Upcoming",
     "Overdue",
   ]);
+
+  const [openDialog, setOpenDialog] = useState(false);
+
   // By what the todos are sorted
   const [sortBy, setSortBy] = useState<"name" | "priority">("priority");
   const [sortOrder, setSortOrder] = useState<"ascending" | "descending">(
@@ -107,6 +120,11 @@ const HomePage = () => {
     let todosLS = JSON.parse(localStorage.getItem("todos"));
     todosLS = [...todosLS, { ...newTodo, userId: "" }];
     localStorage.setItem("todos", JSON.stringify(todosLS));
+  };
+
+  const handleDeleteTodoLS = (todoId: string) => {
+    let newTodos = todos.filter((todo) => todo.taskId !== todoId);
+    localStorage.setItem("todos", JSON.stringify(newTodos));
   };
 
   const handleFetchTodos = async () => {
@@ -367,166 +385,215 @@ const HomePage = () => {
     return (getNumberOfCompletedTodos() / todos.length) * 100;
   };
 
-  const checkForPendingTodo = () => {};
+  // Here, 'current' todos means the todos that are pending, and the todos that are complete that were also pending before.
+  const getCurrentTodos = () => {
+    const currentTodos = todos.filter((todo) => {
+      if (hasExceededStart(todo) && !hasExceededEnd(todo)) {
+        return todo;
+      }
+    });
+    return currentTodos;
+  };
+
+  const getCompletedPendingTodos = () => {
+    const currentTodos = getCurrentTodos();
+    const completedCurrentTodos = currentTodos.reduce((count, todo) => {
+      return count + (todo?.isComplete ? 1 : 0);
+    }, 0);
+    return completedCurrentTodos;
+  };
+
+  const getPercentageOfCompletedPendingTodos = () => {
+    return (getCompletedPendingTodos() / getCurrentTodos().length) * 100;
+  };
+
+  // const getNumberOfOverdueTodos = () => {
+  //   const numberOfOverdueTodos = todos.reduce((count, todo)  => {
+  //     return count + (!todo.isComplete && hasExceededEnd(todo) ? 1 : 0)
+  //   }, 0)
+
+  //   return numberOfOverdueTodos
+  // }
+
+  const numberOfOverdueTodos = todos.reduce((count, todo) => {
+    return count + (!todo.isComplete && hasExceededEnd(todo) ? 1 : 0);
+  }, 0);
 
   return (
+    // <Stack gap="1rem" height="100%"> BEFORE
+    // <Stack gap="1rem" flex="1" minHeight="0">
     <>
-      {/* <EditTodoDialog /> */}
-      {loginNotification && (
-        <Alert
-          onClose={() => {
-            setLoginNotification(false);
-            localStorage.setItem("loginNotification", "off");
-          }}
-        >
-          Your data is saved locally in this browser. Log in to save it to the
-          // cloud.
-        </Alert>
-        // <Notification
-        //   icon={<IconExclamationMark />}
-        //   onClose={() => {
-        //     setLoginNotification(false);
-        //     localStorage.setItem("loginNotification", "off");
-        //   }}
-        // >
-        //   Your data is saved locally in this browser. Log in to save it to the
-        //   cloud.
-        // </Notification>
-      )}
-      {LSNotification && (
-        <Alert
-          // icon={<IconExclamationMark />}
-          onClose={() => {
-            setLSNotification(false);
-          }}
-        >
-          You have some data saved in local storage. Would you like to transfer
-          these to your account?
-          <Button
-            // size="compact-xs"
-            onClick={handleTransferLSTodosToDB}
-          >
-            Yes
-          </Button>
-        </Alert>
-        // <Notification
-        //   icon={<IconExclamationMark />}
-        //   onClose={() => {
-        //     setLSNotification(false);
-        //   }}
-        // >
-        //   You have some data saved in local storage. Would you like to transfer
-        //   these to your account?
-        //   <Button
-        //     // size="compact-xs"
-        //     onClick={handleTransferLSTodosToDB}
-        //   >
-        //     Yes
-        //   </Button>
-        // </Notification>
-      )}
+      <CreateTodoDialog open={openDialog} setOpen={setOpenDialog} />
 
-      {auth && (
-        <Button
-          style={{ alignSelf: "start" }}
-          // size="compact-xs"
-          disabled={synced ? true : false}
-          onClick={handleSyncDB}
-        >
-          Sync to DB
-        </Button>
-      )}
-      {/* <LinearProgress variant="determinate" value={getCompletedValue()} /> */}
-      <Stack alignItems="center" gap="0.5rem">
-        <CircularProgress variant="determinate" value={getCompletedValue()} />
-        <Typography>
-          {getNumberOfCompletedTodos()} / {todos.length}
-        </Typography>
-        {/* <Typography>All pending todos are complete!</Typography> */}
-      </Stack>
-      <DisplayOptions
-        todos={todos}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-        sortOrder={sortOrder}
-        setSortOrder={setSortOrder}
-        todoFilters={todoFilters}
-        setTodoFilters={setTodoFilters}
-        filterGroups={filterGroups}
-        setFilterGroups={setFilterGroups}
-      />
-      <Button
-        style={{ alignSelf: "flex-start" }}
-        size="small"
-        variant="outlined"
-        // flex="1"
+      <Stack
+        gap="0.5rem"
+        p="0.5rem"
+        flex="1"
+        sx={{ overflowY: "auto", minHeight: "0" }}
       >
-        New Todo
-      </Button>
-      <Stack direction="row" gap="0.5rem">
-        <TextField
-          // size="xs"
-          variant="standard"
-          // style={{ border: "1px solid green" }}
-          size="small"
-          placeholder="Enter todo ..."
-          value={newTodo.task}
-          onChange={(e) => setNewTodo({ ...newTodo, task: e.target.value })}
-          style={{ flex: 1 }}
-          // flex="1"
+        {loginNotification && (
+          <Alert
+            onClose={() => {
+              setLoginNotification(false);
+              localStorage.setItem("loginNotification", "off");
+            }}
+          >
+            Your data is saved locally in this browser. Log in to save it to the
+            // cloud.
+          </Alert>
+          // <Notification
+          //   icon={<IconExclamationMark />}
+          //   onClose={() => {
+          //     setLoginNotification(false);
+          //     localStorage.setItem("loginNotification", "off");
+          //   }}
+          // >
+          //   Your data is saved locally in this browser. Log in to save it to the
+          //   cloud.
+          // </Notification>
+        )}
+        {LSNotification && (
+          <Alert
+            // icon={<IconExclamationMark />}
+            onClose={() => {
+              setLSNotification(false);
+            }}
+          >
+            You have some data saved in local storage. Would you like to
+            transfer these to your account?
+            <Button
+              // size="compact-xs"
+              onClick={handleTransferLSTodosToDB}
+            >
+              Yes
+            </Button>
+          </Alert>
+          // <Notification
+          //   icon={<IconExclamationMark />}
+          //   onClose={() => {
+          //     setLSNotification(false);
+          //   }}
+          // >
+          //   You have some data saved in local storage. Would you like to transfer
+          //   these to your account?
+          //   <Button
+          //     // size="compact-xs"
+          //     onClick={handleTransferLSTodosToDB}
+          //   >
+          //     Yes
+          //   </Button>
+          // </Notification>
+        )}
+        {auth && (
+          <Button
+            style={{ alignSelf: "start" }}
+            // size="compact-xs"
+            disabled={synced ? true : false}
+            onClick={handleSyncDB}
+          >
+            Sync to DB
+          </Button>
+        )}
+        <Stack direction="row" justifyContent="center">
+          <Stack alignItems="center" gap="0.5rem" flex="1">
+            <CircularProgress
+              size="2rem"
+              variant="determinate"
+              value={getPercentageOfCompletedPendingTodos()}
+            />
+            <Typography>
+              Current todos: {getCompletedPendingTodos()} /{" "}
+              {getCurrentTodos().length}
+            </Typography>
+          </Stack>
+          <Stack alignItems="center" gap="0.5rem" flex="1">
+            <CircularProgress
+              size="2rem"
+              variant="determinate"
+              value={getCompletedValue()}
+            />
+            <Typography>
+              All todos: {getNumberOfCompletedTodos()} / {todos.length}
+            </Typography>
+          </Stack>
+          {/* <Typography>All pending todos are complete!</Typography> */}
+        </Stack>
+        <DisplayOptions
+          todos={todos}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          todoFilters={todoFilters}
+          setTodoFilters={setTodoFilters}
+          filterGroups={filterGroups}
+          setFilterGroups={setFilterGroups}
         />
-        <IconButton
-          onClick={() => {
-            createTodo({ ...newTodo, userId: auth ? auth._id : "" });
-            if (!auth) {
-              handleSaveToLS();
-            }
-            resetTodo();
-          }}
-        >
-          <AddIcon />
-        </IconButton>
-      </Stack>
+        <Divider />
+        <Stack direction="row" gap="0.5rem">
+          <Button
+            onClick={() => setOpenDialog(true)}
+            // style={{ alignSelf: "flex-start" }}
+            // size="small"
+            variant="outlined"
+            // flex="1"
+          >
+            New Todo
+          </Button>
+          <TextField
+            // size="sma"
+            variant="outlined"
+            // style={{ border: "1px solid green" }}
+            size="small"
+            placeholder="Enter todo ..."
+            value={newTodo.task}
+            onChange={(e) => setNewTodo({ ...newTodo, task: e.target.value })}
+            style={{ flex: 1 }}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => {
+                        createTodo({
+                          ...newTodo,
+                          userId: auth ? auth._id : "",
+                        });
+                        if (!auth) {
+                          handleSaveToLS();
+                        }
+                        resetTodo();
+                      }}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
+            // flex="1"
+          />
+        </Stack>
+        {numberOfOverdueTodos > 0 && (
+          <Alert
+            severity="error"
+            style={{ padding: "0.2rem 0.75rem", opacity: "0.5" }}
+          >
+            You have {numberOfOverdueTodos} overdue{" "}
+            {numberOfOverdueTodos === 1 ? "task" : "tasks"}.
+          </Alert>
+        )}
+        <Stack flex="1" sx={{ overflowY: "auto", minHeight: "0" }} gap="0.5rem">
+          {sortTodos(getFilteredTodos()).map((todo) => {
+            return <TodoItem todo={todo} onDeleteTodoLS={handleDeleteTodoLS} />;
+          })}
+        </Stack>
 
-      {/* <LinearProgress variant="determinate" value={getCompletedValue} /> */}
-      {/* Main part */}
-      <Stack flex="1" style={{ overflow: "auto" }} gap="0.5rem">
-        {/* {organiseTodosByStatus().map((val) => {
-          if (filterGroups.includes(val.status)) {
-            return (
-              <TodoSection
-                key={val.status}
-                todos={val.todos}
-                status={val.status}
-              />
-            );
-          }
-        })} */}
-        {sortTodos(getFilteredTodos()).map((todo) => {
-          return <TodoItem todo={todo} />;
-        })}
-      </Stack>
-      {/* <Group
+        {/* <Group
         gap="xs"
         // mb="sm"
       ></Group> */}
-      <Stack direction="row" gap="xs">
-        {/* <Button
-          // size="xs"
-          variant="outlined"
-          // flex="1"
-        >
-          New Todo
-        </Button> */}
-        {/* <Button
-          // size="xs"
-          variant="outlined"
-          // flex="1"
-          component={Link}
-          to={CREATE_TAG}
-        >
-          New Tag
-        </Button> */}
+        {/* </Stack> */}
       </Stack>
     </>
   );

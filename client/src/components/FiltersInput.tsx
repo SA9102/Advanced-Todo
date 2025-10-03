@@ -8,6 +8,7 @@ import {
   Box,
   Button,
   Chip,
+  Divider,
   MenuItem,
   Select,
   Stack,
@@ -29,7 +30,6 @@ const FiltersInput = ({
   filterGroups,
   setFilterGroups,
 }: props) => {
-  const [opened, { toggle }] = useDisclosure(false);
   const tags = useGetTags();
 
   const handleChangeFilterPriority = (val: "1" | "2" | "3") => {
@@ -72,7 +72,7 @@ const FiltersInput = ({
         >
           Priority
         </Typography>
-        <Stack direction="row">
+        <Stack direction="row" gap="0.5rem">
           <Chip
             label="Low"
             size="small"
@@ -134,7 +134,7 @@ const FiltersInput = ({
         >
           Groups
         </Typography>
-        <Stack direction="row">
+        <Stack direction="row" gap="0.5rem">
           <Chip
             label="Pending"
             size="small"
@@ -173,6 +173,7 @@ const FiltersInput = ({
           />
         </Stack>
       </Stack>
+      <Divider />
     </Stack>
     // <Accordion style={{ flex: 1 }}>
     //   <AccordionSummary>

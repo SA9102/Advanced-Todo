@@ -5,23 +5,24 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Link, Route, Routes, useLocation } from "react-router";
+import { Link, Route, Routes, useLocation, useNavigate } from "react-router";
 import HomePage from "./pages/HomePage";
 import {
   CREATE_TAG,
   HOME,
   EDIT_TODO,
-  EDIT_TAGS,
+  // EDIT_TAGS,
   EDIT_TAG,
   REGISTER,
   LOGIN,
   TEST,
+  TAGS,
 } from "./routes/routes";
 import EditTodoPage from "./pages/EditTodoPage";
 import "./index.css";
 import TagPage from "./pages/TagPage";
 import EditTagsPage from "./pages/EditTagsPage";
-import EditTagPage from "./pages/EditTagPage";
+// import EditTagPage from "./pages/EditTagPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import { useContext, useEffect } from "react";
@@ -30,6 +31,7 @@ import AuthContext from "./context/AuthProvider";
 import useLogout from "./hooks/useLogout";
 import PersistLogin from "./components/PersistLogin";
 import usePersistLogin from "./hooks/usePersistLogin";
+import TagsPage from "./pages/TagsPage";
 
 const BUTTONS = [
   {
@@ -44,10 +46,10 @@ const BUTTONS = [
     text: "New Tag",
     path: CREATE_TAG,
   },
-  {
-    text: "Edit Tags",
-    path: EDIT_TAGS,
-  },
+  // {
+  //   text: "Edit Tags",
+  //   path: EDIT_TAGS,
+  // },
   {
     text: "Register",
     path: REGISTER,
@@ -114,11 +116,14 @@ const App = () => {
   const { auth } = useContext(AuthContext);
   const logout = useLogout();
   console.log(auth);
+  const navigate = useNavigate();
 
   usePersistLogin();
 
   return (
-    <Stack height="100%">
+    <>
+      {/* // <Stack height="100%"> 1st BEFORE */}
+      {/* // <Stack height="100vh"> 2nd BEFORE */}
       {/* <Stack>
         {BUTTONS.map((button) => (
           <Button
@@ -182,30 +187,46 @@ const App = () => {
     //   </AppShell.Header>
       
       */}
-      <Stack direction="row" bgcolor="#141c1b" padding="1rem">
-        <Typography variant="h5">Advanced Todo</Typography>
-        <Button size="small">Login</Button>
-        <Button size="small">Register</Button>
-      </Stack>
 
-      <Stack padding="1rem">
+      {/* <Stack padding="1rem" height="100%"> BEFORE*/}
+      {/* <Stack flex="1" minHeight="0" overflow="hidden"> 2nd BEFORE */}
+
+      <Stack height="100%">
+        <Stack direction="row" bgcolor="#141c1b" padding="1rem">
+          <Typography variant="h5">Advanced Todo</Typography>
+          <Button size="small">Login</Button>
+          <Button size="small">Register</Button>
+        </Stack>
+        {/* <HomePage /> */}
         <Routes>
-          {/* <Route element={<PersistLogin />}> */}
           <Route path={HOME} element={<HomePage />} />
           <Route path={CREATE_TAG} element={<TagPage />} />
           <Route path={EDIT_TODO} element={<EditTodoPage />} />
-          <Route path={EDIT_TAGS} element={<EditTagsPage />} />
-          <Route path={EDIT_TAG} element={<EditTagPage />} />
-          {/* </Route> */}
+          {/* <Route path={EDIT_TAGS} element={<EditTagsPage />} /> */}
+          <Route path={TAGS} element={<TagsPage />} />
+          {/* <Route path={EDIT_TAG} element={<EditTagPage />} /> */}
           <Route path={REGISTER} element={<RegisterPage />} />
           <Route path={LOGIN} element={<LoginPage />} />
         </Routes>
+        <Stack>
+          <BottomNavigation
+            showLabels
+            sx={{ flexShrink: "0" }}
+            onChange={(e, newVal) => {
+              if (newVal === "todos") {
+                navigate(HOME);
+              } else if (newVal === "tags") {
+                navigate(TAGS);
+              }
+            }}
+          >
+            <BottomNavigationAction label="Todos" value="todos" />
+            <BottomNavigationAction label="Tags" value="tags" />
+          </BottomNavigation>
+        </Stack>
       </Stack>
-      <BottomNavigation showLabels>
-        <BottomNavigationAction label="Todos" />
-        <BottomNavigationAction label="Tags" />
-      </BottomNavigation>
-    </Stack>
+    </>
+    // </Stack>
     // <AppShell>
     //   <Drawer opened={opened} onClose={close} title="ASd">
     //     <Stack>

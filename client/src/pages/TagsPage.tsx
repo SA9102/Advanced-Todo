@@ -64,9 +64,19 @@ const TagsPage = () => {
     <>
       <Stack
         gap="0.5rem"
-        p="0.5rem"
         flex="1"
-        sx={{ overflowY: "auto", minHeight: "0" }}
+        sx={{
+          overflowY: "auto",
+          minHeight: "0",
+          paddingY: "1rem",
+          paddingX: {
+            xs: "0.5rem",
+            sm: "3rem",
+            md: "5rem",
+            lg: "10rem",
+            xl: "15rem",
+          },
+        }}
       >
         <Button
           sx={{ alignSelf: "flex-start" }}

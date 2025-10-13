@@ -427,9 +427,19 @@ const HomePage = () => {
 
       <Stack
         gap="0.5rem"
-        p="0.5rem"
         flex="1"
-        sx={{ overflowY: "auto", minHeight: "0" }}
+        sx={{
+          overflowY: "auto",
+          minHeight: "0",
+          paddingY: "1rem",
+          paddingX: {
+            xs: "0.5rem",
+            sm: "3rem",
+            md: "5rem",
+            lg: "10rem",
+            xl: "15rem",
+          },
+        }}
       >
         {loginNotification && (
           <Alert
@@ -500,6 +510,7 @@ const HomePage = () => {
               size="2rem"
               variant="determinate"
               value={getPercentageOfCompletedPendingTodos()}
+              enableTrackSlot
             />
             <Typography>
               Current todos: {getCompletedPendingTodos()} /{" "}
@@ -511,6 +522,7 @@ const HomePage = () => {
               size="2rem"
               variant="determinate"
               value={getCompletedValue()}
+              enableTrackSlot
             />
             <Typography>
               All todos: {getNumberOfCompletedTodos()} / {todos.length}

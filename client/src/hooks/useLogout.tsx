@@ -7,11 +7,13 @@ const useLogout = () => {
   const { setAuth } = useContext(AuthContext);
 
   const logout = async () => {
-    setAuth({});
+    // setAuth({});
     try {
       const res = await axios.post(`${API_BASE_URL}/auth/logout`, {
         withCredentials: true,
       });
+      console.log("SUCCESS");
+      console.log(res);
     } catch (err) {
       console.log(err);
     }

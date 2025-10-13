@@ -25,36 +25,15 @@ import EditTagsPage from "./pages/EditTagsPage";
 // import EditTagPage from "./pages/EditTagPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import HomePageNew from "./pages/HomePageNew";
 import AuthContext from "./context/AuthProvider";
 import useLogout from "./hooks/useLogout";
 import PersistLogin from "./components/PersistLogin";
 import usePersistLogin from "./hooks/usePersistLogin";
 import TagsPage from "./pages/TagsPage";
-
-const BUTTONS = [
-  {
-    text: "My Todos",
-    path: HOME,
-  },
-  {
-    text: "New Todo",
-    path: HOME,
-  },
-  {
-    text: "New Tag",
-    path: CREATE_TAG,
-  },
-  // {
-  //   text: "Edit Tags",
-  //   path: EDIT_TAGS,
-  // },
-  {
-    text: "Register",
-    path: REGISTER,
-  },
-];
+import LoginDialog from "./components/LoginDialog";
+import RegisterDialog from "./components/RegisterDialog";
 
 const todosLS = localStorage.getItem("todos");
 if (!todosLS) {
@@ -113,89 +92,56 @@ if (!loginNotification) {
 
 const App = () => {
   const path = useLocation();
-  const { auth } = useContext(AuthContext);
+  const { auth, setAuth } = useContext(AuthContext);
   const logout = useLogout();
   console.log(auth);
   const navigate = useNavigate();
 
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
+
   usePersistLogin();
+  console.log("AUTH");
+  console.log(auth);
 
   return (
     <>
-      {/* // <Stack height="100%"> 1st BEFORE */}
-      {/* // <Stack height="100vh"> 2nd BEFORE */}
-      {/* <Stack>
-        {BUTTONS.map((button) => (
-          <Button
-            // variant="subtle"
-            onClick={close}
-            component={Link}
-            to={button.path}
-          >
-            {button.text}
-          </Button>
-        ))}
-      </Stack>
-      <AppShell.Header>
-    //     <Group p="0.3rem" gap="xs">
-    //       <Group justify="space-between" w="100%">
-    //         <Group>
-    //           <ActionIcon
-    //             size="sm"
-    //             variant="transparent"
-    //             color="white"
-    //             onClick={open}
-    //           >
-    //             <IconMenu2 />
-    //           </ActionIcon>
-    //           <Text size="lg" fw={700}>
-    //             {path.pathname === CREATE_TAG ? "New Tag" : "My Todos"}
-    //           </Text>
-    //         </Group>
-    //         <Group gap={5}>
-    //           {auth ? (
-    //             <Button size="compact-xs" onClick={logout}>
-    //               Logout
-    //             </Button>
-    //           ) : (
-    //             <>
-    //               <Button size="compact-xs" component={Link} to={LOGIN}>
-    //                 Login
-    //               </Button>
-    //               <Button size="compact-xs" component={Link} to={REGISTER}>
-    //                 Register
-    //               </Button>
-    //             </>
-    //           )}
-    //           <ActionIcon
-    //             disabled
-    //             size="sm"
-    //             variant="default"
-    //             onClick={() =>
-    //               setColorScheme(colorScheme === "light" ? "dark" : "light")
-    //             }
-    //           >
-    //             {colorScheme === "light" ? (
-    //               <IconSun size="16" />
-    //             ) : (
-    //               <IconMoon size="16" />
-    //             )}
-    //           </ActionIcon>
-    //         </Group>
-    //       </Group>
-    //     </Group>
-    //   </AppShell.Header>
-      
-      */}
-
-      {/* <Stack padding="1rem" height="100%"> BEFORE*/}
-      {/* <Stack flex="1" minHeight="0" overflow="hidden"> 2nd BEFORE */}
-
+      <LoginDialog open={loginDialogOpen} setOpen={setLoginDialogOpen} />
+      <RegisterDialog
+        open={registerDialogOpen}
+        setOpen={setRegisterDialogOpen}
+      />
       <Stack height="100%">
-        <Stack direction="row" bgcolor="#141c1b" padding="1rem">
-          <Typography variant="h5">Advanced Todo</Typography>
-          <Button size="small">Login</Button>
-          <Button size="small">Register</Button>
+        <Stack
+          direction="row"
+          bgcolor="#141c1b"
+          padding="1rem"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography variant="h5">
+            Welcome, {auth ? auth.username : "guest"}!
+          </Typography>
+          <Stack direction="row" alignItems="center">
+            <Typography>ADVANCED TODO</Typography>
+            {auth ? (
+              <Button size="small" onClick={logout}>
+                Logout
+              </Button>
+            ) : (
+              <>
+                <Button size="small" onClick={() => setLoginDialogOpen(true)}>
+                  Login
+                </Button>
+                <Button
+                  size="small"
+                  onClick={() => setRegisterDialogOpen(true)}
+                >
+                  Register
+                </Button>
+              </>
+            )}
+          </Stack>
         </Stack>
         {/* <HomePage /> */}
         <Routes>
@@ -226,87 +172,6 @@ const App = () => {
         </Stack>
       </Stack>
     </>
-    // </Stack>
-    // <AppShell>
-    //   <Drawer opened={opened} onClose={close} title="ASd">
-    //     <Stack>
-    //       {BUTTONS.map((button) => (
-    //         <Button
-    //           variant="subtle"
-    //           onClick={close}
-    //           component={Link}
-    //           to={button.path}
-    //         >
-    //           {button.text}
-    //         </Button>
-    //       ))}
-    //     </Stack>
-    //   </Drawer>
-    //   <AppShell.Main>
-    //     <Stack gap="sm" pt="3rem" p="xs" h="100vh">
-    //       <Routes>
-    //         {/* <Route element={<PersistLogin />}> */}
-    //         <Route path={HOME} element={<HomePage />} />
-    //         <Route path={CREATE_TAG} element={<TagPage />} />
-    //         <Route path={EDIT_TODO} element={<EditTodoPage />} />
-    //         <Route path={EDIT_TAGS} element={<EditTagsPage />} />
-    //         <Route path={EDIT_TAG} element={<EditTagPage />} />
-    //         {/* </Route> */}
-    //         <Route path={REGISTER} element={<RegisterPage />} />
-    //         <Route path={LOGIN} element={<LoginPage />} />
-    //       </Routes>
-    //     </Stack>
-    //   </AppShell.Main>
-    //   <AppShell.Header>
-    //     <Group p="0.3rem" gap="xs">
-    //       <Group justify="space-between" w="100%">
-    //         <Group>
-    //           <ActionIcon
-    //             size="sm"
-    //             variant="transparent"
-    //             color="white"
-    //             onClick={open}
-    //           >
-    //             <IconMenu2 />
-    //           </ActionIcon>
-    //           <Text size="lg" fw={700}>
-    //             {path.pathname === CREATE_TAG ? "New Tag" : "My Todos"}
-    //           </Text>
-    //         </Group>
-    //         <Group gap={5}>
-    //           {auth ? (
-    //             <Button size="compact-xs" onClick={logout}>
-    //               Logout
-    //             </Button>
-    //           ) : (
-    //             <>
-    //               <Button size="compact-xs" component={Link} to={LOGIN}>
-    //                 Login
-    //               </Button>
-    //               <Button size="compact-xs" component={Link} to={REGISTER}>
-    //                 Register
-    //               </Button>
-    //             </>
-    //           )}
-    //           <ActionIcon
-    //             disabled
-    //             size="sm"
-    //             variant="default"
-    //             onClick={() =>
-    //               setColorScheme(colorScheme === "light" ? "dark" : "light")
-    //             }
-    //           >
-    //             {colorScheme === "light" ? (
-    //               <IconSun size="16" />
-    //             ) : (
-    //               <IconMoon size="16" />
-    //             )}
-    //           </ActionIcon>
-    //         </Group>
-    //       </Group>
-    //     </Group>
-    //   </AppShell.Header>
-    // </AppShell>
   );
 };
 

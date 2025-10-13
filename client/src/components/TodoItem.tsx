@@ -240,7 +240,7 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
           style={{
             // backgroundColor: "#212121",
             borderLeft:
-              "1px solid " +
+              "2px solid " +
               (todo.priority === "1"
                 ? "#008f49"
                 : todo.priority === "2"

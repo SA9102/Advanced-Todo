@@ -227,8 +227,8 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
   };
 
   const status = getStatus();
-  console.log("--- STATUS ---");
-  console.log(status);
+  // console.log("--- STATUS ---");
+  // console.log(status);
   return (
     <Stack>
       <AnimatePresence>

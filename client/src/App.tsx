@@ -94,15 +94,19 @@ const App = () => {
   const path = useLocation();
   const { auth, setAuth } = useContext(AuthContext);
   const logout = useLogout();
-  console.log(auth);
   const navigate = useNavigate();
 
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
 
   usePersistLogin();
-  console.log("AUTH");
-  console.log(auth);
+  // console.log("AUTH");
+  // console.log(auth);
+
+  const handleLogout = async () => {
+    await logout();
+    window.location.reload();
+  };
 
   return (
     <>
@@ -125,7 +129,7 @@ const App = () => {
           <Stack direction="row" alignItems="center">
             <Typography>ADVANCED TODO</Typography>
             {auth ? (
-              <Button size="small" onClick={logout}>
+              <Button size="small" onClick={handleLogout}>
                 Logout
               </Button>
             ) : (

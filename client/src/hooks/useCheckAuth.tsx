@@ -8,6 +8,7 @@ import { useGetTodos, useTodoActions } from "../store/todoStore";
 import { useGetSync } from "../store/syncStore";
 
 const useCheckAuth = () => {
+  console.log("CHECKING AUTH");
   const { setTodos } = useTodoActions();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   // const isSynced = useGetSync();

@@ -122,6 +122,15 @@ const App = () => {
           padding="1rem"
           justifyContent="space-between"
           alignItems="center"
+          sx={{
+            paddingX: {
+              xs: "0.5rem",
+              sm: "3rem",
+              md: "5rem",
+              lg: "10rem",
+              xl: "15rem",
+            },
+          }}
         >
           <Typography variant="h5">
             Welcome, {auth ? auth.username : "guest"}!

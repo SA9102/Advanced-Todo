@@ -83,9 +83,7 @@ const HomePage = () => {
   );
   console.log("AUTH");
   console.log(auth);
-  const [loginNotification, setLoginNotification] = useState(
-    !auth && localStorage.getItem("loginNotification") === "on" ? true : false
-  );
+  const [loginNotification, setLoginNotification] = useState(false);
 
   const [LSNotification, setLSNotification] = useState(false);
 
@@ -398,10 +396,30 @@ const HomePage = () => {
   }, [auth]);
 
   useEffect(() => {
+    const notif = localStorage.getItem("loginNotification");
+    if (!notif) {
+      localStorage.setItem("loginNotification", "on");
+      setLoginNotification(true);
+    } else if (notif === "on") {
+      setLoginNotification(true);
+    } else {
+      setLSNotification(false);
+    }
+  });
+
+  useEffect(() => {
     if (auth) {
-      const todosLS = localStorage.getItem("todos");
+      const todosLS = JSON.parse(localStorage.getItem("todos"));
+      console.log("TODOS LS");
+      console.log(todosLS);
       if (todosLS) {
-        setLSNotification(true);
+        console.log("PASS 1");
+        if (todosLS.length > 0) {
+          console.log("PASS 2");
+          setLSNotification(true);
+        } else {
+          setLSNotification(false);
+        }
       } else {
         setLSNotification(false);
       }
@@ -476,13 +494,14 @@ const HomePage = () => {
       >
         {loginNotification && (
           <Alert
+            severity="info"
             onClose={() => {
               setLoginNotification(false);
               localStorage.setItem("loginNotification", "off");
             }}
           >
             Your data is saved locally in this browser. Log in to save it to the
-            // cloud.
+            cloud.
           </Alert>
           // <Notification
           //   icon={<IconExclamationMark />}
@@ -506,7 +525,10 @@ const HomePage = () => {
             transfer these to your account?
             <Button
               // size="compact-xs"
-              onClick={handleTransferLSTodosToDB}
+              onClick={() => {
+                handleTransferLSTodosToDB();
+                setLSNotification(false);
+              }}
             >
               Yes
             </Button>

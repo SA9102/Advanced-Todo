@@ -107,6 +107,38 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
     console.log("Long pressed!");
   });
 
+  const handleSaveToDB = async () => {
+    try {
+      // await axios.put(`${API_BASE_URL}/`)
+      await axios.put(
+        `${API_BASE_URL}/todo/todo`,
+        {
+          _id: auth._id,
+          username: auth.username,
+          data: {
+            taskId: todo.taskId,
+            task: todo.task,
+            description: todo.description,
+            tags: todo.tags,
+            isComplete: todo.isComplete,
+            // userId: todo.userId,
+            userId: auth._id,
+            priority: "2",
+            start: todo.start,
+            end: todo.end,
+          },
+        },
+        {
+          withCredentials: true,
+          headers: { Authorization: auth.accessToken },
+        }
+      );
+      navigate(HOME);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   // If 'Save' is pressed when editing
   const handleConfirmChangeTask = () => {
     updateTodo(newTodo);
@@ -308,6 +340,9 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
                     checked={todo.isComplete}
                     onClick={() => {
                       checkTodo(todo.taskId);
+                      if (auth) {
+                        handleSaveToDB();
+                      }
                       setSynced(false);
                     }}
                   />

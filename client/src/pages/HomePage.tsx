@@ -116,6 +116,39 @@ const HomePage = () => {
     }
   };
 
+  const handleSaveToDB = async () => {
+    try {
+      // await axios.put(`${API_BASE_URL}/`)
+      await axios.post(
+        `${API_BASE_URL}/todo`,
+        {
+          _id: auth._id,
+          username: auth.username,
+          data: {
+            taskId: newTodo.taskId,
+            task: newTodo.task,
+            description: "",
+            tags: [],
+            isComplete: false,
+            // userId: todoInput?.userId,
+            userId: auth._id,
+            priority: "1",
+            start: null,
+            end: null,
+          },
+        },
+        {
+          withCredentials: true,
+          headers: { Authorization: auth.accessToken },
+        }
+      );
+      console.log("TODO CREATION SUCCESSFUL");
+      navigate(HOME);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handleSaveToLS = () => {
     let todosLS = JSON.parse(localStorage.getItem("todos"));
     todosLS = [...todosLS, { ...newTodo, userId: "" }];
@@ -571,7 +604,9 @@ const HomePage = () => {
                           ...newTodo,
                           userId: auth ? auth._id : "",
                         });
-                        if (!auth) {
+                        if (auth) {
+                          handleSaveToDB();
+                        } else {
                           handleSaveToLS();
                         }
                         resetTodo();

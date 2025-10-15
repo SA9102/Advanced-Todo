@@ -38,9 +38,8 @@ const EditTodoDialog = ({ open, setOpen, todo }) => {
   const handleSaveToDB = async () => {
     try {
       // await axios.put(`${API_BASE_URL}/`)
-      await axios.patch(
-        `${API_BASE_URL}/todo`,
-
+      await axios.put(
+        `${API_BASE_URL}/todo/todo`,
         {
           _id: auth._id,
           username: auth.username,
@@ -50,7 +49,8 @@ const EditTodoDialog = ({ open, setOpen, todo }) => {
             description: todoInput?.description,
             tags: todoInput?.tags,
             isComplete: todoInput?.isComplete,
-            userId: todoInput?.userId,
+            // userId: todoInput?.userId,
+            userId: auth._id,
             priority: "2",
             start: todoInput?.start,
             end: todoInput?.end,

@@ -40,9 +40,8 @@ const CreateTodoDialog = ({ open, setOpen }) => {
   const handleSaveToDB = async () => {
     try {
       // await axios.put(`${API_BASE_URL}/`)
-      await axios.patch(
+      await axios.post(
         `${API_BASE_URL}/todo`,
-
         {
           _id: auth._id,
           username: auth.username,
@@ -52,7 +51,8 @@ const CreateTodoDialog = ({ open, setOpen }) => {
             description: todoInput?.description,
             tags: todoInput?.tags,
             isComplete: todoInput?.isComplete,
-            userId: todoInput?.userId,
+            // userId: todoInput?.userId,
+            userId: auth._id,
             priority: "2",
             start: todoInput?.start,
             end: todoInput?.end,
@@ -63,6 +63,7 @@ const CreateTodoDialog = ({ open, setOpen }) => {
           headers: { Authorization: auth.accessToken },
         }
       );
+      console.log("TODO CREATION SUCCESSFUL");
       navigate(HOME);
     } catch (err) {
       console.log(err);

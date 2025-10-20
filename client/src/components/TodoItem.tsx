@@ -103,6 +103,23 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
     setMenuAnchor(null);
   };
 
+  const handleDeleteTodoDB = async () => {
+    console.log("DELETING TODO...");
+    try {
+      // await axios.put(`${API_BASE_URL}/`)
+      await axios.delete(`${API_BASE_URL}/todo`, {
+        data: { id: todo.taskId },
+        withCredentials: true,
+        headers: { Authorization: auth.accessToken },
+      });
+      console.log("DELETION SUCCESSFUL");
+      navigate(HOME);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleDeleteTodoLS = () => {};
+
   const longPress = useLongPress(() => {
     console.log("Long pressed!");
   });
@@ -455,7 +472,11 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
                       handleClose();
                       e.stopPropagation();
                       deleteTodo(todo.taskId);
-                      onDeleteTodoLS(todo.taskId);
+                      if (auth) {
+                        handleDeleteTodoDB();
+                      } else {
+                        handleDeleteTodoLS();
+                      }
                       setSynced(false);
                     }}
                   >

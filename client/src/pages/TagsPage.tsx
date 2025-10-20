@@ -16,23 +16,38 @@ import emptyTag from "../utils/emptyTag";
 import { MuiColorInput } from "mui-color-input";
 import { useGetTags, useTagActions } from "../store/tagStore";
 import TagItem from "../components/TagItem";
+import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 const TagsPage = () => {
   // const [tags, setTags] = useState<tagType[]>([]);
   const tags: tagType[] = useGetTags();
-  console.log("TAGS");
-  console.log(tags);
   const { auth } = useContext(AuthContext);
   const [openDialog, setOpenDialog] = useState(false);
   const [tagInput, setTagInput] = useState<tagType>(emptyTag);
 
   const { setTags, createTag } = useTagActions();
 
-  const handleFetchTagsDB = () => {};
+  const handleFetchTagsDB = async () => {
+    try {
+      const tagsDB = await axios.get(`${API_BASE_URL}/tag`, {
+        withCredentials: true,
+        headers: { Authorization: auth.accessToken },
+      });
+      console.log("SUCCESS", tagsDB.data.data);
+      if (tagsDB?.data?.data) {
+        setTags(tagsDB.data.data);
+      } else {
+        setTags([]);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleFetchTagsLS = () => {
     const tagsLS = JSON.parse(localStorage.getItem("tags"));
-
+    console.log("TAGS LS:", tagsLS);
     if (tagsLS) {
       setTags(tagsLS);
     } else {
@@ -40,9 +55,34 @@ const TagsPage = () => {
     }
   };
 
-  const handleSaveToDB = () => {};
+  const handleSaveToDB = async () => {
+    console.log("saving to db");
+    const data = {
+      tagId: tagInput.tagId,
+      label: tagInput.label,
+      colour: tagInput.colour,
+      userId: auth._id,
+    };
+    console.log("DATA");
+    console.log(data);
+    try {
+      const res = await axios.post(
+        `${API_BASE_URL}/tag`,
+        {
+          data: data,
+        },
+        {
+          withCredentials: true,
+          headers: { Authorization: auth.accessToken },
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleSaveToLS = () => {
+    console.log("saving to ls");
     let tagsLS = JSON.parse(localStorage.getItem("tags"));
     if (!tagsLS) {
       tagsLS = [tagInput];

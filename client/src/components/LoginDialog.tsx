@@ -37,8 +37,8 @@ const LoginDialog = ({ open, setOpen }) => {
         },
         { withCredentials: true }
       );
-      console.log("!!!!!!!");
-      console.log(res.data);
+      // console.log("!!!!!!!");
+      // console.log(res.data);
       setAuth({
         _id: res.data._id,
         username: loginInput.username,

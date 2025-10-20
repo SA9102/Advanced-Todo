@@ -396,14 +396,18 @@ const HomePage = () => {
   }, [auth]);
 
   useEffect(() => {
-    const notif = localStorage.getItem("loginNotification");
-    if (!notif) {
-      localStorage.setItem("loginNotification", "on");
-      setLoginNotification(true);
-    } else if (notif === "on") {
-      setLoginNotification(true);
+    if (!auth) {
+      const notif = localStorage.getItem("loginNotification");
+      if (!notif) {
+        localStorage.setItem("loginNotification", "on");
+        setLoginNotification(true);
+      } else if (notif === "on") {
+        setLoginNotification(true);
+      } else {
+        setLoginNotification(false);
+      }
     } else {
-      setLSNotification(false);
+      setLoginNotification(false);
     }
   });
 

@@ -1,11 +1,11 @@
 export const ROOT = "Advanced-Todo";
 
-export const HOME = `/${ROOT}/`;
-export const CREATE_TAG = `/${ROOT}/tag/`;
-export const EDIT_TODO = `/${ROOT}/:id/`;
-// export const EDIT_TAGS = `/${ROOT}/tags/`;
-export const TAGS = `/${ROOT}/tags/`;
-export const EDIT_TAG = `/${ROOT}/tags/:id`;
-export const REGISTER = `/${ROOT}/register`;
-export const LOGIN = `/${ROOT}/login`;
-export const TEST = `/${ROOT}/test`;
+export const HOME = `/`;
+export const CREATE_TAG = `/tag/`;
+export const EDIT_TODO = `/:id/`;
+// export const EDIT_TAGS = `/tags/`;
+export const TAGS = `/tags/`;
+export const EDIT_TAG = `/tags/:id`;
+export const REGISTER = `/register`;
+export const LOGIN = `/login`;
+export const TEST = `/test`;

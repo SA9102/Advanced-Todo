@@ -27,3 +27,16 @@ exports.createTag = (req, res) => {
     return res.status(500).json({ err: err.message });
   }
 };
+
+exports.deleteTag = async (req, res) => {
+  console.log("IN DELETE TAG 1");
+  try {
+    console.log("IN DELETE TAG 2");
+    await Tag.deleteOne({ tagId: req.body.tagId });
+    console.log("IN DELETE TAG 3");
+    return res.status(200).json({ msg: "success" });
+  } catch (error) {
+    console.log("IN DELETE TAG 4");
+    return res.status(500).json({ err: error.message });
+  }
+};

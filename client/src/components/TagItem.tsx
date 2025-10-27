@@ -19,6 +19,8 @@ import tagType from "../types/tagType";
 import { useTagActions } from "../store/tagStore";
 import { useGetTodos, useTodoActions } from "../store/todoStore";
 import todoType from "../types/todoType";
+import axios from "axios";
+import { API_BASE_URL } from "../config.ts";
 
 const TagItem = ({ tag }) => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -52,9 +54,13 @@ const TagItem = ({ tag }) => {
 
     if (todosLS) {
       todosLS = todosLS.map((todoLS: todoType) => {
-        const newTags = todoLS.tags.filter(
-          (tagId: string) => tagId !== tag.tagId
-        );
+        const newTags = todoLS.tags.filter((tagId: string) => {
+          console.log("CURRENT TAG:", tagId);
+          if (tagId !== tag.tagId) {
+            console.log("Current tag is equal to tag");
+            return tagId;
+          }
+        });
         return { ...todoLS, tags: newTags };
       });
       localStorage.setItem("todos", JSON.stringify(todosLS));
@@ -65,6 +71,37 @@ const TagItem = ({ tag }) => {
     if (tagsLS) {
       tagsLS = tagsLS.filter((tagLS: tagType) => tagLS.tagId !== tag.tagId);
       localStorage.setItem("tags", JSON.stringify(tagsLS));
+    }
+  };
+
+  const handleDeleteDB = async () => {
+    try {
+      const res = await axios.delete(`${API_BASE_URL}/tag`, {
+        data: { tagId: tag.tagId },
+        withCredentials: true,
+        headers: { Authorization: auth.accessToken },
+      });
+      const newTodos = todos.map((todo: todoType) => {
+        const newTags = todo.tags.filter(
+          (tagId: string) => tagId !== tag.tagId
+        );
+        return { ...todo, tags: newTags };
+      });
+      try {
+        await axios.put(
+          `${API_BASE_URL}/todo`,
+          { _id: auth._id, username: auth.username, data: newTodos },
+          {
+            withCredentials: true,
+            headers: { Authorization: auth.accessToken },
+          }
+        );
+        setTodos(newTodos);
+      } catch (e) {
+        console.error(e);
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -99,6 +136,7 @@ const TagItem = ({ tag }) => {
                 onClick={() => {
                   deleteTag(tag.tagId);
                   if (auth) {
+                    handleDeleteDB();
                   } else {
                     handleDeleteFromLS();
                   }

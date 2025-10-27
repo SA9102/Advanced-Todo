@@ -5,31 +5,24 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Link, Route, Routes, useLocation, useNavigate } from "react-router";
+import { Route, Routes, useLocation, useNavigate } from "react-router";
 import HomePage from "./pages/HomePage";
 import {
   CREATE_TAG,
   HOME,
   EDIT_TODO,
-  // EDIT_TAGS,
-  EDIT_TAG,
   REGISTER,
   LOGIN,
-  TEST,
   TAGS,
 } from "./routes/routes";
 import EditTodoPage from "./pages/EditTodoPage";
 import "./index.css";
 import TagPage from "./pages/TagPage";
-import EditTagsPage from "./pages/EditTagsPage";
-// import EditTagPage from "./pages/EditTagPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import { useContext, useEffect, useState } from "react";
-import HomePageNew from "./pages/HomePageNew";
+import { useContext, useState } from "react";
 import AuthContext from "./context/AuthProvider";
 import useLogout from "./hooks/useLogout";
-import PersistLogin from "./components/PersistLogin";
 import usePersistLogin from "./hooks/usePersistLogin";
 import TagsPage from "./pages/TagsPage";
 import LoginDialog from "./components/LoginDialog";
@@ -91,7 +84,6 @@ if (!loginNotification) {
 }
 
 const App = () => {
-  const path = useLocation();
   const { auth, setAuth } = useContext(AuthContext);
   const logout = useLogout();
   const navigate = useNavigate();
@@ -100,8 +92,6 @@ const App = () => {
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
 
   usePersistLogin();
-  // console.log("AUTH");
-  // console.log(auth);
 
   const handleLogout = async () => {
     await logout();
@@ -156,14 +146,11 @@ const App = () => {
             )}
           </Stack>
         </Stack>
-        {/* <HomePage /> */}
         <Routes>
           <Route path={HOME} element={<HomePage />} />
           <Route path={CREATE_TAG} element={<TagPage />} />
           <Route path={EDIT_TODO} element={<EditTodoPage />} />
-          {/* <Route path={EDIT_TAGS} element={<EditTagsPage />} /> */}
           <Route path={TAGS} element={<TagsPage />} />
-          {/* <Route path={EDIT_TAG} element={<EditTagPage />} /> */}
           <Route path={REGISTER} element={<RegisterPage />} />
           <Route path={LOGIN} element={<LoginPage />} />
         </Routes>

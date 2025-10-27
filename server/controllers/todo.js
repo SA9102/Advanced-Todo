@@ -19,7 +19,20 @@ exports.getAllTodos = async (req, res) => {
   }
 };
 
-exports.createTodo = async (req, res) => {};
+exports.createTodo = async (req, res) => {
+  try {
+    console.log(req.body.data);
+    console.log("IN TRY");
+    // await Todo.create(req.body.data);
+    const todo = new Todo(req.body.data);
+    await todo.save();
+    console.log("AFTER AWAIT");
+    return res.status(201).json({ message: "Todo successfully created" });
+  } catch (err) {
+    console.log("IN ERROR");
+    return res.status(500).json({ err: err.message });
+  }
+};
 
 exports.updateTodo = async (req, res) => {
   try {
@@ -43,5 +56,15 @@ exports.updateAllTodos = async (req, res) => {
     return res.json({ message: "Success" });
   } catch (err) {
     return res.status(500).json({ err: err.message });
+  }
+};
+
+exports.deleteTodo = async (req, res) => {
+  try {
+    await Todo.deleteOne({ taskId: req.body.id });
+    return res.json({ message: "Success" });
+  } catch (err) {
+    console.log(err);
+    return res.json({ message: "Deletion error" });
   }
 };

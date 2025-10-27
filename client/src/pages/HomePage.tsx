@@ -2,62 +2,44 @@ import todoType from "../types/todoType";
 import { useGetTodos, useTodoActions } from "../store/todoStore";
 import { useContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import FiltersInput from "../components/FiltersInput";
 import emptyTodo from "../utils/emptyTodo";
 import todoFiltersType from "../types/todoFiltersType";
 import emptyTodoFilters from "../utils/emptyTodoFilters";
-
-import TodoSection from "../components/TodoSection";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
-import useCheckAuth from "../hooks/useCheckAuth";
 import { useSetSynced, useSynced } from "../store/syncStore";
-import updateDB from "../utils/updateDB";
-import useSyncDB from "../hooks/useSyncDB";
-import useCheckAuthNew from "../hooks/useCheckAuthNew";
 import AuthContext from "../context/AuthProvider";
-import { Link, useNavigate } from "react-router";
 import useRefreshToken from "../hooks/useRefreshToken";
-import usePersistLogin from "../hooks/usePersistLogin";
-import { CREATE_TAG } from "../routes/routes";
 import DisplayOptions from "../components/DisplayOptions";
 import {
   Alert,
-  BottomNavigation,
-  BottomNavigationAction,
-  Box,
   Button,
-  Card,
   CircularProgress,
   Divider,
   IconButton,
   InputAdornment,
-  LinearProgress,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { AnimatePresence, motion } from "motion/react";
 import TodoItem from "../components/TodoItem";
-import EditTodoModal from "../components/EditTodoDialog";
-import EditTodoDialog from "../components/EditTodoDialog";
-import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import CreateTodoDialog from "../components/CreateTodoDialog";
+import {
+  addTodoLS,
+  addTodosLS,
+  deleteTodoLS,
+  getTodosLS,
+  updateTodosLS,
+} from "../utils/localStorage";
 
 const HomePage = () => {
   // Get all todos from store
   const todos: todoType[] = useGetTodos();
-  // const todos = [];
-  // console.log("TODOS");
-  // console.log(todos);
-  // const [todos, setTodos] = useState<todoType[]>([]);
   const synced = useSynced();
   const setSynced = useSetSynced();
   // Function for creating a todo
   const { createTodo, setTodos } = useTodoActions();
-
-  const [show, setShow] = useState(true);
 
   const { auth } = useContext(AuthContext);
 
@@ -81,13 +63,9 @@ const HomePage = () => {
   const [sortOrder, setSortOrder] = useState<"ascending" | "descending">(
     "ascending"
   );
-  console.log("AUTH");
-  console.log(auth);
   const [loginNotification, setLoginNotification] = useState(false);
 
   const [LSNotification, setLSNotification] = useState(false);
-
-  const refresh = useRefreshToken();
 
   // Checks if the user is logged in, and if so then get their todos.
   // useCheckAuth();
@@ -147,15 +125,8 @@ const HomePage = () => {
     }
   };
 
-  const handleSaveToLS = () => {
-    let todosLS = JSON.parse(localStorage.getItem("todos"));
-    todosLS = [...todosLS, { ...newTodo, userId: "" }];
-    localStorage.setItem("todos", JSON.stringify(todosLS));
-  };
-
   const handleDeleteTodoLS = (todoId: string) => {
-    let newTodos = todos.filter((todo) => todo.taskId !== todoId);
-    localStorage.setItem("todos", JSON.stringify(newTodos));
+    deleteTodoLS(todos, todoId);
   };
 
   const handleFetchTodos = async () => {
@@ -182,33 +153,6 @@ const HomePage = () => {
       setTodos(formattedTodos);
     } catch (err) {
       console.log(err);
-    }
-  };
-
-  // Fetches todos that are saved to local storage if the user is
-  // not logged in
-  const handleFetchTodosLS = () => {
-    let todosLS = JSON.parse(localStorage.getItem("todos"));
-    // When we fetch the data from local storage, the date values will
-    // no longer be date objects but strings instead, so we must convert
-    // these back into date objects.
-    if (todosLS) {
-      todosLS = todosLS.map((todo) => {
-        let start = null;
-        let end = null;
-        if (todo.start) {
-          start = new Date(todo.start);
-        }
-
-        if (todo.end) {
-          end = new Date(todo.end);
-        }
-
-        return { ...todo, start, end };
-      });
-      setTodos(todosLS);
-    } else {
-      setTodos([]);
     }
   };
 
@@ -253,16 +197,6 @@ const HomePage = () => {
   const resetTodo = () => {
     setNewTodo({ ...emptyTodo, taskId: uuidv4() });
   };
-
-  // // Get the number of todos that have been checked off as completed
-  // const getNumberOfCompletedTodos = () => {
-  //   return todos.filter((todo: todoType) => todo.isComplete).length;
-  // };
-
-  // // Get percentage of completed todos
-  // const getCompletedValue = () => {
-  //   return (getNumberOfCompletedTodos() / todos.length) * 100;
-  // };
 
   const getFilteredTodos = () => {
     let filtered = [...todos];
@@ -355,33 +289,33 @@ const HomePage = () => {
   // Organises the todos into their statuses, namely 'Pending', 'Upcoming',
   // 'Overdue' and 'Complete'. (NOTE: this is done AFTER the todos have been
   // filtered, to avoid unnecessary allocation of todos.).
-  const organiseTodosByStatus = () => {
-    let pending: todoType[] = [];
-    let upcoming: todoType[] = [];
-    let overdue: todoType[] = [];
-    let completed: todoType[] = [];
-    const filteredTodos = getFilteredTodos();
+  // const organiseTodosByStatus = () => {
+  //   let pending: todoType[] = [];
+  //   let upcoming: todoType[] = [];
+  //   let overdue: todoType[] = [];
+  //   let completed: todoType[] = [];
+  //   const filteredTodos = getFilteredTodos();
 
-    for (let i = 0; i < filteredTodos.length; i++) {
-      const todo = filteredTodos[i];
-      if (!todo.isComplete && hasExceededStart(todo) && !hasExceededEnd(todo)) {
-        pending = [...pending, todo];
-      } else if (!todo.isComplete && !hasExceededStart(todo)) {
-        upcoming = [...upcoming, todo];
-      } else if (!todo.isComplete && hasExceededEnd(todo)) {
-        overdue = [...overdue, todo];
-      } else if (todo.isComplete) {
-        completed = [...completed, todo];
-      }
-    }
+  //   for (let i = 0; i < filteredTodos.length; i++) {
+  //     const todo = filteredTodos[i];
+  //     if (!todo.isComplete && hasExceededStart(todo) && !hasExceededEnd(todo)) {
+  //       pending = [...pending, todo];
+  //     } else if (!todo.isComplete && !hasExceededStart(todo)) {
+  //       upcoming = [...upcoming, todo];
+  //     } else if (!todo.isComplete && hasExceededEnd(todo)) {
+  //       overdue = [...overdue, todo];
+  //     } else if (todo.isComplete) {
+  //       completed = [...completed, todo];
+  //     }
+  //   }
 
-    return [
-      { status: "Pending", todos: sortTodos(pending) },
-      { status: "Upcoming", todos: sortTodos(upcoming) },
-      { status: "Overdue", todos: sortTodos(overdue) },
-      { status: "Completed", todos: sortTodos(completed) },
-    ];
-  };
+  //   return [
+  //     { status: "Pending", todos: sortTodos(pending) },
+  //     { status: "Upcoming", todos: sortTodos(upcoming) },
+  //     { status: "Overdue", todos: sortTodos(overdue) },
+  //     { status: "Completed", todos: sortTodos(completed) },
+  //   ];
+  // };
 
   // useCheckAuthNew();
   console.log("FILTER GROUPS");
@@ -391,7 +325,7 @@ const HomePage = () => {
     if (auth) {
       handleFetchTodos();
     } else {
-      handleFetchTodosLS();
+      setTodos(getTodosLS());
     }
   }, [auth]);
 
@@ -414,12 +348,8 @@ const HomePage = () => {
   useEffect(() => {
     if (auth) {
       const todosLS = JSON.parse(localStorage.getItem("todos"));
-      console.log("TODOS LS");
-      console.log(todosLS);
       if (todosLS) {
-        console.log("PASS 1");
         if (todosLS.length > 0) {
-          console.log("PASS 2");
           setLSNotification(true);
         } else {
           setLSNotification(false);
@@ -462,21 +392,11 @@ const HomePage = () => {
     return (getCompletedPendingTodos() / getCurrentTodos().length) * 100;
   };
 
-  // const getNumberOfOverdueTodos = () => {
-  //   const numberOfOverdueTodos = todos.reduce((count, todo)  => {
-  //     return count + (!todo.isComplete && hasExceededEnd(todo) ? 1 : 0)
-  //   }, 0)
-
-  //   return numberOfOverdueTodos
-  // }
-
   const numberOfOverdueTodos = todos.reduce((count, todo) => {
     return count + (!todo.isComplete && hasExceededEnd(todo) ? 1 : 0);
   }, 0);
 
   return (
-    // <Stack gap="1rem" height="100%"> BEFORE
-    // <Stack gap="1rem" flex="1" minHeight="0">
     <>
       <CreateTodoDialog open={openDialog} setOpen={setOpenDialog} />
 
@@ -633,7 +553,7 @@ const HomePage = () => {
                         if (auth) {
                           handleSaveToDB();
                         } else {
-                          handleSaveToLS();
+                          addTodoLS(newTodo);
                         }
                         resetTodo();
                       }}

@@ -44,6 +44,7 @@ import { AnimatePresence, motion } from "motion/react";
 import EditTodoModal from "./EditTodoDialog";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { deleteTodoLS, getTagsLS, updateTodoLS } from "../utils/localStorage";
 
 type props = {
   todo: todoType;
@@ -227,10 +228,7 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
     };
 
     const handleFetchTagsLS = () => {
-      let tagsLS = JSON.parse(localStorage.getItem("tags"));
-      if (!tagsLS) {
-        tagsLS = [];
-      }
+      const tagsLS = getTagsLS();
       setTags(tagsLS);
       setAllTags(tagsLS);
       setTagsFetched(true);
@@ -359,6 +357,8 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
                       checkTodo(todo.taskId);
                       if (auth) {
                         handleSaveToDB();
+                      } else {
+                        updateTodoLS(todo);
                       }
                       setSynced(false);
                     }}
@@ -475,7 +475,7 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
                       if (auth) {
                         handleDeleteTodoDB();
                       } else {
-                        handleDeleteTodoLS();
+                        deleteTodoLS(todo.taskId);
                       }
                       setSynced(false);
                     }}

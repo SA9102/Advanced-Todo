@@ -12,4 +12,6 @@ router.get("/", verifyJWT, tagController.getAllTags); // Get all tags that the u
 
 router.post("/", verifyJWT, tagController.createTag); // Create a new tag
 
+router.delete("/", verifyJWT, tagController.deleteTag);
+
 module.exports = router;

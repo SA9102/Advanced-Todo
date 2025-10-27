@@ -1,5 +1,28 @@
 # Change Log
 
+## 27th October 2025
+
+- Fixed issue with deleting todos from local storage
+
+## 15th October 2025
+
+- Fixed functionality of creating todos when logged in.
+- Notifications function properly.
+
+## 14th October 2025
+
+- Logging out now works.
+
+## 13th October 2025
+
+- Made app on bigger screens look a bit more appealing.
+
+## 3rd October 2025
+
+- Todos are now scrollable.
+- Two options at the bottom navigation bar: "Todos" and "Tags". You can switch to the "Tags" page to create and edit tags.
+- Tags that are deleted will also be removed from todos that were previously linked with them.
+
 ## 23rd September 2025
 
 - Switched from Mantine to MUI as I did not like the interface, plus MUI is much more supported (many changes were required).

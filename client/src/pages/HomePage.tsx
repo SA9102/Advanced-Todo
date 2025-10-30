@@ -32,22 +32,24 @@ import {
   getTodosLS,
   updateTodosLS,
 } from "../utils/localStorage";
+import {
+  getCompletedPendingTodos,
+  getCompletedValue,
+  getCurrentTodos,
+  getNumberOfCompletedTodos,
+  getPercentageOfCompletedPendingTodos,
+  hasExceededEnd,
+  hasExceededStart,
+} from "../utils/todoUtils";
 
 const HomePage = () => {
-  // Get all todos from store
-  const todos: todoType[] = useGetTodos();
   const synced = useSynced();
   const setSynced = useSetSynced();
   // Function for creating a todo
-  const { createTodo, setTodos } = useTodoActions();
 
-  const { auth } = useContext(AuthContext);
-
-  // Input for adding a new todo
-  const [newTodo, setNewTodo] = useState<todoType>(emptyTodo);
-  // Input for todo filters
+  const [newTodo, setNewTodo] = useState<todoType>(emptyTodo); // Input for adding a new todo
   const [todoFilters, setTodoFilters] =
-    useState<todoFiltersType>(emptyTodoFilters);
+    useState<todoFiltersType>(emptyTodoFilters); // Input for todo filters
   // The different 'states' that a todo item can be in
   const [filterGroups, setFilterGroups] = useState([
     "Pending",
@@ -55,17 +57,17 @@ const HomePage = () => {
     "Upcoming",
     "Overdue",
   ]);
-
-  const [openDialog, setOpenDialog] = useState(false);
-
   // By what the todos are sorted
   const [sortBy, setSortBy] = useState<"name" | "priority">("priority");
   const [sortOrder, setSortOrder] = useState<"ascending" | "descending">(
     "ascending"
   );
+  const [openDialog, setOpenDialog] = useState(false);
   const [loginNotification, setLoginNotification] = useState(false);
-
   const [LSNotification, setLSNotification] = useState(false);
+  const { auth } = useContext(AuthContext);
+  const todos: todoType[] = useGetTodos(); // Get all todos from store
+  const { createTodo, setTodos } = useTodoActions();
 
   // Checks if the user is logged in, and if so then get their todos.
   // useCheckAuth();
@@ -256,68 +258,6 @@ const HomePage = () => {
     return todos;
   };
 
-  // Check if the todo item has a start date and, if it does then check
-  // if the current time is past this start date.
-  const hasExceededStart = (todo: todoType) => {
-    if (todo.start !== null) {
-      const todoStart = new Date(todo.start);
-      if (Date.now() >= todoStart.getTime()) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return true;
-    }
-  };
-
-  // Check if the todo item has an end date and, if it does then check
-  // if the current time is past this end date.
-  const hasExceededEnd = (todo: todoType) => {
-    if (todo.end !== null) {
-      const todoEnd = new Date(todo.end);
-      if (Date.now() >= todoEnd.getTime()) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  };
-
-  // Organises the todos into their statuses, namely 'Pending', 'Upcoming',
-  // 'Overdue' and 'Complete'. (NOTE: this is done AFTER the todos have been
-  // filtered, to avoid unnecessary allocation of todos.).
-  // const organiseTodosByStatus = () => {
-  //   let pending: todoType[] = [];
-  //   let upcoming: todoType[] = [];
-  //   let overdue: todoType[] = [];
-  //   let completed: todoType[] = [];
-  //   const filteredTodos = getFilteredTodos();
-
-  //   for (let i = 0; i < filteredTodos.length; i++) {
-  //     const todo = filteredTodos[i];
-  //     if (!todo.isComplete && hasExceededStart(todo) && !hasExceededEnd(todo)) {
-  //       pending = [...pending, todo];
-  //     } else if (!todo.isComplete && !hasExceededStart(todo)) {
-  //       upcoming = [...upcoming, todo];
-  //     } else if (!todo.isComplete && hasExceededEnd(todo)) {
-  //       overdue = [...overdue, todo];
-  //     } else if (todo.isComplete) {
-  //       completed = [...completed, todo];
-  //     }
-  //   }
-
-  //   return [
-  //     { status: "Pending", todos: sortTodos(pending) },
-  //     { status: "Upcoming", todos: sortTodos(upcoming) },
-  //     { status: "Overdue", todos: sortTodos(overdue) },
-  //     { status: "Completed", todos: sortTodos(completed) },
-  //   ];
-  // };
-
-  // useCheckAuthNew();
   console.log("FILTER GROUPS");
   console.log(filterGroups);
 
@@ -361,36 +301,6 @@ const HomePage = () => {
       setLSNotification(false);
     }
   }, [auth]);
-
-  const getNumberOfCompletedTodos = () => {
-    return todos.filter((todo: todoType) => todo.isComplete).length;
-  };
-
-  const getCompletedValue = () => {
-    return (getNumberOfCompletedTodos() / todos.length) * 100;
-  };
-
-  // Here, 'current' todos means the todos that are pending, and the todos that are complete that were also pending before.
-  const getCurrentTodos = () => {
-    const currentTodos = todos.filter((todo) => {
-      if (hasExceededStart(todo) && !hasExceededEnd(todo)) {
-        return todo;
-      }
-    });
-    return currentTodos;
-  };
-
-  const getCompletedPendingTodos = () => {
-    const currentTodos = getCurrentTodos();
-    const completedCurrentTodos = currentTodos.reduce((count, todo) => {
-      return count + (todo?.isComplete ? 1 : 0);
-    }, 0);
-    return completedCurrentTodos;
-  };
-
-  const getPercentageOfCompletedPendingTodos = () => {
-    return (getCompletedPendingTodos() / getCurrentTodos().length) * 100;
-  };
 
   const numberOfOverdueTodos = todos.reduce((count, todo) => {
     return count + (!todo.isComplete && hasExceededEnd(todo) ? 1 : 0);
@@ -488,23 +398,23 @@ const HomePage = () => {
             <CircularProgress
               size="2rem"
               variant="determinate"
-              value={getPercentageOfCompletedPendingTodos()}
+              value={getPercentageOfCompletedPendingTodos(todos)}
               enableTrackSlot
             />
             <Typography>
-              Current todos: {getCompletedPendingTodos()} /{" "}
-              {getCurrentTodos().length}
+              Current todos: {getCompletedPendingTodos(todos)} /{" "}
+              {getCurrentTodos(todos).length}
             </Typography>
           </Stack>
           <Stack alignItems="center" gap="0.5rem" flex="1">
             <CircularProgress
               size="2rem"
               variant="determinate"
-              value={getCompletedValue()}
+              value={getCompletedValue(todos)}
               enableTrackSlot
             />
             <Typography>
-              All todos: {getNumberOfCompletedTodos()} / {todos.length}
+              All todos: {getNumberOfCompletedTodos(todos)} / {todos.length}
             </Typography>
           </Stack>
           {/* <Typography>All pending todos are complete!</Typography> */}

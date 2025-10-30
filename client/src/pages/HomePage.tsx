@@ -9,7 +9,6 @@ import axios from "axios";
 import { API_BASE_URL } from "../config";
 import { useSetSynced, useSynced } from "../store/syncStore";
 import AuthContext from "../context/AuthProvider";
-import useRefreshToken from "../hooks/useRefreshToken";
 import DisplayOptions from "../components/DisplayOptions";
 import {
   Alert,
@@ -25,13 +24,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import TodoItem from "../components/TodoItem";
 import CreateTodoDialog from "../components/CreateTodoDialog";
-import {
-  addTodoLS,
-  addTodosLS,
-  deleteTodoLS,
-  getTodosLS,
-  updateTodosLS,
-} from "../utils/localStorage";
+import { addTodoLS, deleteTodoLS, getTodosLS } from "../utils/localStorage";
 import {
   getCompletedPendingTodos,
   getCompletedValue,
@@ -45,8 +38,6 @@ import {
 const HomePage = () => {
   const synced = useSynced();
   const setSynced = useSetSynced();
-  // Function for creating a todo
-
   const [newTodo, setNewTodo] = useState<todoType>(emptyTodo); // Input for adding a new todo
   const [todoFilters, setTodoFilters] =
     useState<todoFiltersType>(emptyTodoFilters); // Input for todo filters

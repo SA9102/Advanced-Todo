@@ -1,3 +1,4 @@
+import tagType from "../types/tagType";
 import todoType from "../types/todoType";
 
 const retrieveTodosLS = () => {
@@ -59,8 +60,18 @@ export const deleteTodoLS = (todoId: string) => {
 
 export const getTagsLS = () => {
   let tags = JSON.parse(localStorage.getItem("tags"));
-  if (tags) {
+  if (!tags) {
     tags = [];
   }
   return tags;
+};
+
+export const addTagToLS = (tagInput: tagType) => {
+  let tagsLS = JSON.parse(localStorage.getItem("tags"));
+  if (!tagsLS) {
+    tagsLS = [tagInput];
+  } else {
+    tagsLS = [...tagsLS, tagInput];
+  }
+  localStorage.setItem("tags", JSON.stringify(tagsLS));
 };

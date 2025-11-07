@@ -18,6 +18,7 @@ import { useGetTags, useTagActions } from "../store/tagStore";
 import TagItem from "../components/TagItem";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
+import { addTagToLS, getTagsLS } from "../utils/localStorage";
 
 const TagsPage = () => {
   // const [tags, setTags] = useState<tagType[]>([]);
@@ -44,15 +45,6 @@ const TagsPage = () => {
     }
   };
 
-  const handleFetchTagsLS = () => {
-    const tagsLS = JSON.parse(localStorage.getItem("tags"));
-    if (tagsLS) {
-      setTags(tagsLS);
-    } else {
-      setTags([]);
-    }
-  };
-
   const handleSaveToDB = async () => {
     const data = {
       tagId: tagInput.tagId,
@@ -76,21 +68,11 @@ const TagsPage = () => {
     }
   };
 
-  const handleSaveToLS = () => {
-    let tagsLS = JSON.parse(localStorage.getItem("tags"));
-    if (!tagsLS) {
-      tagsLS = [tagInput];
-    } else {
-      tagsLS = [...tagsLS, tagInput];
-    }
-    localStorage.setItem("tags", JSON.stringify(tagsLS));
-  };
-
   useEffect(() => {
     if (auth) {
       handleFetchTagsDB();
     } else {
-      handleFetchTagsLS();
+      setTags(getTagsLS());
     }
   }, [auth, createTag]);
 
@@ -152,7 +134,7 @@ const TagsPage = () => {
               if (auth) {
                 handleSaveToDB();
               } else {
-                handleSaveToLS();
+                addTagToLS(tagInput);
               }
               setOpenDialog(false);
             }}

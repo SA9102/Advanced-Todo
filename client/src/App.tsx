@@ -72,6 +72,11 @@ if (!loginNotification) {
   localStorage.setItem("loginNotification", "on");
 }
 
+const tagsLS = localStorage.getItem("tags");
+if (!tagsLS) {
+  localStorage.setItem("tags", JSON.stringify([]));
+}
+
 const App = () => {
   const { auth, setAuth } = useContext(AuthContext);
   const logout = useLogout();

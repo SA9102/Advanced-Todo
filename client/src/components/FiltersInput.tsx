@@ -54,8 +54,6 @@ const FiltersInput = ({
     setFilterGroups(newFilterGroups);
   };
 
-  // console.log("TODO FILTERS TAGS")
-  // console.log(todoFilters.tags);
   return (
     <Stack gap="1rem">
       <TextField

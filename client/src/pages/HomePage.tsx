@@ -111,7 +111,6 @@ const HomePage = () => {
           headers: { Authorization: auth.accessToken },
         }
       );
-      console.log("TODO CREATION SUCCESSFUL");
       navigate(HOME);
     } catch (err) {
       console.log(err);
@@ -248,9 +247,6 @@ const HomePage = () => {
     }
     return todos;
   };
-
-  console.log("FILTER GROUPS");
-  console.log(filterGroups);
 
   useEffect(() => {
     if (auth) {

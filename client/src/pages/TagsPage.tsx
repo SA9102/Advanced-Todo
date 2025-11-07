@@ -34,7 +34,6 @@ const TagsPage = () => {
         withCredentials: true,
         headers: { Authorization: auth.accessToken },
       });
-      console.log("SUCCESS", tagsDB.data.data);
       if (tagsDB?.data?.data) {
         setTags(tagsDB.data.data);
       } else {
@@ -47,7 +46,6 @@ const TagsPage = () => {
 
   const handleFetchTagsLS = () => {
     const tagsLS = JSON.parse(localStorage.getItem("tags"));
-    console.log("TAGS LS:", tagsLS);
     if (tagsLS) {
       setTags(tagsLS);
     } else {
@@ -55,18 +53,13 @@ const TagsPage = () => {
     }
   };
 
-
-
   const handleSaveToDB = async () => {
-    console.log("saving to db");
     const data = {
       tagId: tagInput.tagId,
       label: tagInput.label,
       colour: tagInput.colour,
       userId: auth._id,
     };
-    console.log("DATA");
-    console.log(data);
     try {
       const res = await axios.post(
         `${API_BASE_URL}/tag`,
@@ -84,7 +77,6 @@ const TagsPage = () => {
   };
 
   const handleSaveToLS = () => {
-    console.log("saving to ls");
     let tagsLS = JSON.parse(localStorage.getItem("tags"));
     if (!tagsLS) {
       tagsLS = [tagInput];

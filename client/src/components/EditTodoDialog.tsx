@@ -214,10 +214,8 @@ const EditTodoDialog = ({ open, setOpen, todo }) => {
               setOpen(false);
               updateTodo(todoInput);
               if (auth) {
-                console.log("SAVE TO DB");
                 handleSaveToDB();
               } else {
-                console.log("SAVE TO LS");
                 handleSaveToLS();
               }
             }}

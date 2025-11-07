@@ -63,7 +63,6 @@ const CreateTodoDialog = ({ open, setOpen }) => {
           headers: { Authorization: auth.accessToken },
         }
       );
-      console.log("TODO CREATION SUCCESSFUL");
       navigate(HOME);
     } catch (err) {
       console.log(err);
@@ -211,10 +210,8 @@ const CreateTodoDialog = ({ open, setOpen }) => {
               setOpen(false);
               createTodo(todoInput);
               if (auth) {
-                console.log("SAVE TO DB");
                 handleSaveToDB();
               } else {
-                console.log("SAVE TO LS");
                 handleSaveToLS();
               }
               setTodoInput({ ...emptyTodo, taskId: uuidv4() });

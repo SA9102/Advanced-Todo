@@ -10,9 +10,6 @@ const useLogout = () => {
   const navigate = useNavigate();
 
   const logout = async () => {
-    // setAuth({});
-    console.log(auth);
-    console.log("doing logout");
     try {
       const res = await axios.post(
         `${API_BASE_URL}/auth/logout`,
@@ -22,7 +19,6 @@ const useLogout = () => {
           headers: { Authorization: auth.accessToken },
         }
       );
-      console.log(res);
       setAuth({});
     } catch (err) {
       console.log(err);

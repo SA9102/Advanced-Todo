@@ -5,21 +5,10 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Route, Routes, useLocation, useNavigate } from "react-router";
+import { Route, Routes, useNavigate } from "react-router";
 import HomePage from "./pages/HomePage";
-import {
-  CREATE_TAG,
-  HOME,
-  EDIT_TODO,
-  REGISTER,
-  LOGIN,
-  TAGS,
-} from "./routes/routes";
-import EditTodoPage from "./pages/EditTodoPage";
+import { HOME, TAGS } from "./routes/routes";
 import "./index.css";
-import TagPage from "./pages/TagPage";
-import RegisterPage from "./pages/RegisterPage";
-import LoginPage from "./pages/LoginPage";
 import { useContext, useState } from "react";
 import AuthContext from "./context/AuthProvider";
 import useLogout from "./hooks/useLogout";
@@ -148,11 +137,7 @@ const App = () => {
         </Stack>
         <Routes>
           <Route path={HOME} element={<HomePage />} />
-          <Route path={CREATE_TAG} element={<TagPage />} />
-          <Route path={EDIT_TODO} element={<EditTodoPage />} />
           <Route path={TAGS} element={<TagsPage />} />
-          <Route path={REGISTER} element={<RegisterPage />} />
-          <Route path={LOGIN} element={<LoginPage />} />
         </Routes>
         <Stack>
           <BottomNavigation

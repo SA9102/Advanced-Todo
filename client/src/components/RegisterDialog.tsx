@@ -102,22 +102,7 @@ const RegisterDialog = ({ open, setOpen }) => {
         >
           Cancel
         </Button>
-        <Button
-          onClick={handleSubmit}
-          // onClick={() => {
-          //   setOpen(false);
-          // //   updateTodo(todoInput);
-          //   if (auth) {
-          //     console.log("SAVE TO DB");
-          //     // handleSaveToDB();
-          //   } else {
-          //     console.log("SAVE TO LS");
-          //     // handleSaveToLS();
-          //   }
-          // }}
-        >
-          Register
-        </Button>
+        <Button onClick={handleSubmit}>Register</Button>
       </DialogActions>
     </Dialog>
   );

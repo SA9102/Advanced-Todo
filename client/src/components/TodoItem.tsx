@@ -45,19 +45,10 @@ import EditTodoModal from "./EditTodoDialog";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { deleteTodoLS, getTagsLS, updateTodoLS } from "../utils/localStorage";
+import { hasExceededStart, hasExceededEnd } from "../utils/todoUtils";
 
 type props = {
   todo: todoType;
-};
-
-const options = {
-  weekday: "short",
-  month: "short",
-  day: "2-digit",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit",
-  hour12: false,
 };
 
 // Renders a todo item
@@ -81,10 +72,8 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
 
   const { setTags } = useTagActions();
 
-  const sync = useSynced();
   const setSynced = useSetSynced();
 
-  // const allTags: tagType[] = useGetTags();
   const [allTags, setAllTags] = useState([]);
 
   const [newTodo, setNewTodo] = useState(todo);
@@ -92,8 +81,6 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
   const [tagsFetched, setTagsFetched] = useState(false);
 
   const { auth } = useContext(AuthContext);
-
-  const layout = useGetLayout();
 
   const [menuAnchor, setMenuAnchor] = useState(null);
   const open = Boolean(menuAnchor);
@@ -105,15 +92,12 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
   };
 
   const handleDeleteTodoDB = async () => {
-    console.log("DELETING TODO...");
     try {
-      // await axios.put(`${API_BASE_URL}/`)
       await axios.delete(`${API_BASE_URL}/todo`, {
         data: { id: todo.taskId },
         withCredentials: true,
         headers: { Authorization: auth.accessToken },
       });
-      console.log("DELETION SUCCESSFUL");
       navigate(HOME);
     } catch (err) {
       console.log(err);
@@ -121,13 +105,8 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
   };
   const handleDeleteTodoLS = () => {};
 
-  const longPress = useLongPress(() => {
-    console.log("Long pressed!");
-  });
-
   const handleSaveToDB = async () => {
     try {
-      // await axios.put(`${API_BASE_URL}/`)
       await axios.put(
         `${API_BASE_URL}/todo/todo`,
         {
@@ -171,18 +150,6 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
     changeTask(todo.taskId, false);
   };
 
-  // Return the colour based on the todo item's priority
-  const getPriorityColour = () => {
-    switch (todo.priority) {
-      case "1":
-        return "green";
-      case "2":
-        return "yellow";
-      case "3":
-        return "red";
-    }
-  };
-
   // Check if the todo has some text as its description
   const hasDescription = () => {
     return todo.description.trim() !== "";
@@ -194,7 +161,6 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
   };
 
   // Check if todo has a start datetime specified
-
   const hasStart = () => todo.start !== null;
 
   // Check if todo has an end datetime specified
@@ -205,12 +171,6 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
   const canBeExpanded = () => {
     return hasDescription() || hasTags() || hasEnd();
   };
-
-  function formatDate(date: Date): string {
-    return date.toISOString().split("T")[0];
-  }
-
-  // const iconColor = colorScheme === "light" ? "gray" : "white";
 
   useEffect(() => {
     const handleFetchTags = async () => {
@@ -241,355 +201,200 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
     }
   }, []);
 
-  // console.log
-
-  // Check if the todo item has a start date and, if it does then check
-  // if the current time is past this start date.
-  const hasExceededStart = (todo: todoType) => {
-    if (todo.start !== null) {
-      const todoStart = new Date(todo.start);
-      if (Date.now() >= todoStart.getTime()) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return true;
-    }
-  };
-
-  // Check if the todo item has an end date and, if it does then check
-  // if the current time is past this end date.
-  const hasExceededEnd = (todo: todoType) => {
-    if (todo.end !== null) {
-      const todoEnd = new Date(todo.end);
-      if (Date.now() >= todoEnd.getTime()) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  };
-
   const status = getStatus();
-  // console.log("--- STATUS ---");
-  // console.log(status);
   return (
     <Stack>
-      <AnimatePresence>
-        <Card
-          elevation={0}
-          // component={motion.div}
-          // initial={{ scale: 0.95 }}
-          // animate={{ scale: 1 }}
-          style={{
-            // backgroundColor: "#212121",
-            borderLeft:
-              "2px solid " +
-              (todo.priority === "1"
-                ? "#008f49"
-                : todo.priority === "2"
-                ? "#946426"
-                : "#9c3232"),
-          }}
-          // style={{
-          //   borderLeft: `2px solid var(--mantine-color-${getPriorityColour()}-9)`,
-          //   flexGrow: "1",
-          //   display: "inline-block",
-          //   width: "100%",
-          // }}
-          key={todo.taskId}
-          // shadow="xs"
-          // px="xs"
-          // py="0.4rem"
-          // flex="1"
-          // onClick={() => checkTodo(todo.taskId)}
-          {...longPress()}
-        >
-          <Stack>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              flexWrap="nowrap"
-            >
-              {todo.isChangingTask ? (
-                <Stack
-                  direction="row"
-                  // wrap="nowrap"
-                  // bgcolor="red"
-                >
-                  <TextField
-                    // size="xs"
-                    value={newTodo.task}
-                    onChange={(e) =>
-                      setNewTodo({ ...newTodo, task: e.target.value })
-                    }
-                  />
-                  <IconButton
-                    // size="xs"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleConfirmChangeTask();
-                    }}
-                  >
-                    <CheckIcon />
-                  </IconButton>
-                  <IconButton
-                    // size="xs"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCancelChangeTask();
-                    }}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                </Stack>
-              ) : (
-                <Stack direction="row" alignItems="center">
-                  <Checkbox
-                    icon={<RadioButtonUncheckedIcon />}
-                    checkedIcon={<CheckCircleIcon />}
-                    size="small"
-                    checked={todo.isComplete}
-                    onClick={() => {
-                      checkTodo(todo.taskId);
-                      if (auth) {
-                        handleSaveToDB();
-                      } else {
-                        updateTodoLS(todo);
-                      }
-                      setSynced(false);
-                    }}
-                  />
-                  <Typography
-                  // size="sm"
-                  // style={{
-                  //   whiteSpace: "nowrap",
-                  //   overflow: "hidden",
-                  //   textOverflow: "ellipsis",
-                  //   flex: 1,
-                  //   minWidth: 0,
-                  // }}
-                  >
-                    {todo.task}
-                  </Typography>
-                </Stack>
-              )}
-              <Stack
-                direction="row"
-                alignItems="center"
-                // wrap="nowrap"
-              >
-                {/* ebdb8f */}
-                <Typography
-                  variant="body2"
-                  style={{
-                    color:
-                      status === "pending"
-                        ? "#ebdb8f"
-                        : status === "upcoming"
-                        ? "#84dfe0"
-                        : status === "overdue"
-                        ? "#e08484"
-                        : "#8ae386",
+      <Card
+        elevation={0}
+        style={{
+          borderLeft:
+            "2px solid " +
+            (todo.priority === "1"
+              ? "#008f49"
+              : todo.priority === "2"
+              ? "#946426"
+              : "#9c3232"),
+        }}
+        key={todo.taskId}
+      >
+        <Stack>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            flexWrap="nowrap"
+          >
+            {todo.isChangingTask ? (
+              <Stack direction="row">
+                <TextField
+                  value={newTodo.task}
+                  onChange={(e) =>
+                    setNewTodo({ ...newTodo, task: e.target.value })
+                  }
+                />
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleConfirmChangeTask();
                   }}
                 >
-                  {status === "pending"
-                    ? "Pending"
-                    : status === "upcoming"
-                    ? "Upcoming"
-                    : status === "overdue"
-                    ? "Overdue"
-                    : "Completed"}
-                </Typography>
-                {canBeExpanded() && (
-                  <IconButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleExpandTodo(todo.taskId);
-                    }}
-                    // variant="transparent"
-                    // size="xs"
-                  >
-                    {todo.isExpanded ? (
-                      // <IconChevronUp color={iconColor} />
-                      <ExpandLessIcon />
-                    ) : (
-                      // <IconChevronDown color={iconColor} />
-                      <ExpandMoreIcon />
-                    )}
-                  </IconButton>
-                )}
-                <IconButton onClick={handleClick}>
-                  <MoreVertIcon />
+                  <CheckIcon />
                 </IconButton>
-                <Menu
-                  // variant="menu"
-                  anchorEl={menuAnchor}
-                  onClose={handleClose}
-                  open={open}
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCancelChangeTask();
+                  }}
                 >
-                  <MenuItem
-                    onClick={(e) => {
-                      handleClose();
-                      e.stopPropagation();
-                      setOpenDialog(true);
-                    }}
-                  >
-                    <ListItemIcon>
-                      <EditDocumentIcon />
-                    </ListItemIcon>
-                    <ListItemText>Edit Todo</ListItemText>
-                  </MenuItem>
-                  <MenuItem
-                    onClick={(e) => {
-                      handleClose();
-                      e.stopPropagation();
-                      changeTask(todo.taskId, true);
-                    }}
-                  >
-                    <ListItemIcon>
-                      <EditIcon />
-                    </ListItemIcon>
-                    <ListItemText>Change Task</ListItemText>
-                  </MenuItem>
-                  {/* <Link to={todo.taskId}>
-                    <MenuItem
-                      onClick={() => {
-                        handleClose;
-                      }}
-                    >
-                      <ListItemIcon>
-                        <EditNoteIcon />
-                      </ListItemIcon>
-                      <ListItemText>Edit</ListItemText>
-                    </MenuItem>
-                  </Link> */}
-                  <MenuItem
-                    onClick={(e) => {
-                      handleClose();
-                      e.stopPropagation();
-                      deleteTodo(todo.taskId);
-                      if (auth) {
-                        handleDeleteTodoDB();
-                      } else {
-                        deleteTodoLS(todo.taskId);
-                      }
-                      setSynced(false);
-                    }}
-                  >
-                    <ListItemIcon>
-                      <DeleteIcon />
-                    </ListItemIcon>
-                    <ListItemText>Delete</ListItemText>
-                  </MenuItem>
-                </Menu>
-                {/* <Menu>
-                <Menu.Target>
-                  <ActionIcon
-                    variant="transparent"
-                    size="xs"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <IconDotsVertical color={iconColor} />
-                  </ActionIcon>
-                </Menu.Target>
-
-                <Menu.Dropdown>
-                  <Menu.Item
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      changeTask(todo.taskId, true);
-                    }}
-                  >
-                    Change Task
-                  </Menu.Item>
-                  <Link to={todo.taskId}>
-                    <Menu.Item>Edit</Menu.Item>
-                  </Link>
-                  <Menu.Item
-                    color="red"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteTodo(todo.taskId);
-                      setSynced(false);
-                    }}
-                  >
-                    Delete
-                  </Menu.Item>
-                </Menu.Dropdown>
-              </Menu> */}
+                  <CloseIcon />
+                </IconButton>
               </Stack>
+            ) : (
+              <Stack direction="row" alignItems="center">
+                <Checkbox
+                  icon={<RadioButtonUncheckedIcon />}
+                  checkedIcon={<CheckCircleIcon />}
+                  size="small"
+                  checked={todo.isComplete}
+                  onClick={() => {
+                    checkTodo(todo.taskId);
+                    if (auth) {
+                      handleSaveToDB();
+                    } else {
+                      updateTodoLS(todo);
+                    }
+                    setSynced(false);
+                  }}
+                />
+                <Typography>{todo.task}</Typography>
+              </Stack>
+            )}
+            <Stack direction="row" alignItems="center">
+              <Typography
+                variant="body2"
+                style={{
+                  color:
+                    status === "pending"
+                      ? "#ebdb8f"
+                      : status === "upcoming"
+                      ? "#84dfe0"
+                      : status === "overdue"
+                      ? "#e08484"
+                      : "#8ae386",
+                }}
+              >
+                {status === "pending"
+                  ? "Pending"
+                  : status === "upcoming"
+                  ? "Upcoming"
+                  : status === "overdue"
+                  ? "Overdue"
+                  : "Completed"}
+              </Typography>
+              {canBeExpanded() && (
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleExpandTodo(todo.taskId);
+                  }}
+                >
+                  {todo.isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+              )}
+              <IconButton onClick={handleClick}>
+                <MoreVertIcon />
+              </IconButton>
+              <Menu anchorEl={menuAnchor} onClose={handleClose} open={open}>
+                <MenuItem
+                  onClick={(e) => {
+                    handleClose();
+                    e.stopPropagation();
+                    setOpenDialog(true);
+                  }}
+                >
+                  <ListItemIcon>
+                    <EditDocumentIcon />
+                  </ListItemIcon>
+                  <ListItemText>Edit Todo</ListItemText>
+                </MenuItem>
+                <MenuItem
+                  onClick={(e) => {
+                    handleClose();
+                    e.stopPropagation();
+                    changeTask(todo.taskId, true);
+                  }}
+                >
+                  <ListItemIcon>
+                    <EditIcon />
+                  </ListItemIcon>
+                  <ListItemText>Change Task</ListItemText>
+                </MenuItem>
+                <MenuItem
+                  onClick={(e) => {
+                    handleClose();
+                    e.stopPropagation();
+                    deleteTodo(todo.taskId);
+                    if (auth) {
+                      handleDeleteTodoDB();
+                    } else {
+                      deleteTodoLS(todo.taskId);
+                    }
+                    setSynced(false);
+                  }}
+                >
+                  <ListItemIcon>
+                    <DeleteIcon />
+                  </ListItemIcon>
+                  <ListItemText>Delete</ListItemText>
+                </MenuItem>
+              </Menu>
             </Stack>
+          </Stack>
 
-            {todo.isExpanded && tagsFetched && (
-              <Stack px="1rem" py="0.5rem" gap="0.5rem">
-                {hasDescription() && (
-                  <Typography fontSize="0.7rem">{todo.description}</Typography>
-                )}
-                {hasStart() && (
-                  <Typography fontSize="0.7rem">
-                    Start:{" "}
-                    {new Date(todo.start!).toLocaleDateString("en-GB", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
-                    })}
-                  </Typography>
-                )}
-                {hasEnd() && (
-                  <Typography fontSize="0.7rem">
-                    End:{" "}
-                    {new Date(todo.end!).toLocaleDateString("en-GB", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
-                    })}
-                  </Typography>
-                )}
-                {hasTags() && (
-                  <Stack direction="row" gap="0.5rem">
-                    {todo.tags.map((tagId) => {
-                      const tagObj = allTags.find((tag) => tag.tagId === tagId);
-                      if (tagObj) {
-                        return (
-                          <Chip
-                            style={{ fontSize: "0.7rem" }}
-                            size="small"
-                            label={tagObj.label}
-                          />
-                        );
-                      }
-                    })}
-                  </Stack>
-                )}
-                {/* {hasTags() && (
-                <Pill.Group>
+          {todo.isExpanded && tagsFetched && (
+            <Stack px="1rem" py="0.5rem" gap="0.5rem">
+              {hasDescription() && (
+                <Typography fontSize="0.7rem">{todo.description}</Typography>
+              )}
+              {hasStart() && (
+                <Typography fontSize="0.7rem">
+                  Start:{" "}
+                  {new Date(todo.start!).toLocaleDateString("en-GB", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                  })}
+                </Typography>
+              )}
+              {hasEnd() && (
+                <Typography fontSize="0.7rem">
+                  End:{" "}
+                  {new Date(todo.end!).toLocaleDateString("en-GB", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                  })}
+                </Typography>
+              )}
+              {hasTags() && (
+                <Stack direction="row" gap="0.5rem">
                   {todo.tags.map((tagId) => {
                     const tagObj = allTags.find((tag) => tag.tagId === tagId);
                     if (tagObj) {
                       return (
-                        <Pill
-                          size="xs"
-                          key={tagObj!.tagId}
-                          style={{
-                            backgroundColor: tagObj!.colour,
-                          }}
-                        >
-                          {tagObj!.label}
-                        </Pill>
+                        <Chip
+                          style={{ fontSize: "0.7rem" }}
+                          size="small"
+                          label={tagObj.label}
+                        />
                       );
                     }
                   })}
-                </Pill.Group>
-              )} */}
-              </Stack>
-            )}
-          </Stack>
-        </Card>
-      </AnimatePresence>
+                </Stack>
+              )}
+            </Stack>
+          )}
+        </Stack>
+      </Card>
       <EditTodoModal open={openDialog} setOpen={setOpenDialog} todo={todo} />
     </Stack>
   );

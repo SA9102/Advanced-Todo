@@ -37,8 +37,6 @@ const LoginDialog = ({ open, setOpen }) => {
         },
         { withCredentials: true }
       );
-      // console.log("!!!!!!!");
-      // console.log(res.data);
       setAuth({
         _id: res.data._id,
         username: loginInput.username,
@@ -101,22 +99,7 @@ const LoginDialog = ({ open, setOpen }) => {
         >
           Cancel
         </Button>
-        <Button
-          onClick={handleSubmit}
-          // onClick={() => {
-          //   setOpen(false);
-          // //   updateTodo(todoInput);
-          //   if (auth) {
-          //     console.log("SAVE TO DB");
-          //     // handleSaveToDB();
-          //   } else {
-          //     console.log("SAVE TO LS");
-          //     // handleSaveToLS();
-          //   }
-          // }}
-        >
-          Log In
-        </Button>
+        <Button onClick={handleSubmit}>Log In</Button>
       </DialogActions>
     </Dialog>
   );

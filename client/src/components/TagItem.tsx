@@ -55,9 +55,7 @@ const TagItem = ({ tag }) => {
     if (todosLS) {
       todosLS = todosLS.map((todoLS: todoType) => {
         const newTags = todoLS.tags.filter((tagId: string) => {
-          console.log("CURRENT TAG:", tagId);
           if (tagId !== tag.tagId) {
-            console.log("Current tag is equal to tag");
             return tagId;
           }
         });

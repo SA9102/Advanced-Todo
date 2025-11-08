@@ -61,7 +61,6 @@ const HomePage = () => {
   const { createTodo, setTodos } = useTodoActions();
 
   // Checks if the user is logged in, and if so then get their todos.
-  // useCheckAuth();
   const handleSyncDB = async () => {
     const formattedTodos = todos.map((todo) => ({
       taskId: todo.taskId,

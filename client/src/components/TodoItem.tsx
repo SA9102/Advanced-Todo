@@ -46,15 +46,18 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { deleteTodoLS, getTagsLS, updateTodoLS } from "../utils/localStorage";
 import { hasExceededStart, hasExceededEnd } from "../utils/todoUtils";
+import useDatabase from "../hooks/useDatabase";
 
 type props = {
   todo: todoType;
 };
 
 // Renders a todo item
-const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
+const TodoItem = ({ todo }: props) => {
   const { updateTodo, checkTodo, deleteTodo, changeTask, toggleExpandTodo } =
     useTodoActions();
+
+  const { updateTodoDB, deleteTodoDB } = useDatabase();
 
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -89,51 +92,6 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
   };
   const handleClose = () => {
     setMenuAnchor(null);
-  };
-
-  const handleDeleteTodoDB = async () => {
-    try {
-      await axios.delete(`${API_BASE_URL}/todo`, {
-        data: { id: todo.taskId },
-        withCredentials: true,
-        headers: { Authorization: auth.accessToken },
-      });
-      navigate(HOME);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const handleDeleteTodoLS = () => {};
-
-  const handleSaveToDB = async () => {
-    try {
-      await axios.put(
-        `${API_BASE_URL}/todo/todo`,
-        {
-          _id: auth._id,
-          username: auth.username,
-          data: {
-            taskId: todo.taskId,
-            task: todo.task,
-            description: todo.description,
-            tags: todo.tags,
-            isComplete: todo.isComplete,
-            // userId: todo.userId,
-            userId: auth._id,
-            priority: "2",
-            start: todo.start,
-            end: todo.end,
-          },
-        },
-        {
-          withCredentials: true,
-          headers: { Authorization: auth.accessToken },
-        }
-      );
-      navigate(HOME);
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   // If 'Save' is pressed when editing
@@ -258,7 +216,7 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
                   onClick={() => {
                     checkTodo(todo.taskId);
                     if (auth) {
-                      handleSaveToDB();
+                      updateTodoDB(todo);
                     } else {
                       updateTodoLS(todo);
                     }
@@ -334,7 +292,7 @@ const TodoItem = ({ todo, onDeleteTodoLS }: props) => {
                     e.stopPropagation();
                     deleteTodo(todo.taskId);
                     if (auth) {
-                      handleDeleteTodoDB();
+                      deleteTodoDB(todo.taskId);
                     } else {
                       deleteTodoLS(todo.taskId);
                     }

@@ -1,5 +1,19 @@
 # Change Log
 
+## 8th November 2025
+
+- Tidying some code (moving database logic to separate custom hook)
+
+## 7th November 2025
+
+- Deleted some unnecessary files
+- Removed most commented-out code
+- Tidying up code
+
+## 30th October 2025
+
+- HomePage.tsx: refactoring and cleaning
+
 ## 27th October 2025
 
 - Fixed issue with deleting todos from local storage

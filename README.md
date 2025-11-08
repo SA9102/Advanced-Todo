@@ -1,8 +1,6 @@
 # Advanced Todo
 
-A simple, efficient and informative task management application.
-
-Currently work-in-progress.
+An organised, feature-rich task management application, designed for efficiency and simplicity.
 
 [View live demo on GitHub Pages](https://sa9102.github.io/Advanced-Todo/)
 
@@ -10,6 +8,16 @@ Currently work-in-progress.
 ![Main page showing filtering options: task/description, priority, tags, and pending/completed/upcoming/overdue](./public/preview2.png)
 ![Edit page showing fields where you can edit the todo task, description, priority and tags](./public/preview3.png)
 ![Grid layout of todo items](./public/preview4.png) -->
+
+## :hammer_and_wrench: Overview
+
+This project began as a simple todo application, but quickly evolved into a more advanced productivity platform. The goal is to combine robust functionality with an intuitive and responsive user interface, and serves as both a learning project and a showcase of modern frontend practises.
+
+Some notes about this project from a development perspective:
+
+- A mobile-frst design approach is used - first building for mobile devices, then scaling up the design to be responsive for larger screens
+- Using global state management, as this would make it easier to scale up the application. Learning Zustand for this.
+- Backend code is structured using MVC.
 
 ## :toolbox: Current Features
 
@@ -83,15 +91,7 @@ npm run dev
 - Mantine
 - React Router
 
-## :hammer_and_wrench: Development
 
-This project began as a simple to-do application, but quickly evolved into a more advanced productivity tool. The goal of this project is to challenge myself by enhancing functionality, while also keeping the user interface responsive, intuitive and efficient. This project serves as an opportunity to not only apply what I have learned, but also to level-up my software development skills.
-
-Some notes about this project from a development perspective:
-
-- A mobile-frst design approach is used - first building for mobile devices, then scaling up the design to be responsive for larger screens
-- Using global state management, as this would make it easier to scale up the application. Learning Zustand for this.
-- Backend code is structured using MVC.
 
 ## Known Issues
 

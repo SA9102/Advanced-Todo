@@ -20,28 +20,6 @@ const RegisterDialog = ({ open, setOpen }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // setError(false);
-
-    // if (!validatePassword()) {
-    //   setPasswordValid(false);
-    //   setError(true);
-    // } else {
-    //   setPasswordValid(true);
-    // }
-
-    // if (!matchPasswords()) {
-    //   setPasswordsMatch(false);
-    //   setError(true);
-    // } else {
-    //   setPasswordsMatch(true);
-    // }
-
-    // if (error) {
-    //   return;
-    // }
-
-    // setLoading(true);
     try {
       const hashedPassword = await bcrypt.hash(registerInput.password, 12);
       await axios.post(

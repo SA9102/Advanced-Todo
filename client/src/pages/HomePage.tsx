@@ -34,6 +34,7 @@ import {
   hasExceededEnd,
   hasExceededStart,
 } from "../utils/todoUtils";
+import useDatabase from "../hooks/useDatabase";
 
 const HomePage = () => {
   const synced = useSynced();
@@ -59,6 +60,7 @@ const HomePage = () => {
   const { auth } = useContext(AuthContext);
   const todos: todoType[] = useGetTodos(); // Get all todos from store
   const { createTodo, setTodos } = useTodoActions();
+  const { getTodosDB, quickAddTodoDB } = useDatabase();
 
   // Checks if the user is logged in, and if so then get their todos.
   const handleSyncDB = async () => {
@@ -84,68 +86,32 @@ const HomePage = () => {
     }
   };
 
-  const handleSaveToDB = async () => {
-    try {
-      // await axios.put(`${API_BASE_URL}/`)
-      await axios.post(
-        `${API_BASE_URL}/todo`,
-        {
-          _id: auth._id,
-          username: auth.username,
-          data: {
-            taskId: newTodo.taskId,
-            task: newTodo.task,
-            description: "",
-            tags: [],
-            isComplete: false,
-            // userId: todoInput?.userId,
-            userId: auth._id,
-            priority: "1",
-            start: null,
-            end: null,
-          },
-        },
-        {
-          withCredentials: true,
-          headers: { Authorization: auth.accessToken },
-        }
-      );
-      navigate(HOME);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  // const setTodos getTo= async () => {
+  //   try {
+  //     const res = await axios.get(`${API_BASE_URL}/todo/`, {
+  //       withCredentials: true,
+  //       headers: { Authorization: auth.accessToken },
+  //     });
+  //     const todos = res.data.data;
+  //     const formattedTodos = todos.map((todo) => ({
+  //       taskId: todo.taskId,
+  //       userId: todo.userId,
+  //       task: todo.task,
+  //       description: todo.description,
+  //       priority: todo.priority,
+  //       tags: todo.tags,
+  //       start: todo.start === null ? null : new Date(todo.start),
+  //       end: todo.end === null ? null : new Date(todo.end),
+  //       isComplete: todo.isComplete,
+  //       isChangingTask: false,
+  //       isExpanded: false,
+  //     }));
 
-  const handleDeleteTodoLS = (todoId: string) => {
-    deleteTodoLS(todos, todoId);
-  };
-
-  const handleFetchTodos = async () => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/todo/`, {
-        withCredentials: true,
-        headers: { Authorization: auth.accessToken },
-      });
-      const todos = res.data.data;
-      const formattedTodos = todos.map((todo) => ({
-        taskId: todo.taskId,
-        userId: todo.userId,
-        task: todo.task,
-        description: todo.description,
-        priority: todo.priority,
-        tags: todo.tags,
-        start: todo.start === null ? null : new Date(todo.start),
-        end: todo.end === null ? null : new Date(todo.end),
-        isComplete: todo.isComplete,
-        isChangingTask: false,
-        isExpanded: false,
-      }));
-
-      setTodos(formattedTodos);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  //     setTodos(formattedTodos);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   const handleTransferLSTodosToDB = async () => {
     let todosLS = JSON.parse(localStorage.getItem("todos"));
@@ -248,11 +214,15 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    if (auth) {
-      handleFetchTodos();
-    } else {
-      setTodos(getTodosLS());
-    }
+    const get = async () => {
+      if (auth) {
+        const todos = await getTodosDB();
+        setTodos(todos);
+      } else {
+        setTodos(getTodosLS());
+      }
+    };
+    get();
   }, [auth]);
 
   useEffect(() => {
@@ -372,7 +342,6 @@ const HomePage = () => {
         {auth && (
           <Button
             style={{ alignSelf: "start" }}
-            // size="compact-xs"
             disabled={synced ? true : false}
             onClick={handleSyncDB}
           >
@@ -418,19 +387,11 @@ const HomePage = () => {
         />
         <Divider />
         <Stack direction="row" gap="0.5rem">
-          <Button
-            onClick={() => setOpenDialog(true)}
-            // style={{ alignSelf: "flex-start" }}
-            // size="small"
-            variant="outlined"
-            // flex="1"
-          >
+          <Button onClick={() => setOpenDialog(true)} variant="outlined">
             New Todo
           </Button>
           <TextField
-            // size="sma"
             variant="outlined"
-            // style={{ border: "1px solid green" }}
             size="small"
             placeholder="Enter todo ..."
             value={newTodo.task}
@@ -447,7 +408,7 @@ const HomePage = () => {
                           userId: auth ? auth._id : "",
                         });
                         if (auth) {
-                          handleSaveToDB();
+                          quickAddTodoDB(newTodo);
                         } else {
                           addTodoLS(newTodo);
                         }
@@ -460,7 +421,6 @@ const HomePage = () => {
                 ),
               },
             }}
-            // flex="1"
           />
         </Stack>
         {numberOfOverdueTodos > 0 && (
@@ -474,15 +434,9 @@ const HomePage = () => {
         )}
         <Stack flex="1" sx={{ overflowY: "auto", minHeight: "0" }} gap="0.5rem">
           {sortTodos(getFilteredTodos()).map((todo) => {
-            return <TodoItem todo={todo} onDeleteTodoLS={handleDeleteTodoLS} />;
+            return <TodoItem todo={todo} />;
           })}
         </Stack>
-
-        {/* <Group
-        gap="xs"
-        // mb="sm"
-      ></Group> */}
-        {/* </Stack> */}
       </Stack>
     </>
   );

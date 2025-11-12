@@ -2,12 +2,15 @@
 
 An organised, feature-rich task management application, designed for efficiency and simplicity.
 
-[View live demo on GitHub Pages](https://sa9102.github.io/Advanced-Todo/)
+<img src="./client/public/img1.png" alt="Main page showing a list of todos, as well as an input for todos, and progress bars." width="225"/>
+<img src="./client/public/img2.png" alt="Main page showing a modal for creating a new todo. Includes input for the name, description, priority, tags, and start and end datetimes for the todo." width="225"/>
 
-<!-- ![Main page showing the list of pending and completed todo, as well as an input for todos, and a progress bar](./client/public/preview1.png)
+<!--
 ![Main page showing filtering options: task/description, priority, tags, and pending/completed/upcoming/overdue](./public/preview2.png)
 ![Edit page showing fields where you can edit the todo task, description, priority and tags](./public/preview3.png)
 ![Grid layout of todo items](./public/preview4.png) -->
+
+[View live demo on GitHub Pages](https://sa9102.github.io/Advanced-Todo/)
 
 ## :hammer_and_wrench: Overview
 
@@ -90,8 +93,6 @@ npm run dev
 - Zustand
 - Mantine
 - React Router
-
-
 
 ## Known Issues
 

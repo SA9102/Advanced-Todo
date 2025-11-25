@@ -19,15 +19,17 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+  console.log("E&ATFGYUV");
   try {
     const user = await User.findOne({ username: req.body.username }).exec();
 
     if (!user) {
+      console.log("Not found user");
       return res
         .status(401)
         .json({ message: "Invalid username and/or password" });
     }
-
+    console.log("Found user");
     const accessToken = jwt.sign(
       { id: user._id },
       process.env.ACCESS_TOKEN_SECRET,

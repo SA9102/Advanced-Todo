@@ -16,6 +16,7 @@ import usePersistLogin from "./hooks/usePersistLogin";
 import TagsPage from "./pages/TagsPage";
 import LoginDialog from "./components/LoginDialog";
 import RegisterDialog from "./components/RegisterDialog";
+import NewHomePage from "./pages/NewHomePage";
 
 const todosLS = localStorage.getItem("todos");
 if (!todosLS) {

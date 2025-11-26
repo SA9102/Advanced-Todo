@@ -19,7 +19,6 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  console.log("E&ATFGYUV");
   try {
     const user = await User.findOne({ username: req.body.username }).exec();
 
@@ -49,7 +48,7 @@ exports.login = async (req, res) => {
     res
       .cookie("token", refreshToken, {
         httpOnly: true, // This prevents JavaScript from accessing the cookie via document.cookie. Helps protect against XSS attacks.
-        secure: false, // If running on localhost, set this to false.
+        secure: true, // If running on localhost, set this to false.
         sameSite: "lax", // A
       })
       .json({ _id: user._id, accessToken });

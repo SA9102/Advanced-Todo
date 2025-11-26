@@ -49,7 +49,7 @@ exports.login = async (req, res) => {
       .cookie("token", refreshToken, {
         httpOnly: true, // This prevents JavaScript from accessing the cookie via document.cookie. Helps protect against XSS attacks.
         secure: true, // If running on localhost, set this to false.
-        sameSite: "lax", // A
+        sameSite: "none", // A
       })
       .json({ _id: user._id, accessToken });
   } catch (err) {
@@ -70,14 +70,14 @@ exports.logout = async (req, res) => {
   if (!user) {
     res.clearCookie("token", {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
     });
     return res.sendStatus(204);
   }
   user.refreshToken = "";
   await user.save();
-  res.clearCookie("token", { httpOnly: true, secure: false, sameSite: "Lax" });
+  res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "none" });
   return res.sendStatus(204);
 };
 

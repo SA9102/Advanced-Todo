@@ -1,6 +1,5 @@
 // Packages
 const express = require("express");
-const jwt = require("jsonwebtoken");
 
 // Controllers
 const todoController = require("../controllers/todo");

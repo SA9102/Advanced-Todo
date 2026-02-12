@@ -339,7 +339,7 @@ const HomePage = () => {
           //   </Button>
           // </Notification>
         )}
-        {auth && (
+        {/* {auth && (
           <Button
             style={{ alignSelf: "start" }}
             disabled={synced ? true : false}
@@ -347,7 +347,7 @@ const HomePage = () => {
           >
             Sync to DB
           </Button>
-        )}
+        )} */}
         <Stack direction="row" justifyContent="center">
           <Stack alignItems="center" gap="0.5rem" flex="1">
             <CircularProgress

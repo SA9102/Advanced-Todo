@@ -17,7 +17,7 @@ exports.getAllTags = async (req, res) => {
   }
 };
 
-exports.createTag = (req, res) => {
+exports.postTag = (req, res) => {
   try {
     const tag = new Tag(req.body.data);
     tag.save();

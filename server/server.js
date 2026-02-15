@@ -4,13 +4,14 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
+const path = require("path");
 
 // Routes
 const authRoutes = require("./routes/auth");
 const todoRoutes = require("./routes/todo");
 const tagRoutes = require("./routes/tag");
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 const app = express();
 
@@ -18,12 +19,18 @@ app.use(express.json());
 app.use(cookieParser()); // Allows us to access cookies through the request object
 app.use(
   cors({
-    // origin: "http://localhost:5173",
-    origin: "https://advanced-todo-2zks.onrender.com",
+    origin: "http://localhost:5173",
+    // origin: "https://advanced-todo-2zks.onrender.com",
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+app.use(express.static(path.join(__dirname, "../client/dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
+});
+
+const apiRoute = "/api/";
 
 // Routes
 app.use("/api/auth", authRoutes);

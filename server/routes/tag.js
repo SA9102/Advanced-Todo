@@ -4,14 +4,14 @@ const express = require("express");
 const tagController = require("../controllers/tag");
 
 // Middleware
-const { verifyJWT } = require("../middleware/auth");
+const { verifyAccessToken } = require("../middleware/auth");
 
 const router = express.Router();
 
-router.get("/", verifyJWT, tagController.getAllTags); // Get all tags that the user has created
+router.get("/", verifyAccessToken, tagController.getAllTags); // Get all tags that the user has created
 
-router.post("/", verifyJWT, tagController.createTag); // Create a new tag
+router.post("/", verifyAccessToken, tagController.postTag); // Create a new tag
 
-router.delete("/", verifyJWT, tagController.deleteTag);
+router.delete("/", verifyAccessToken, tagController.deleteTag);
 
 module.exports = router;

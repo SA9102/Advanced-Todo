@@ -1,8 +1,9 @@
 // Updates the database with the current todos.
 
-import { API_BASE_URL } from "../config";
 import axios from "axios";
 import { getTodos, useGetTodos } from "../store/todoStore";
+
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const updateDB = async () => {
   console.log("EXECUTED");

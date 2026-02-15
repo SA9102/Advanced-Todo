@@ -20,11 +20,11 @@ import AuthContext from "../context/AuthProvider";
 import { useTodoActions } from "../store/todoStore";
 import { useGetTags } from "../store/tagStore";
 import axios from "axios";
-import { API_BASE_URL } from "../config";
 import todoType from "../types/todoType";
 import emptyTodo from "../utils/emptyTodo";
 
 import { v4 as uuidv4 } from "uuid";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const CreateTodoDialog = ({ open, setOpen }) => {
   // const [open, setOpen] = useState(false);

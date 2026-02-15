@@ -17,8 +17,9 @@ import { MuiColorInput } from "mui-color-input";
 import { useGetTags, useTagActions } from "../store/tagStore";
 import TagItem from "../components/TagItem";
 import axios from "axios";
-import { API_BASE_URL } from "../config";
 import { addTagToLS, getTagsLS } from "../utils/localStorage";
+
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const TagsPage = () => {
   // const [tags, setTags] = useState<tagType[]>([]);

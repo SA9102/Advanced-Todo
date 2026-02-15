@@ -3,7 +3,7 @@ import tagType from "../types/tagType";
 import { useGetTags } from "../store/tagStore";
 import todoType from "../types/todoType";
 import axios from "axios";
-import { API_BASE_URL } from "../config";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import AuthContext from "../context/AuthProvider";
 import {
   Chip,

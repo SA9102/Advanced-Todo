@@ -10,7 +10,7 @@ import {
 import axios from "axios";
 import bcrypt from "bcryptjs";
 import { useState } from "react";
-import { API_BASE_URL } from "../config";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const RegisterDialog = ({ open, setOpen }) => {
   const [registerInput, setRegisterInput] = useState({

@@ -11,8 +11,8 @@ import {
 import axios from "axios";
 import bcrypt from "bcryptjs";
 import { useContext, useState } from "react";
-import { API_BASE_URL } from "../config";
 import AuthContext from "../context/AuthProvider";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const LoginDialog = ({ open, setOpen }) => {
   const [loginInput, setLoginInput] = useState({ username: "", password: "" });

@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import AuthContext from "../context/AuthProvider";
 import axios from "axios";
-import { API_BASE_URL } from "../config";
 import { useNavigate } from "react-router";
 import { HOME } from "../routes/routes";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 const useLogout = () => {
   const { auth, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();

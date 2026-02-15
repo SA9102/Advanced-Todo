@@ -3,10 +3,10 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { API_BASE_URL } from "../config";
 import { useGetTodos, useTodoActions } from "../store/todoStore";
 import { useGetSync } from "../store/syncStore";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 const useCheckAuth = () => {
   const { setTodos } = useTodoActions();
   const [isLoggedIn, setIsLoggedIn] = useState(false);

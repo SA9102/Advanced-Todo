@@ -6,7 +6,6 @@ import emptyTodo from "../utils/emptyTodo";
 import todoFiltersType from "../types/todoFiltersType";
 import emptyTodoFilters from "../utils/emptyTodoFilters";
 import axios from "axios";
-import { API_BASE_URL } from "../config";
 import { useSetSynced, useSynced } from "../store/syncStore";
 import AuthContext from "../context/AuthProvider";
 import DisplayOptions from "../components/DisplayOptions";
@@ -35,6 +34,7 @@ import {
   hasExceededStart,
 } from "../utils/todoUtils";
 import useDatabase from "../hooks/useDatabase";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const HomePage = () => {
   const synced = useSynced();

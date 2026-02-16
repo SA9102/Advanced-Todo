@@ -24,7 +24,7 @@ import todoType from "../types/todoType";
 import emptyTodo from "../utils/emptyTodo";
 
 import { v4 as uuidv4 } from "uuid";
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from "../config";
 
 const CreateTodoDialog = ({ open, setOpen }) => {
   // const [open, setOpen] = useState(false);

@@ -19,7 +19,7 @@ import TagItem from "../components/TagItem";
 import axios from "axios";
 import { addTagToLS, getTagsLS } from "../utils/localStorage";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from "../config";
 
 const TagsPage = () => {
   // const [tags, setTags] = useState<tagType[]>([]);

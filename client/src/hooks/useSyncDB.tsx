@@ -5,7 +5,7 @@ import axios from "axios";
 import { useGetTodos } from "../store/todoStore";
 import { useSetSynced } from "../store/syncStore";
 import AuthContext from "../context/AuthProvider";
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from "../config";
 
 const useSyncDB = () => {
   const todos = useGetTodos();

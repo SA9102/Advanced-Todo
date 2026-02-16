@@ -20,7 +20,7 @@ import { useTagActions } from "../store/tagStore";
 import { useGetTodos, useTodoActions } from "../store/todoStore";
 import todoType from "../types/todoType";
 import axios from "axios";
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from "../config";
 
 const TagItem = ({ tag }) => {
   const [openDialog, setOpenDialog] = useState(false);

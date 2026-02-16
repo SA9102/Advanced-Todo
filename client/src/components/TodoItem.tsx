@@ -24,7 +24,7 @@ import tagType from "../types/tagType";
 import { useGetTags, useTagActions } from "../store/tagStore";
 import { useSynced, useSetSynced } from "../store/syncStore";
 import axios from "axios";
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from "../config";
 import AuthContext from "../context/AuthProvider";
 import {
   Button,

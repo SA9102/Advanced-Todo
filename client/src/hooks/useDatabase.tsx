@@ -3,7 +3,7 @@ import { useContext } from "react";
 import AuthContext from "../context/AuthProvider";
 import todoType from "../types/todoType";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from "../config";
 const useDatabase = () => {
   const { auth } = useContext(AuthContext);
 

@@ -34,7 +34,7 @@ import {
   hasExceededStart,
 } from "../utils/todoUtils";
 import useDatabase from "../hooks/useDatabase";
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from "../config";
 
 const HomePage = () => {
   const synced = useSynced();

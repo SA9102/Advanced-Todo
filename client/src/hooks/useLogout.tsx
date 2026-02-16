@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import { HOME } from "../routes/routes";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from "../config";
 const useLogout = () => {
   const { auth, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();

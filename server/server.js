@@ -19,8 +19,10 @@ app.use(express.json());
 app.use(cookieParser()); // Allows us to access cookies through the request object
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    // origin: "https://advanced-todo-2zks.onrender.com",
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://advanced-todo-2zks.onrender.com"
+        : "http://localhost:5173",
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
   })

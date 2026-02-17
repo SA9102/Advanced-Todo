@@ -9,8 +9,7 @@ const useDatabase = () => {
 
   const getTodosDB = async () => {
     try {
-      console.log("FETCHING");
-      const res = await axios.get(`http://localhost:3000/api/todo/`, {
+      const res = await axios.get(`${API_BASE_URL}/todo/`, {
         withCredentials: true,
         headers: { Authorization: auth.accessToken },
       });
@@ -28,7 +27,6 @@ const useDatabase = () => {
         isChangingTask: false,
         isExpanded: false,
       }));
-      console.log("RETURNING");
       return formattedTodos;
     } catch (err) {
       console.log("ERROR");

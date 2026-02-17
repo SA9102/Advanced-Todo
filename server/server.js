@@ -11,7 +11,7 @@ const authRoutes = require("./routes/auth");
 const todoRoutes = require("./routes/todo");
 const tagRoutes = require("./routes/tag");
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 
@@ -20,17 +20,18 @@ app.use(cookieParser()); // Allows us to access cookies through the request obje
 app.use(
   cors({
     origin:
-      process.env.NODE_ENV === "production"
-        ? "https://advanced-todo-2zks.onrender.com"
-        : "http://localhost:5173",
+      // process.env.NODE_ENV === "production"
+      //   ? "https://advanced-todo-2zks.onrender.com"
+      // :
+      "http://localhost:5173",
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-app.use(express.static(path.join(__dirname, "../client/dist")));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
-});
+// app.use(express.static(path.join(__dirname, "../client/dist")));
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
+// });
 
 const apiRoute = "/api/";
 
